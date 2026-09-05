@@ -93,7 +93,10 @@ donde escribes la pregunta en cristiano:
 
 Si la respuesta no está en ninguna tabla, **lo dice** en vez de inventársela.
 
-Qué quiere decir exactamente cada columna está en [db/columnas.py](db/columnas.py), que es el único sitio donde se explica.
+Qué quiere decir exactamente cada columna, y qué es una fila en cada tabla,
+está explicado una por una: lo tienes en
+[el catálogo](#y-si-quieres-mirar-por-dentro), aquí abajo.
+
 ---
 
 ## Lo que apunta, y lo que no
