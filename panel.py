@@ -50,6 +50,7 @@ RAIZ = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, RAIZ)
 
 from mod_verdad.donde_esta_el_juego import carpeta_del_juego, carpeta_de_verdad
+import idiomas
 from db import vistas as _vistas
 from db import titulares as _titulares
 
@@ -547,7 +548,7 @@ def vistas_viejas():
     return viejas
 
 
-def estado():
+def estado(idioma=None):
     juego = carpeta_del_juego()
     plugin = (os.path.isfile(os.path.join(juego, "BepInEx", "plugins",
                                           "CatanVerdad.dll")) if juego else False)
@@ -581,7 +582,8 @@ def estado():
         # Lo que el mod lleva apuntado de la partida de ahora mismo.
         "apunta": _apuntando(),
         "grabacion_viva": grabacion.vivo,
-        "tarea": tarea.nombre if (tarea.vivo or tarea.acabado_en) else None,
+        "tarea": (idiomas.frase(tarea.nombre, idioma)
+                  if (tarea.vivo or tarea.acabado_en) else None),
         "tarea_viva": tarea.vivo,
         "tarea_codigo": tarea.codigo,
         "partidas": _partidas_grabadas(),
@@ -775,6 +777,98 @@ def _pagina_al_dia():
     _sello_pagina["cuando"] = ahora
     _sello_pagina["html"] = html
     return html
+
+
+_ATRIBUTOS_QUE_SE_LEEN = ("placeholder", "title", "alt", "aria-label")
+
+
+def _traducir(html, idioma):
+    """La pagina en otro idioma. El porque de todo esto vive en `idiomas.py`.
+
+    Lo importante: NO es un `replace` sobre la pagina entera. El CSS, el
+    JavaScript y los identificadores van dentro de la misma cadena, y una
+    palabra como «dentro» o «nunca» aparece tambien ahi. Aqui se separa:
+
+      - los <style> no se tocan,
+      - los <script> se traducen SOLO con las cadenas entrecomilladas de
+        `guion`, comillas incluidas, que no pueden chocar con codigo,
+      - y en el resto se toca unicamente lo que hay ENTRE etiquetas.
+
+    Un idioma que no exista devuelve la pagina tal cual, sin quejarse: el
+    parametro puede venir de una cookie vieja o de alguien probando a mano.
+    """
+    lengua = idiomas.IDIOMAS.get(idioma)
+    if lengua is None:
+        return html
+    texto, guion = lengua["texto"], lengua["guion"]
+    salida = []
+    for i, trozo in enumerate(re.split(
+            r"(<script[^>]*>.*?</script>|<style[^>]*>.*?</style>)",
+            html, flags=re.S)):
+        if i % 2:                      # un <script> o un <style> ENTERO
+            if trozo.lstrip().lower().startswith("<script"):
+                for es in sorted(guion, key=len, reverse=True):
+                    trozo = trozo.replace(es, guion[es])
+            salida.append(trozo)
+            continue
+        partes = re.split(r"(<[^>]+>)", trozo)
+        for j, parte in enumerate(partes):
+            if j % 2:
+                # Una etiqueta. Dentro NO se traduce nada menos los atributos
+                # que se LEEN: el texto gris de una caja de busqueda y el
+                # globo que sale al pasar el raton. Se quedaban en castellano
+                # y no se notaba, porque no son texto de la pagina.
+                for atributo in _ATRIBUTOS_QUE_SE_LEEN:
+                    for valor in re.findall(r'\b%s="([^"]*)"' % atributo,
+                                            parte):
+                        if valor in texto:
+                            parte = parte.replace(
+                                '%s="%s"' % (atributo, valor),
+                                '%s="%s"' % (atributo, texto[valor]))
+                partes[j] = parte
+                continue
+            clave = " ".join(parte.split())
+            if clave and clave in texto:
+                # Se conserva el blanco de los bordes: sin el, una palabra se
+                # pegaria a la etiqueta de al lado y saldrian juntas.
+                izq = parte[:len(parte) - len(parte.lstrip())]
+                der = parte[len(parte.rstrip()):]
+                partes[j] = izq + texto[clave] + der
+        salida.append("".join(partes))
+    return "".join(salida)
+
+
+def _idioma_pedido(cabeceras, consulta):
+    """El idioma de esta visita: primero lo que diga la URL, y si no la cookie.
+
+    Cookie y no `localStorage` como el tema, porque esto lo decide el SERVIDOR
+    antes de mandar nada: con localStorage habria que recargar la pagina una
+    segunda vez y se veria el cambio a medias.
+    """
+    for par in consulta.split("&"):
+        if par.startswith("idioma="):
+            return par[len("idioma="):]
+    for galleta in (cabeceras.get("Cookie") or "").split(";"):
+        nombre, _, valor = galleta.strip().partition("=")
+        if nombre == "idioma":
+            return valor
+    return idiomas.ORIGINAL
+
+
+def _con_idioma(html, idioma):
+    """La pagina traducida y con la lista de idiomas dentro, para el boton.
+
+    La lista la manda el servidor y no la escribe la pagina, por lo mismo que
+    los ambitos: si anadir un idioma obligara a tocar dos sitios, el que se
+    olvide seria este.
+    """
+    vuelta = idiomas.la_vuelta()
+    if idioma not in [lengua["id"] for lengua in vuelta]:
+        idioma = idiomas.ORIGINAL      # cookie vieja, o alguien probando
+    html = _traducir(html, idioma)
+    dentro = ("<script>window.IDIOMAS_HAY=%s;window.IDIOMA_AHORA=%s;</script>"
+              % (json.dumps(vuelta, ensure_ascii=False), json.dumps(idioma)))
+    return html.replace("<!--idiomas-->", dentro)
 
 
 # Los trozos entre <!--dev--> y <!--/dev--> se QUITAN de la pagina, no se
@@ -1795,7 +1889,7 @@ def _dia_es(iso):
     return "%s/%s/%s" % (m.group(3), m.group(2), m.group(1)) if m else iso
 
 
-def catalogo():
+def catalogo(idioma=None):
     """Que vistas hay y que partidas se pueden elegir."""
     _vistas_al_dia()
     conn = _abrir_base()
@@ -1822,18 +1916,24 @@ def catalogo():
             # Agrupadas y en el orden en que se enseñan. Se manda ya ordenado
             # y no la lista cruda con una etiqueta: si el orden lo decidiera
             # el navegador, habría dos sitios donde cambiarlo.
-            "vistas": [{"nombre": v["nombre"], "titulo": v["titulo"],
-                        "que": v["que"], "vacio": v.get("vacio"),
-                        "grupo": titulo}
+            "vistas": [{"nombre": v["nombre"],
+                        "titulo": idiomas.frase(v["titulo"], idioma),
+                        "que": idiomas.frase(v["que"], idioma),
+                        "vacio": idiomas.frase(v.get("vacio"), idioma),
+                        "grupo": idiomas.frase(titulo, idioma)}
                        for titulo, vistas in _vistas.por_grupos()
                        for v in vistas],
             "partidas": partidas,
             # Los ambitos los manda el servidor y no los escribe la pagina:
             # si el dia que se anada uno hay que tocar dos sitios, el que se
             # olvide sera este.
-            "ambitos": [{"id": a, "texto": _vistas.NOMBRE_DEL_AMBITO[a]}
+            "ambitos": [{"id": a,
+                         "texto": idiomas.frase(
+                             _vistas.NOMBRE_DEL_AMBITO[a], idioma)}
                         for a in _vistas.AMBITOS],
-            "mesas": [{"id": m, "texto": _vistas.NOMBRE_DE_LA_MESA[m]}
+            "mesas": [{"id": m,
+                       "texto": idiomas.frase(
+                           _vistas.NOMBRE_DE_LA_MESA[m], idioma)}
                       for m in _vistas.MESAS],
             "faltan": faltan,
         }
@@ -1965,7 +2065,7 @@ def poner_nombre(red, nombre):
          red, nombre])
 
 
-def titulares():
+def titulares(idioma=None):
     """Los titulares de ahora mismo, recalculados en cada visita.
 
     Se piden a `db/titulares.py`, que a su vez lee las MISMAS vistas que
@@ -1977,14 +2077,14 @@ def titulares():
     if conn is None:
         return {"error": "Todavia no hay base de datos."}
     try:
-        return _titulares.calcular(conn)
+        return _titulares.calcular(conn, idioma=idioma)
     except sqlite3.Error as e:
         return {"error": "%s  --  prueba con: py db/vistas.py --crear" % e}
     finally:
         conn.close()
 
 
-def ver_vista(nombre, partida=None, ambito=None, mesa=None):
+def ver_vista(nombre, partida=None, ambito=None, mesa=None, idioma=None):
     # Releer aqui tambien, y no solo en `catalogo()`. Teniendolo en un solo
     # sitio pasaba lo peor que puede pasar: la lista de vistas se refrescaba
     # -- o sea que la pagina PARECIA al dia -- y la consulta seguia siendo la
@@ -2005,7 +2105,13 @@ def ver_vista(nombre, partida=None, ambito=None, mesa=None):
             ambito = "amigos"
         columnas, filas = _vistas.consultar(conn, nombre, partida, ambito,
                                             mesa)
+        # `columnas` son los nombres de SQL y NO se tocan: con ellos se
+        # ordena, se filtra y se casan las fichas de `db/columnas.py`.
+        # `etiquetas` es lo que se PINTA encima, que es otra cosa y sí cambia
+        # de idioma. Mezclarlas rompería el orden de las columnas en cuanto
+        # alguien tradujera una.
         return {"columnas": columnas,
+                "etiquetas": [idiomas.columna(c, idioma) for c in columnas],
                 "filas": [list(f) for f in filas]}
     except ValueError:
         return {"error": "No existe el ambito '%s' o la mesa '%s'."
@@ -2469,13 +2575,14 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   document.documentElement.setAttribute("data-tema", t);
 })();
 </script>
-</head><body><div class="envoltorio">
+<!--idiomas--></head><body><div class="envoltorio">
 
 <div class="cabecera">
   <div>
     <h1>Catan Tracker</h1>
     <p class="sub" id="donde">buscando el juego...</p>
   </div>
+  <button id="bIdioma" type="button" title="Cambiar de idioma"></button>
   <button id="bTema" type="button" title="Cambiar entre claro y oscuro"></button>
 </div>
 
@@ -2795,6 +2902,27 @@ function boton(id, fn){
 // y lo apunta en el navegador. El servidor no sabe ni tiene por que saber de
 // que color ves la pagina.
 //
+// El boton de idioma, con la misma regla que el de tema: dice A DONDE
+// VAS. Recorre los idiomas en circulo, asi que con tres funciona igual que
+// con dos sin tocar nada de aqui.
+(function(){
+  const b = document.getElementById("bIdioma");
+  if (!b) return;
+  const hay = window.IDIOMAS_HAY || [];
+  if (hay.length < 2){ b.hidden = true; return; }
+  let i = 0;
+  for (let k = 0; k < hay.length; k++)
+    if (hay[k].id === window.IDIOMA_AHORA) i = k;
+  const siguiente = hay[(i + 1) % hay.length];
+  b.textContent = siguiente.boton;
+  b.onclick = () => {
+    // Un anio. Y `path=/` para que valga en todas las rutas del panel, no
+    // solo en la que estabas.
+    document.cookie = "idioma=" + siguiente.id + ";path=/;max-age=31536000";
+    location.reload();
+  };
+})();
+
 // El boton dice A DONDE VAS, no donde estas: estando en claro pone «Oscuro».
 // Al reves obliga a pensarlo, y es un boton para no pensarlo.
 function pintarTema(){
@@ -3176,7 +3304,7 @@ function dibujar(){
     return '<th class="orden' + (numerica[i] ? " num" : "")
       + (activa ? " activa" : "") + '" data-col="' + i
       + '" title="Ordenar por esta columna">'
-      + escapar(c.replace(/_/g, " "))
+      + escapar((r.etiquetas && r.etiquetas[i]) || c.replace(/_/g, " "))
       + '<span class="flecha">'
       + (activa ? (orden.desc ? " ▼" : " ▲") : "")
       + "</span></th>";
@@ -3654,18 +3782,23 @@ class Manejador(BaseHTTPRequestHandler):
     def do_GET(self):
         ruta, _, consulta = self.path.partition("?")
         if ruta == "/":
-            return self._responder(
-                200, "text/html; charset=utf-8",
-                _pagina_para(_pagina_al_dia(), hay_desarrollo(),
-                             hay_vision()).encode("utf-8"))
+            pagina = _pagina_para(_pagina_al_dia(), hay_desarrollo(),
+                                  hay_vision())
+            pagina = _con_idioma(pagina,
+                                 _idioma_pedido(self.headers, consulta))
+            return self._responder(200, "text/html; charset=utf-8",
+                                   pagina.encode("utf-8"))
         if ruta == "/estado":
-            return self._json(estado())
+            return self._json(
+                estado(_idioma_pedido(self.headers, consulta)))
         if ruta == "/vistas":
-            return self._json(catalogo())
+            return self._json(
+                catalogo(_idioma_pedido(self.headers, consulta)))
         if ruta == "/gente":
             return self._json(gente())
         if ruta == "/titulares":
-            return self._json(titulares())
+            return self._json(
+                titulares(_idioma_pedido(self.headers, consulta)))
         if ruta == "/preguntar":
             args = dict(p.split("=", 1) for p in consulta.split("&") if "=" in p)
             # La pregunta es texto libre, pero no toca SQL en ningun momento:
@@ -3688,8 +3821,9 @@ class Manejador(BaseHTTPRequestHandler):
             # tampoco entra SQL.
             ambito = unquote(args.get("ambito", "")) or None
             mesa = unquote(args.get("mesa", "")) or None
-            return self._json(ver_vista(unquote(args.get("nombre", "")),
-                                        partida, ambito, mesa))
+            return self._json(ver_vista(
+                unquote(args.get("nombre", "")), partida, ambito, mesa,
+                _idioma_pedido(self.headers, consulta)))
         if ruta == "/registro":
             args = dict(p.split("=", 1) for p in consulta.split("&") if "=" in p)
             # El mod no es una tarea del panel --escribe el juego, en un

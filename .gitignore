@@ -53,13 +53,16 @@ __pycache__/
 # personas de verdad y no tienen por que salir en un repositorio publico.
 #
 # README.md si sube: es lo unico que lee quien abre esto, y un repositorio
-# sin portada es una lista de ficheros.
+# sin portada es una lista de ficheros. Y README.en.md igual, que es la misma
+# portada en ingles -- sin la excepcion se quedaba fuera en silencio, que es
+# lo peor que puede hacer un .gitignore.
 #
 # OJO CON EL ORDEN: el `!` tiene que ir DESPUES del `*.md`, y no vale
 # excluir una carpeta entera y luego reincluir algo de dentro. Es la misma
 # trampa que esta explicada abajo con `red/*`.
 *.md
 !README.md
+!README.en.md
 
 # El plugin compilado sale de compilar.ps1
 mod_verdad/CatanVerdad.dll

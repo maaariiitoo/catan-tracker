@@ -1,3 +1,5 @@
+*[Read this in English](README.en.md).*
+
 # Catan Tracker
 
 Tus partidas de **Catan Universe**, apuntadas solas y convertidas en

@@ -40,6 +40,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from db import vistas as V           # noqa: E402
+import idiomas                       # noqa: E402
 
 
 # Partidas que hay que llevar para poder salir en un titular.
@@ -235,23 +236,33 @@ RECORDS = (
 )
 
 
-def _num(valor):
-    """Un número como se escribe en español, o el texto tal cual."""
+def _num(valor, idioma=None):
+    """Un número como se escribe en ese idioma, o el texto tal cual.
+
+    La coma decimal no es cosmética: un inglés lee «3,18» como tres mil
+    ciento dieciocho, o sea mil veces el número que es. Cada idioma dice cuál
+    es la suya en `idiomas.py`."""
     if isinstance(valor, float):
         # Los enteros que vienen como float (7.0) se escriben sin coma: en un
         # titular, «7,0 de 12» se lee peor que «7 de 12».
         if valor == int(valor):
             return str(int(valor))
-        return ("%g" % valor).replace(".", ",")
+        return ("%g" % valor).replace(".", idiomas.decimal(idioma))
     return str(valor)
 
 
-def _rellenar(plantilla, cols, fila):
-    texto = plantilla
+def _rellenar(plantilla, cols, fila, idioma=None):
+    """La plantilla con los numeros de la fila puestos, en el idioma que sea.
+
+    Traducir AQUI y no en el panel es lo que hace que funcione: para cuando
+    el panel ve el titular, «{victorias} de {partidas}» ya es «7 de 10» y no
+    hay nada que buscar en un diccionario. Y como todas las plantillas pasan
+    por este embudo, no hay forma de que una se quede sin traducir."""
+    texto = idiomas.frase(plantilla, idioma)
     for i, col in enumerate(cols):
         marca = "{%s}" % col
         if marca in texto:
-            texto = texto.replace(marca, _num(fila[i]))
+            texto = texto.replace(marca, _num(fila[i], idioma))
     return texto
 
 
@@ -292,11 +303,13 @@ def _filtrar(filas, cols, donde):
     return [f for f in filas if _COMO[op](f[k], valor)]
 
 
-def _uno(conn, titular, gente):
+def _uno(conn, titular, gente, idioma=None):
     """Un titular resuelto, o con `falta` puesto si todavía no se puede."""
-    salida = {"id": titular["id"], "titulo": titular["titulo"],
+    salida = {"id": titular["id"],
+              "titulo": idiomas.frase(titular["titulo"], idioma),
               "vista": titular["vista"],
-              "vista_titulo": V.POR_NOMBRE[titular["vista"]]["titulo"]}
+              "vista_titulo": idiomas.frase(
+                  V.POR_NOMBRE[titular["vista"]]["titulo"], idioma)}
     try:
         cols, filas = V.consultar(conn, titular["vista"])
     except sqlite3.Error as e:
@@ -327,9 +340,10 @@ def _uno(conn, titular, gente):
         return salida
 
     fila = max(dentro, key=lambda f: f[orden])
-    salida["quien"] = _rellenar(titular.get("quien", "{quien}"), cols, fila)
-    salida["cifra"] = _rellenar(titular["cifra"], cols, fila)
-    salida["detalle"] = _rellenar(titular["detalle"], cols, fila)
+    salida["quien"] = _rellenar(titular.get("quien", "{quien}"), cols, fila,
+                                idioma)
+    salida["cifra"] = _rellenar(titular["cifra"], cols, fila, idioma)
+    salida["detalle"] = _rellenar(titular["detalle"], cols, fila, idioma)
 
     # La segunda linea, cuando la vista se parte en bloques que no se pueden
     # mezclar. Es OTRA fila de LA MISMA consulta -- no una consulta nueva --
@@ -339,12 +353,14 @@ def _uno(conn, titular, gente):
     if extra:
         otras = _filtrar(pueden, cols, extra.get("donde"))
         if not otras:
-            salida["tambien"] = extra.get("si_nadie")
+            salida["tambien"] = idiomas.frase(extra.get("si_nadie"),
+                                              idioma)
         else:
             otra = max(otras, key=lambda f: f[orden])
             salida["tambien"] = (
-                extra["si_cero"] if not otra[orden] and extra.get("si_cero")
-                else _rellenar(extra["texto"], cols, otra))
+                idiomas.frase(extra["si_cero"], idioma)
+                if not otra[orden] and extra.get("si_cero")
+                else _rellenar(extra["texto"], cols, otra, idioma))
     return salida
 
 
@@ -358,11 +374,13 @@ def _las_partidas(conn):
         " ORDER BY game_id DESC")]
 
 
-def _un_record(conn, record, partidas):
+def _un_record(conn, record, partidas, idioma=None):
     """La mejor marca de una sola partida, mirandolas todas una a una."""
-    salida = {"id": record["id"], "titulo": record["titulo"],
+    salida = {"id": record["id"],
+              "titulo": idiomas.frase(record["titulo"], idioma),
               "vista": record["vista"],
-              "vista_titulo": V.POR_NOMBRE[record["vista"]]["titulo"]}
+              "vista_titulo": idiomas.frase(
+                  V.POR_NOMBRE[record["vista"]]["titulo"], idioma)}
     mejor = None
     for numero, dia in partidas:
         try:
@@ -383,15 +401,16 @@ def _un_record(conn, record, partidas):
         return salida
 
     _valor, numero, dia, cols, fila = mejor
-    salida["quien"] = _rellenar(record.get("quien", "{quien}"), cols, fila)
-    salida["cifra"] = _rellenar(record["cifra"], cols, fila)
-    salida["detalle"] = _rellenar(record["detalle"], cols, fila)
+    salida["quien"] = _rellenar(record.get("quien", "{quien}"), cols, fila,
+                                idioma)
+    salida["cifra"] = _rellenar(record["cifra"], cols, fila, idioma)
+    salida["detalle"] = _rellenar(record["detalle"], cols, fila, idioma)
     salida["partida"] = numero
     salida["dia"] = dia
     return salida
 
 
-def calcular(conn, minimo=MINIMO):
+def calcular(conn, minimo=MINIMO, idioma=None):
     """Los titulares de ahora mismo, en orden.
 
     Devuelve `{minimo, cuantos_llegan, el_que_mas, titulares}`. Lo de fuera
@@ -406,8 +425,9 @@ def calcular(conn, minimo=MINIMO):
             "cuantos_llegan": len(gente),
             "el_que_mas": ({"quien": el_que_mas[0], "partidas": el_que_mas[1]}
                            if el_que_mas else None),
-            "titulares": [_uno(conn, t, gente) for t in TITULARES],
-            "records": [_un_record(conn, r, partidas) for r in RECORDS]}
+            "titulares": [_uno(conn, t, gente, idioma) for t in TITULARES],
+            "records": [_un_record(conn, r, partidas, idioma)
+                        for r in RECORDS]}
 
 
 def main():

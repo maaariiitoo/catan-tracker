@@ -3634,6 +3634,169 @@ def prueba_los_dos_temas_definen_los_mismos_colores():
               'id="bTema"' in recortada
               and 'localStorage.getItem("tema")' in recortada)
 
+def prueba_ningun_idioma_se_queda_a_medias():
+    """Cada idioma tiene que cubrirlo TODO. Media traduccion no vale.
+
+    Una pagina medio en ingles y medio en castellano es peor que una entera
+    en castellano: el que la lee no sabe si le falta algo o es que ahi pone
+    eso. Y se cuela sola, porque se anade un parrafo en el idioma de casa y
+    nadie se acuerda de los demas.
+
+    Se miran los CUATRO sitios de donde sale texto, que son cuatro fallos
+    distintos y ninguno avisa solo:
+
+      texto     lo que hay entre etiquetas de la pagina -- la ENTERA, con los
+                bloques <!--dev--> dentro. Se dejaron fuera una vez, con el
+                argumento de que no se publican, y el resultado fue media
+                pagina traducida para quien desarrolla esto.
+      atributos el gris de una caja de busqueda y el globo del raton. No son
+                texto de la pagina y por eso se colaron.
+      guion     las cadenas que escribe el JavaScript.
+      frases    lo que manda el servidor: titulos de tabla, titulares,
+                filtros y nombres de tarea.
+      columnas  las cabeceras de las tablas.
+
+    Y en los dos sentidos: falta una entrada es traduccion incompleta; sobra
+    una es traduccion CADUCA, que es peor, porque parece hecha.
+    """
+    import re
+    import panel
+    import idiomas
+    import db.vistas as V
+    import db.titulares as T
+
+    # --- lo que se ve en la pagina, la entera -----------------------------
+    cuerpo = panel.PAGINA.split("</head>", 1)[-1]
+    sin_guion = re.sub(r"<script.*?</script>", "", cuerpo, flags=re.S)
+    trozos = []
+    for crudo in re.split(r"<[^>]+>", sin_guion):
+        limpio = " ".join(crudo.split())
+        if len(limpio) > 2 and re.search(r"[a-zA-Z]", limpio):
+            trozos.append(limpio)
+    for etiqueta in re.findall(r"<[^>]+>", panel.PAGINA):
+        for atributo in panel._ATRIBUTOS_QUE_SE_LEEN:
+            for valor in re.findall(r'\b%s="([^"]+)"' % atributo, etiqueta):
+                valor = valor.strip()
+                if len(valor) > 2 and re.search(r"[a-zA-Z]", valor):
+                    trozos.append(valor)
+    trozos = list(dict.fromkeys(trozos))
+    guiones = "\n".join(re.findall(r"<script[^>]*>(.*?)</script>",
+                                   panel.PAGINA, re.S))
+
+    # --- lo que manda el servidor ------------------------------------------
+    frases = [g for g, _ in V.GRUPOS]
+    for v in V.VISTAS:
+        frases += [v["titulo"], v.get("que"), v.get("vacio")]
+    frases += list(V.NOMBRE_DEL_AMBITO.values())
+    frases += list(V.NOMBRE_DE_LA_MESA.values())
+    frases += [n[0] if isinstance(n, tuple) else n
+               for n in panel.TAREAS.values()]
+
+    def plantillas(d):
+        fuera = []
+        for clave in ("titulo", "cifra", "detalle", "quien", "texto",
+                      "si_cero", "si_nadie"):
+            if isinstance(d.get(clave), str):
+                fuera.append(d[clave])
+        if isinstance(d.get("tambien"), dict):
+            fuera += plantillas(d["tambien"])
+        return fuera
+
+    for uno in list(T.TITULARES) + list(T.RECORDS):
+        frases += plantillas(uno)
+    frases = [f for f in dict.fromkeys(frases) if f]
+
+    columnas = set(C.COMUNES)
+    for v in V.VISTAS:
+        columnas |= set(C.POR_VISTA.get(v["nombre"]) or {})
+    columnas = sorted(columnas)
+
+    # Y las fichas del catalogo: que quiere decir cada columna y que es una
+    # fila. No salen en el panel --las escribe `py db/catalogo.py`-- pero un
+    # catalogo medio traducido es exactamente el mismo problema.
+    filas = [v["nombre"] for v in V.VISTAS if v["nombre"] in C.FILA_ES]
+
+    comprobar("hay %d trozos de pagina, %d frases y %d columnas que traducir"
+              % (len(trozos), len(frases), len(columnas)),
+              len(trozos) > 150 and len(frases) > 100 and len(columnas) > 100)
+
+    for clave in sorted(idiomas.IDIOMAS):
+        lengua = idiomas.IDIOMAS[clave]
+        for que, tiene, hay in (
+                ("los %d trozos de la pagina" % len(trozos),
+                 lengua["texto"], trozos),
+                ("las %d frases del servidor" % len(frases),
+                 lengua["frases"], frases),
+                ("las %d cabeceras de columna" % len(columnas),
+                 lengua["columnas"], columnas),
+                ("las %d columnas comunes del catalogo" % len(C.COMUNES),
+                 lengua["comunes"], list(C.COMUNES)),
+                ("el «que es una fila» de las %d tablas" % len(filas),
+                 lengua["fila_es"], filas)):
+            faltan = [x for x in hay if x not in tiene]
+            comprobar("«%s» traduce %s" % (clave, que), not faltan,
+                      "sin traducir: %s" % [x[:45] for x in faltan[:3]])
+            caducas = [k for k in tiene if k not in hay]
+            comprobar("y no le sobra ninguna", not caducas,
+                      "ya no existen: %s" % [k[:45] for k in caducas[:3]])
+
+        # `fila_es` no es una frase, son dos: que es una fila y para que
+        # sirve mirarla. Con una sola el catalogo sale cojo y no lo dice.
+        cojas = [k for k, v in lengua["fila_es"].items()
+                 if not (isinstance(v, dict) and v.get("fila") and v.get("para"))]
+        comprobar("y cada «que es una fila» trae sus dos frases", not cojas,
+                  str(cojas[:3]))
+
+        # Y las propias de cada vista, tabla por tabla: es donde estan
+        # las tres cuartas partes del texto del catalogo.
+        sin_ficha, de_mas = [], []
+        for v in V.VISTAS:
+            suyas = C.POR_VISTA.get(v["nombre"]) or {}
+            tiene = lengua["por_vista"].get(v["nombre"]) or {}
+            sin_ficha += ["%s.%s" % (v["nombre"], c)
+                          for c in suyas if c not in tiene]
+            de_mas += ["%s.%s" % (v["nombre"], c)
+                       for c in tiene if c not in suyas]
+        comprobar("«%s» explica las columnas propias de las 32 tablas" % clave,
+                  not sin_ficha, "sin ficha: %s" % sin_ficha[:3])
+        comprobar("y no explica ninguna que ya no exista", not de_mas,
+                  "sobran: %s" % de_mas[:3])
+        sobran_tablas = [t for t in lengua["por_vista"]
+                         if t not in V.POR_NOMBRE]
+        comprobar("y ninguna tabla suya ha desaparecido", not sobran_tablas,
+                  str(sobran_tablas[:3]))
+
+        huerfanas = [k for k in lengua["guion"] if k not in guiones]
+        comprobar("y sus %d cadenas de JavaScript siguen existiendo"
+                  % len(lengua["guion"]), not huerfanas,
+                  "no aparecen: %s" % [k[:45] for k in huerfanas[:3]])
+
+        # LAS LLAVES. Un titular es una plantilla: «{victorias} de
+        # {partidas}». Si la traduccion se come un hueco o se inventa otro, en
+        # la pantalla sale un `{victorias}` en crudo o falta el numero.
+        malas = []
+        for es, otro in lengua["frases"].items():
+            if set(re.findall(r"\{(\w+)\}", es)) != set(
+                    re.findall(r"\{(\w+)\}", otro)):
+                malas.append(es)
+        comprobar("y los huecos {} de las plantillas son los mismos",
+                  not malas, str([m[:45] for m in malas[:3]]))
+
+        # Traducir cambia el texto, nunca la FORMA. Si una entrada se colara
+        # dentro de una etiqueta o de un <script>, el numero de etiquetas
+        # cambiaria y esto lo canta.
+        otra = panel._traducir(panel.PAGINA, clave)
+        comprobar("y traducir a «%s» no cambia la forma de la pagina" % clave,
+                  otra.count("<") == panel.PAGINA.count("<")
+                  and otra.count("<script") == panel.PAGINA.count("<script"),
+                  "etiquetas %d -> %d" % (panel.PAGINA.count("<"),
+                                          otra.count("<")))
+        comprobar("y la pagina en «%s» no es la misma que en castellano"
+                  % clave, otra != panel.PAGINA)
+
+    comprobar("y el boton de idioma le llega al usuario",
+              'id="bIdioma"' in panel._pagina_para(panel.PAGINA, False, False))
+
 def prueba_ponerselo_a_uno_mismo_cuadra(conn):
     """Las dos vistas del ladron tienen que cuadrar quitando lo de uno mismo.
 
@@ -3960,6 +4123,7 @@ def main():
         prueba_la_caja_distingue_el_mas_del_menos()
         prueba_ponerselo_a_uno_mismo_cuadra(conn)
         prueba_los_dos_temas_definen_los_mismos_colores()
+        prueba_ningun_idioma_se_queda_a_medias()
         prueba_lo_que_se_publica_no_lleva_el_nombre_de_nadie(conn)
         prueba_el_catalogo_no_lleva_datos_de_nadie(conn)
         partidas = [r[0] for r in conn.execute(
