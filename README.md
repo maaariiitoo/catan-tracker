@@ -6,6 +6,8 @@ uno el ladrón, quién comercia con quién y quién sale ganando.
 
 No hay que apuntar nada a mano. Juegas, le das a un botón y ya está.
 
+![Los titulares del panel: conclusiones ya escritas, cada una con su número](docs/titulares.png)
+
 ---
 
 ## Empezar
@@ -68,13 +70,15 @@ Y debajo los **récords**: la mejor marca de una sola partida, con la partida
 en que fue. Ahí no hay mínimo — un titular es una costumbre y pide partidas;
 un récord es de un día.
 
+![Los récords de una sola partida, con la partida y el día en que fueron](docs/records.png)
+
 Y dos filtros que se combinan: **con quién** se jugó —de serie sólo las
 de personas, porque la IA no propone tratos ni bloquea igual— y **de
 cuántos era la mesa**, porque una de 5 o 6 tiene 30 casillas en vez de 19 y
 se juega a 12 puntos y no a 10. Mezclarlas no ensucia la media un poco: la
 deja sin significado.
 
-Debajo, 31 tablas. El marcador, la suerte de cada uno, el ladrón, los
+Debajo, 32 tablas. El marcador, la suerte de cada uno, el ladrón, los
 comercios, las cartas de desarrollo, los números de cada casilla… Y una caja
 donde escribes la pregunta en cristiano:
 
@@ -86,7 +90,7 @@ donde escribes la pregunta en cristiano:
 
 Si la respuesta no está en ninguna tabla, **lo dice** en vez de inventársela.
 
-Las explicaciones de las columnas y que significa cada cosa esta en db  ----> columnas
+Qué quiere decir exactamente cada columna está en [db/columnas.py](db/columnas.py), que es el único sitio donde se explica.
 ---
 
 ## Lo que apunta, y lo que no
@@ -144,7 +148,7 @@ Es un proyecto sobre datos, así que la pregunta importa:
 py db/pruebas.py
 ```
 
-**Más de 250 comprobaciones** sobre tus propias partidas: que el total y
+**Trescientas comprobaciones** sobre tus propias partidas: que el total y
 cada partida por separado digan lo mismo, que los robos hechos cuadren con
 los sufridos, que nadie tenga puntos imposibles, que la producción deducida
 del tablero coincida con la apuntada.
