@@ -1868,7 +1868,8 @@ def poner_mod(encendido):
     try:
         r = subprocess.run(
             ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
-             "-File", INTERRUPTOR, "on" if encendido else "off"],
+             "-File", INTERRUPTOR, "on" if encendido else "off",
+             "-python", sys.executable],
             cwd=RAIZ, capture_output=True, timeout=120,
             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
     except Exception as e:

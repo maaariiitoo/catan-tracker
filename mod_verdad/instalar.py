@@ -100,7 +100,28 @@ def ya_esta(juego):
 
 
 def dependencias():
-    """Las de `requirements.txt`, si falta alguna."""
+    """Las de `requirements.txt`, si es que hay alguna.
+
+    NUNCA tumba la instalacion, y por eso esta escrita asi. Lo unico que se
+    instalaria aqui es de la mitad de vision, que hoy no se publica: el mod,
+    el importador y el panel van con la biblioteca estandar. Antes devolvia
+    False cuando `pip` fallaba y `main` cortaba ahi, asi que un ordenador
+    sin red, detras de un proxy o sin pip se quedaba sin BepInEx y sin
+    plugin por unas librerias que su mitad ni toca.
+
+    Y con el requirements.txt de hoy, que es todo comentarios, ni siquiera
+    hay nada que pedir. Se dice y se sigue, en vez de anunciar cuatro que
+    faltan y decir despues que se han instalado, que era mentira: pip
+    devuelve 0 sin hacer nada cuando el fichero no pide nada.
+    """
+    req = os.path.join(RAIZ, "requirements.txt")
+    pedidas = []
+    if os.path.isfile(req):
+        with io.open(req, encoding="utf-8", errors="replace") as f:
+            pedidas = [l.strip() for l in f
+                       if l.strip() and not l.strip().startswith("#")]
+    if not pedidas:
+        return True, "ninguna: esto va con la biblioteca estandar"
     faltan = []
     for modulo, nombre in (("cv2", "opencv-python"), ("numpy", "numpy"),
                            ("PIL", "pillow"), ("mss", "mss")):
@@ -111,10 +132,10 @@ def dependencias():
     if not faltan:
         return True, "ya estan"
     _di("   faltan: %s" % ", ".join(faltan))
-    req = os.path.join(RAIZ, "requirements.txt")
     r = subprocess.run([sys.executable, "-m", "pip", "install", "-r", req])
-    return r.returncode == 0, ("instaladas" if r.returncode == 0
-                               else "pip ha fallado")
+    return True, ("instaladas" if r.returncode == 0
+                  else "pip ha fallado, y se sigue igual: eso es de la mitad"
+                       " de vision y el mod no lo necesita")
 
 
 def bajar_bepinex(juego, arq):
@@ -164,7 +185,8 @@ def apagar(juego):
 def compilar():
     ps1 = os.path.join(AQUI, "compilar.ps1")
     r = subprocess.run(["powershell", "-ExecutionPolicy", "Bypass",
-                        "-File", ps1], capture_output=True, text=True)
+                        "-File", ps1, "-python", sys.executable],
+                       capture_output=True, text=True)
     salida = (r.stdout or "") + (r.stderr or "")
     return r.returncode == 0 and "compilado" in salida, salida.strip()
 
@@ -202,8 +224,6 @@ def main():
     _di("2. Dependencias de Python")
     ok, detalle = dependencias()
     _di("   %s" % detalle)
-    if not ok:
-        return 1
 
     _di()
     _di("3. BepInEx %s" % BEPINEX)

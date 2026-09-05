@@ -4,10 +4,36 @@
 # Se usa el csc de .NET Framework que ya viene con Windows: no hace falta
 # instalar nada. Por eso el codigo esta escrito en C# 5 (sin interpolacion
 # de cadenas).
+param([string]$python = "")
+
 $aqui    = Split-Path -Parent $MyInvocation.MyCommand.Path
 # la carpeta del juego se le pregunta a Steam, no va escrita a mano
-$juego = (& python (Join-Path $aqui "donde_esta_el_juego.py") 2>$null |
-          Select-String -Pattern "^Catan Universe: (.+)$").Matches.Groups[1].Value
+# Con que Python se le pregunta a Steam. Lo pasa quien llama (-python), que
+# sabe cual esta corriendo. Si el .ps1 se lanza a mano no viene, y entonces
+# se prueba `py` PRIMERO y `python` despues: en muchos Windows `python` no
+# esta en el PATH, y peor aun, suele resolver al stub de la Microsoft Store,
+# que no imprime nada y devuelve vacio.
+#
+# Esto llamaba a `python` a secas. Cuando no estaba, el .ps1 se quedaba sin
+# carpeta y decia "No encuentro Catan Universe": una mentira que manda a
+# reinstalar Steam a quien lo que le falta es Python.
+if (-not $python) {
+    foreach ($c in @("py", "python")) {
+        $g = Get-Command $c -ErrorAction SilentlyContinue
+        if ($g) { $python = $g.Source; break }
+    }
+}
+if (-not $python) {
+    Write-Output "No encuentro Python. Instalalo desde python.org y marca Add to PATH."
+    exit 1
+}
+
+$dicho = & $python (Join-Path $aqui "donde_esta_el_juego.py") 2>$null
+if (-not $dicho) {
+    Write-Output "Python no ha contestado ($python). Esto NO es un problema de Catan."
+    exit 1
+}
+$juego = ($dicho | Select-String -Pattern "^Catan Universe: (.+)$").Matches.Groups[1].Value
 if (-not $juego -or $juego -eq "NO ENCONTRADO" -or -not (Test-Path $juego)) {
     Write-Output "No encuentro Catan Universe. Abre Steam una vez si lo has movido."
     exit 1
