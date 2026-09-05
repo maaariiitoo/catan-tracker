@@ -1,16 +1,18 @@
-# Sin dependencias.
+# NADA. Cero dependencias. No hay ningun `pip install` que dar.
 #
-# El fichero esta vacio a proposito, no por descuido: el mod, el importador,
-# la base, las vistas, el panel y las consultas funcionan con la biblioteca
-# estandar. Solo hace falta Python 3.7 o mas nuevo.
+# Medido, no supuesto: bloqueando a la fuerza cv2, numpy, torch, pillow, mss
+# y pytesseract, los 17 modulos que se publican cargan igual y las vistas se
+# montan. Solo hace falta Python 3.7 o mas nuevo, que ya trae todo lo que
+# esto usa: sqlite3, http.server, json, urllib, zipfile, hashlib.
 #
-#     py panel.py
+#     py panel.py --simple
 #
-# Poner aqui algo que no se usa tendria un precio real: un `pip install -r`
-# de 2,5 GB (torch) que ademas puede fallar, y quien lo vea fallar pensara
-# que el proyecto no arranca. Arranca.
+# El mod tampoco pide instalar nada a mano: BepInEx se lo baja el boton
+# (comprobando su huella SHA-256) y el plugin lo compila el csc.exe que ya
+# viene con Windows.
 #
-# La otra mitad del proyecto --leer el tablero de la pantalla-- si necesita
-# opencv-python, pytesseract, mss, numpy y torch, y Tesseract OCR aparte.
-# Esa mitad todavia no va en el repositorio; el .gitignore dice por que.
-# Cuando vuelva, vuelven estas lineas.
+# La otra mitad --leer el tablero de la pantalla-- si necesita opencv-python,
+# numpy, pillow, mss, pytesseract y torch, y Tesseract OCR aparte. Esa mitad
+# NO va en el repositorio todavia; el .gitignore dice por que. Cuando vuelva,
+# vuelven estas lineas aqui abajo, y no antes: un `pip install -r` de 2,5 GB
+# que ademas puede fallar hace pensar que el proyecto no arranca. Arranca.
