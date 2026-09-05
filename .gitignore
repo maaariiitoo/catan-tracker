@@ -1,0 +1,136 @@
+# Lo que NO va al repositorio: todo lo que pesa y se puede volver a generar,
+# o lo que son datos y no codigo.
+
+# Las capturas de las partidas grabadas: 18 GB. Son los datos de
+# entrenamiento de la red, no codigo. Si se pierden se pierden, pero meterlas
+# aqui haria el repositorio inmanejable.
+mod_verdad/datos/
+
+# Los datos ya preparados para entrenar: 4,3 GB en 22 ficheros, y diez de
+# ellos pasan de 100 MB, que es el limite por fichero de GitHub -- o sea que
+# el `git push` fallaria entero, no solo esos. Se regeneran con
+# `python -m red.dataset` a partir de mod_verdad/datos, asi que no hay nada
+# irrecuperable en subirlos: solo un repositorio inmanejable.
+red/datos/
+*.npz
+# Las plantillas de digitos (7 KB cada una) se forzaban a subir, porque sin
+# ellas no se pueden leer ni los puntos ni los paneles. Ya no hace falta
+# forzarlas: la mitad que las usa tampoco sube. Cuando vuelva, vuelven.
+
+# Los modelos entrenados (.pt) pesan y se regeneran entrenando.
+red/modelos/
+*.pt
+
+# Las grabaciones. NO van al repositorio: son las partidas de quien juega, y
+# nadie que se descargue esto tiene por que llevarse los datos de otro. Se
+# guardan igual en local -- son la unica fuente para reimportar si Steam
+# verifica los ficheros del juego y se lleva los originales por delante --
+# pero se quedan en tu disco.
+#
+# Consecuencia, que conviene saberla: quien clone esto empieza con la base
+# VACIA. Enciende el mod, juega una partida, importa, y ya tiene la suya.
+mod_verdad/crudo/
+
+# La base de datos es un dato vivo, no codigo. Ademas cambia en cada partida
+# y ensuciaria el historial entero.
+*.db
+copias/
+
+# Material de depuracion y calibracion: pesa 170 MB y son capturas sueltas.
+debug_ocr/
+fotos/
+referencias_tablero/
+registros/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# LOS .md SE QUEDAN FUERA MENOS LA PORTADA. PROYECTO.md, TRASPASO.md y
+# VISTAS.md son notas de trabajo y documentacion interna, y ademas llevan
+# dentro los apodos de quien juega -- 23 solo en PROYECTO.md -- que son
+# personas de verdad y no tienen por que salir en un repositorio publico.
+#
+# README.md si sube: es lo unico que lee quien abre esto, y un repositorio
+# sin portada es una lista de ficheros.
+#
+# OJO CON EL ORDEN: el `!` tiene que ir DESPUES del `*.md`, y no vale
+# excluir una carpeta entera y luego reincluir algo de dentro. Es la misma
+# trampa que esta explicada abajo con `red/*`.
+*.md
+!README.md
+
+# El plugin compilado sale de compilar.ps1
+mod_verdad/CatanVerdad.dll
+
+# El .exe de usar y tirar con el que `catalogar.py` lee el ensamblado del
+# juego por reflexion. Se recompila solo con el csc que trae Windows, y un
+# binario en el repositorio no lo mira nadie.
+mod_verdad/_mirar.exe
+mod_verdad/_mirar.cs
+# -> mod_verdad/catalogo.json SI se versiona: es lo que hace que el resto
+#    sepa que existe en el juego sin tener el juego instalado.
+
+
+# --------------------------------------------------------------------------
+# LA MITAD DE LA VISION, DE MOMENTO FUERA
+#
+# El proyecto tiene dos mitades: apuntar la partida con el mod (esta lista y
+# medida) y leer el tablero de la pantalla con una red (48-53 sitios de 54).
+# Publicar la segunda hoy es publicar algo que falla, y el modelo entrenado
+# --que es lo que la haria funcionar en otra maquina-- pesa 1,18 MB y cabria
+# de sobra, pero todavia no esta fino.
+#
+# Lo de las mesas de 5-6 ya NO es un motivo: el 2 de septiembre de 2026 el
+# detector aprendio a contar 30 casillas y a saber solo de cual de las dos
+# mesas se trata (8 grabaciones de 8). Queda el acierto de la red.
+#
+# Cuando lo este, esto se quita y sube entera CON el modelo dentro: el codigo
+# sin el .pt no sirve de nada, igual que pasaba con las plantillas.
+#
+# OJO CON EL CORTE. `red/` y `vision/` no se pueden excluir enteras: tres
+# ficheros de ahi NO son vision, son biblioteca.
+#
+#     vision/board_graph.py   la geometria del hexagono
+#     red/sitios.py           nombra los sitios del tablero, y las piezas
+#     red/reglas.py           las reglas del Catan que los validan
+#
+# Los dos primeros los importa `mod_verdad/importar.py`, asi que sin ellos un
+# clon no puede meter ni una partida. `red/reglas.py` NO lo usa el importador
+# --lo decia aqui y era mentira-- pero sube igual: son las reglas del juego
+# escritas en codigo, se sostienen solas y las prueba `db/pruebas.py`.
+#
+# Y no arrastran nada: son biblioteca estandar, ni torch ni OpenCV. Eso hay
+# que mantenerlo a mano y ya se rompio una vez -- `red/reglas.py` importaba
+# `PIEZAS` de `red/modelo.py`, que no sube y trae torch detras. La lista vive
+# ahora en `red/sitios.py`. La prueba del clon recien bajado bloquea los
+# imports de lo que no se publica, asi que si vuelve a pasar, salta.
+#
+# Y se escribe `red/*` y no `red/`: con la carpeta excluida entera, git NO
+# deja volver a incluir nada de dentro. Es la trampa clasica de esto.
+ocr/
+mirar.py
+mod_verdad/recopilar.py
+
+vision/*
+# `vision` es un paquete implicito (no tiene __init__.py y funciona igual).
+# La linea esta por si algun dia aparece uno, para que no se caiga solo.
+!vision/__init__.py
+!vision/board_graph.py
+
+red/*
+!red/__init__.py
+!red/sitios.py
+!red/reglas.py
+
+# El diario del proyecto: son las notas del dia a dia, no documentacion.
+DIARIO.md
+
+# Ajustes del editor. Llevan la ruta absoluta al Python de ESTA maquina
+# (C:\Users\...), asi que en otra no valen y de paso publican donde vives.
+.vscode/
+
+# Rastros de ejecuciones. `partida.log` lo deja la lectura de pantalla y se
+# habia colado en el repositorio: 30 KB de mensajes de una partida concreta.
+*.log

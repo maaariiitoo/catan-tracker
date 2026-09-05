@@ -1,0 +1,812 @@
+{
+ "accessores_de_accion": [
+  {
+   "campo": "_canBePlayedByAutoAI",
+   "tipo": "System.Boolean"
+  },
+  {
+   "campo": "Id",
+   "tipo": "Catan.GameLogic.Model.CatanGameActionId"
+  },
+  {
+   "campo": "AsGameFinished",
+   "tipo": "System.Nullable`1[[System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "IsAutoBotAction",
+   "tipo": "System.Nullable`1[[System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "WillEndTurn",
+   "tipo": "System.Nullable`1[[System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "AsBaseRollDice",
+   "tipo": "Catan.GameLogic.Model.Base_RollDice_GameActionState"
+  },
+  {
+   "campo": "AsCandidates",
+   "tipo": "CandidateSelection_GameActionState"
+  },
+  {
+   "campo": "AsResourceDistribution",
+   "tipo": "Catan.GameLogic.Model.ResourceDistribution_GameActionState"
+  },
+  {
+   "campo": "AsPlayCard",
+   "tipo": "Catan.GameLogic.Model.Base_PlayCard_GameActionState"
+  },
+  {
+   "campo": "AsBuyDevelopmentCard",
+   "tipo": "Catan.GameLogic.Model.Base_BuyDevelopmentCard_GameActionState"
+  },
+  {
+   "campo": "AsShuffleDevelopmentCards",
+   "tipo": "Catan.GameLogic.Model.Base_ShuffleDevelopmentCard_GameActionState"
+  },
+  {
+   "campo": "AsRobbedResources",
+   "tipo": "Catan.GameLogic.Model.HandOverResourcesToRobber_GameActionState"
+  },
+  {
+   "campo": "AsSelectAblePlayers",
+   "tipo": "Catan.GameLogic.Model.SelectPlayer_GameActionState"
+  },
+  {
+   "campo": "AsResourceTypeToChoose",
+   "tipo": "Catan.GameLogic.Model.ResourceTypeToChoose_GameActionState"
+  },
+  {
+   "campo": "AsResourcesFromPlayers",
+   "tipo": "Catan.GameLogic.Model.ResourcesFromPlayers_GameActionState"
+  },
+  {
+   "campo": "AsResourcesToChoose",
+   "tipo": "Catan.GameLogic.Model.ResourcesToChoose_GameActionState"
+  },
+  {
+   "campo": "AsResourceDistributionFromBank",
+   "tipo": "Catan.GameLogic.Model.ResourceDistributionFromBank"
+  },
+  {
+   "campo": "AsLargestArmy",
+   "tipo": "Catan.GameLogic.Model.LargestArmy_GameActionState"
+  },
+  {
+   "campo": "AsLongestRoad",
+   "tipo": "Catan.GameLogic.Model.LongestRoad_GameActionState"
+  },
+  {
+   "campo": "AsHarborMaster",
+   "tipo": "Catan.GameLogic.Model.HarborMaster_GameActionState"
+  },
+  {
+   "campo": "AsGameSettings",
+   "tipo": "Catan.GameLogic.Model.GameSettings_GameActionState"
+  },
+  {
+   "campo": "AsWinLosePlayers",
+   "tipo": "Catan.GameLogic.Model.WinLose_GameActionState"
+  },
+  {
+   "campo": "AsTurnNumberChange",
+   "tipo": "Catan.GameLogic.Model.TurnNumberChange_GameActionState"
+  },
+  {
+   "campo": "AsTradeInit",
+   "tipo": "Catan.GameLogic.Model.Trade_Bank_Init_GameActionState"
+  },
+  {
+   "campo": "AsTradeFinish",
+   "tipo": "Catan.GameLogic.Model.Trade_Finish_GameActionState"
+  },
+  {
+   "campo": "AsTradeCancel",
+   "tipo": "Catan.GameLogic.Model.Trade_Cancel_GameActionState"
+  },
+  {
+   "campo": "AsImprovementCost",
+   "tipo": "Catan.GameLogic.Model.BuyCityImprovement_GameActionState"
+  },
+  {
+   "campo": "AsShuffleProgressCards",
+   "tipo": "Catan.GameLogic.Model.Shuffle_ProgressCards_GameActionState"
+  },
+  {
+   "campo": "AsUsingKnight",
+   "tipo": "Catan.GameLogic.Model.Using_Knight_GameActionState"
+  },
+  {
+   "campo": "AsProgressCardDistribution",
+   "tipo": "Catan.GameLogic.Model.ProgressCardDistribution_GameActionState"
+  },
+  {
+   "campo": "AsProgressCardDiscard",
+   "tipo": "Catan.GameLogic.Model.ProgressCardDiscard_GameActionState"
+  },
+  {
+   "campo": "AsMoveBarbarians",
+   "tipo": "Catan.GameLogic.Model.MoveBarbarians_GameActionState"
+  },
+  {
+   "campo": "AsDefeatBarbarians",
+   "tipo": "Catan.GameLogic.Model.DefeatedBarbarians_GameActionState"
+  },
+  {
+   "campo": "AsLoseCityFromBarbarians",
+   "tipo": "Catan.GameLogic.Model.LoseCityFromBarbarians_GameAction"
+  },
+  {
+   "campo": "AsSelectDices",
+   "tipo": "Catan.GameLogic.Model.SelectDiceValue_GameAction"
+  },
+  {
+   "campo": "AsReductCosts",
+   "tipo": "ResourceModifyer"
+  },
+  {
+   "campo": "AsResourceCosts",
+   "tipo": "Catan.GameLogic.Model.CardBundleModel"
+  },
+  {
+   "campo": "AsMasterMerchant",
+   "tipo": "Catan.GameLogic.Model.ProgressCardMasterMerchant_GameActionState"
+  },
+  {
+   "campo": "AsCommercialHarbor",
+   "tipo": "Catan.GameLogic.Model.ProgressCardCommercialHarbor_GameActionState"
+  },
+  {
+   "campo": "AsSaboteur",
+   "tipo": "Catan.GameLogic.Model.ProgressCardSaboteur_GameActionState"
+  },
+  {
+   "campo": "AsWedding",
+   "tipo": "Catan.GameLogic.Model.ProgressCardWedding_GameActionState"
+  },
+  {
+   "campo": "AsMerchantFleet",
+   "tipo": "Catan.GameLogic.Model.ProgressCardMerchantFleet_GameActionState"
+  },
+  {
+   "campo": "AsSpy",
+   "tipo": "Catan.GameLogic.Model.ProgressCardSpy_GameActionState"
+  },
+  {
+   "campo": "AsMoveShip",
+   "tipo": "Catan.GameLogic.Model.Seafarer_MoveShip_GameActionState"
+  },
+  {
+   "campo": "AsSelectPositionOnTile",
+   "tipo": "Catan.GameLogic.Model.Seafarer_SelectLandOrWaterTile_GameActionState"
+  },
+  {
+   "campo": "AsGoldfield",
+   "tipo": "Catan.GameLogic.Model.GoldfieldChooseResources_GameActionState"
+  },
+  {
+   "campo": "AsFogField",
+   "tipo": "Catan.GameLogic.Model.FogField_GameActionState"
+  },
+  {
+   "campo": "AsShuffleFogField",
+   "tipo": "Catan.GameLogic.Model.ShuffleFogField_GameActionState"
+  },
+  {
+   "campo": "AsShuffleTreasures",
+   "tipo": "Catan.GameLogic.Model.ShuffleTreasures_GameActionState"
+  },
+  {
+   "campo": "AsTreasures",
+   "tipo": "Catan.GameLogic.Model.Treasures_GameActionState"
+  },
+  {
+   "campo": "AsShuffledIslands",
+   "tipo": "Catan.GameLogic.Model.ShuffledIslands_GameActionState"
+  },
+  {
+   "campo": "AsReductionInResources",
+   "tipo": "Catan.GameLogic.Model.ReductionInResources_GameActionState"
+  },
+  {
+   "campo": "AsChooseProgressCard",
+   "tipo": "Catan.GameLogic.Model.ChooseProgresscard_GameActionState"
+  },
+  {
+   "campo": "AsInkaFall",
+   "tipo": "Catan.GameLogic.Model.InkaFall_GameActionState"
+  },
+  {
+   "campo": "AsBuildCanal",
+   "tipo": "Catan.GameLogic.Model.BuildCanal_GameActionState"
+  },
+  {
+   "campo": "AsDragonFight",
+   "tipo": "Catan.GameLogic.Model.FightDragon_GameActionState"
+  },
+  {
+   "campo": "BigGameUpdatePlayerDetails",
+   "tipo": "System.Collections.Generic.List`1[[Common.Net.PlayerDetails, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "AsInitialGamePieces",
+   "tipo": "Catan.GameLogic.Model.InitialGamePieces_GameActionState"
+  },
+  {
+   "campo": "AsBigGameRobberMovement",
+   "tipo": "Catan.GameLogic.Model.BigGameRobberMovement_GameActionState"
+  },
+  {
+   "campo": "AsBigGameNeighbourAction",
+   "tipo": "Catan.GameLogic.Model.BigGameNeighbourAction"
+  },
+  {
+   "campo": "AsBigGameReconnect",
+   "tipo": "Catan.GameLogic.Model.BigGameReconnect_GameActionState"
+  },
+  {
+   "campo": "AsBigGameReconnectMoveRobbers",
+   "tipo": "Catan.GameLogic.Model.BigGameReconnectMoveRobbers_GameActionState"
+  },
+  {
+   "campo": "AsProgressCardType",
+   "tipo": "System.Nullable`1[[Catan.GameLogic.Model.ProgressCardType, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "__isset",
+   "tipo": "Catan.GameLogic.Model.CatanGameActionState+Isset"
+  }
+ ],
+ "acciones": [
+  "CatanBase_BuildCity_GameAction",
+  "CatanBase_BuildFreeRoad_GameAction",
+  "CatanBase_BuildRoad_GameAction",
+  "CatanBase_BuildSettlement_GameAction",
+  "CatanBase_BuyDevelopmentCard_GameAction",
+  "CatanBase_CheckHarborMaster_GameAction",
+  "CatanBase_CheckLargestArmy_GameAction",
+  "CatanBase_CheckLongestRoad_GameAction",
+  "CatanBase_DevCard_Inventor_DistributeResources_GameAction",
+  "CatanBase_DevCard_Inventor_SelectResources_GameAction",
+  "CatanBase_DevCard_Monopoly_HandOverResourcesToPlayer_GameAction",
+  "CatanBase_DevCard_Monopoly_SelectResourceType_GameAction",
+  "CatanBase_DistributeResources_GameAction",
+  "CatanBase_EndTurn_GameAction",
+  "CatanBase_NextPlayer_GameAction",
+  "CatanBase_NextPlayer_SixPlayer_GameAction",
+  "CatanBase_PlayDevelopmentCard_GameAction",
+  "CatanBase_RobPlayer_GameAction",
+  "CatanBase_Robber_HandOverResourcesToRobber_GameAction",
+  "CatanBase_Robber_Move_GameAction",
+  "CatanBase_RollDice_GameAction",
+  "CatanBase_SelectPlayerToRob_GameAction",
+  "CatanBase_SetupPlayerInventory_GameAction",
+  "CatanBase_ShuffleDevCardStack_GameAction",
+  "CatanBase_ShuffleDiceStack_GameAction",
+  "CatanBase_StartGame_GameAction",
+  "CatanBase_StartPhase_BuildFreeRoad_GameAction",
+  "CatanBase_StartPhase_BuildRoad_GameAction",
+  "CatanBase_StartPhase_BuildSettlement_GameAction",
+  "CatanBase_StartPhase_DistributeResources_GameAction",
+  "CatanBase_StartPhase_NextPlayer_GameAction",
+  "CatanBase_WinGame_GameAction",
+  "CatanBigGame_ApplyNeighbourAction_GameAction",
+  "CatanBigGame_AwaitVictoryVerification_GameAction",
+  "CatanBigGame_BuildCity_GameAction",
+  "CatanBigGame_BuildFinalLeaderboard_GameAction",
+  "CatanBigGame_BuildFreeRoadFailed_GameAction",
+  "CatanBigGame_BuildFreeRoad_GameAction",
+  "CatanBigGame_BuildRoad_GameAction",
+  "CatanBigGame_BuildSettlement_GameAction",
+  "CatanBigGame_BuildShip_GameAction",
+  "CatanBigGame_BuyDevelopmentCard_GameAction",
+  "CatanBigGame_CancelTrade_GameAction",
+  "CatanBigGame_CheckLargestArmy_GameAction",
+  "CatanBigGame_CheckLongestRoad_GameAction",
+  "CatanBigGame_ChooseRobberResourcesAfterDevCard_GameAction",
+  "CatanBigGame_DevCard_Inventor_SelectResources_GameAction",
+  "CatanBigGame_DistributeResources_GameAction",
+  "CatanBigGame_EndTurn_GameAction",
+  "CatanBigGame_FinishTrade_GameAction",
+  "CatanBigGame_GetRobberResourcesAfterDevCard_GameAction",
+  "CatanBigGame_HandOverResourcesToRobber_GameAction",
+  "CatanBigGame_MoveRobberAfterDevCard_GameAction",
+  "CatanBigGame_MoveRobbers_GameAction",
+  "CatanBigGame_MoveShip_GameAction",
+  "CatanBigGame_NextSide_GameAction",
+  "CatanBigGame_PlayDevCardKnight_GameAction",
+  "CatanBigGame_PlayDevelopmentCard_GameAction",
+  "CatanBigGame_ReconnectFinished_GameAction",
+  "CatanBigGame_ReconnectMoveRobbersViaDevCard_GameAction",
+  "CatanBigGame_RerollDiceForRobbers_GameAction",
+  "CatanBigGame_RollDice_GameAction",
+  "CatanBigGame_ServerGameStart_GameAction",
+  "CatanBigGame_SetupBoard_GameAction",
+  "CatanBigGame_SetupPlayerInventory_GameAction",
+  "CatanBigGame_SetupRobbers_GameAction",
+  "CatanBigGame_ShuffleDevCardStack_GameAction",
+  "CatanBigGame_StartGame_GameAction",
+  "CatanBigGame_StartNeighbourActions_GameAction",
+  "CatanBigGame_StartPhase_DistributeSelectSettlement_GameAction",
+  "CatanBigGame_StartPhase_PromoteSettlement_GameAction",
+  "CatanBigGame_Startphase_PromoteSettlement_GameAction",
+  "CatanBigGame_TradeBank_GameAction",
+  "CatanBigGame_Win_GameAction",
+  "CatanCakSf_PlayProgressCard_Diplomat_GameAction",
+  "CatanCakSf_PlayProgressCard_Diplomat_PlaceRoad_GameAction",
+  "CatanCakSf_RemoveRobber_GameAction",
+  "CatanCakSf_StartPhase_BuildCity_GameAction",
+  "CatanCakSf_StartPhase_BuildSettlement_GameAction",
+  "CatanCakSf_StartPhase_Treasure_GetACard_GameAction",
+  "CatanCakSf_Treasure_GetACard_GameAction",
+  "CatanCak_ActivateKnight_GameAction",
+  "CatanCak_BankSixPlayerExtraordinaryRound_GameAction",
+  "CatanCak_BarbariansChooseProgressCard_GameAction",
+  "CatanCak_BarbariansDefenderOfCatan_GameAction",
+  "CatanCak_BarbariansLoseCity_GameAction",
+  "CatanCak_BarbariansReset_GameAction",
+  "CatanCak_Bishop_RobPlayers_GameAction",
+  "CatanCak_BuildCity_GameAction",
+  "CatanCak_BuildKnight_GameAction",
+  "CatanCak_BuildMetropol_GameAction",
+  "CatanCak_BuildWall_GameAction",
+  "CatanCak_BuyCityImprovement_GameAction",
+  "CatanCak_Cancel_Smith_GameAction",
+  "CatanCak_CommercialHarbor_PlayerChooseCommodity_GameAction",
+  "CatanCak_Deserter_BuildKnight_GameAction",
+  "CatanCak_Deserter_SelectKnight_GameAction",
+  "CatanCak_DiscardProgressCardsAfterDice_GameAction",
+  "CatanCak_DiscardProgressCardsAfterTurn_GameAction",
+  "CatanCak_DistributeProgressCards_GameAction",
+  "CatanCak_DistributeResources_GameAction",
+  "CatanCak_LoseMetropol_GameAction",
+  "CatanCak_Medicine_BuildCity_GameAction",
+  "CatanCak_MoveBarbarians_GameAction",
+  "CatanCak_MoveKnight_GameAction",
+  "CatanCak_PlayProgressCard_Alchemist_GameAction",
+  "CatanCak_PlayProgressCard_Bishop_GameAction",
+  "CatanCak_PlayProgressCard_CommercialHarbor_GameAction",
+  "CatanCak_PlayProgressCard_Crane_GameAction",
+  "CatanCak_PlayProgressCard_Deserter_GameAction",
+  "CatanCak_PlayProgressCard_Diplomat_GameAction",
+  "CatanCak_PlayProgressCard_Diplomat_PlaceRoad_GameAction",
+  "CatanCak_PlayProgressCard_DistributeMonopoly_GameAction",
+  "CatanCak_PlayProgressCard_Engineer_GameAction",
+  "CatanCak_PlayProgressCard_GameAction",
+  "CatanCak_PlayProgressCard_Intrigue_GameAction",
+  "CatanCak_PlayProgressCard_Inventor_GameAction",
+  "CatanCak_PlayProgressCard_Irrigation_GameAction",
+  "CatanCak_PlayProgressCard_MasterMerchant_GameAction",
+  "CatanCak_PlayProgressCard_Medicine_GameAction",
+  "CatanCak_PlayProgressCard_MerchantFleet_GameAction",
+  "CatanCak_PlayProgressCard_Merchant_GameAction",
+  "CatanCak_PlayProgressCard_Mining_GameAction",
+  "CatanCak_PlayProgressCard_ResourceMonopoly_GameAction",
+  "CatanCak_PlayProgressCard_Saboteur_GameAction",
+  "CatanCak_PlayProgressCard_Smith_GameAction",
+  "CatanCak_PlayProgressCard_Spy_GameAction",
+  "CatanCak_PlayProgressCard_TradeMonopoly_GameAction",
+  "CatanCak_PlayProgressCard_Victory_GameAction",
+  "CatanCak_PlayProgressCard_Warlord_GameAction",
+  "CatanCak_PlayProgressCard_Wedding_GameAction",
+  "CatanCak_RemoveKnight_GameAction",
+  "CatanCak_RemoveRobber_GameAction",
+  "CatanCak_ReplaceKnight_GameAction",
+  "CatanCak_Robber_HandOverResourcesToRobber_GameAction",
+  "CatanCak_RollDice_GameAction",
+  "CatanCak_ScienceBonusDistribution_GameAction",
+  "CatanCak_SetupGame_GameAction",
+  "CatanCak_SetupPlayerInventory_GameAction",
+  "CatanCak_ShuffleProgressCardStacks_GameAction",
+  "CatanCak_Spy_SelectCard_GameAction",
+  "CatanCak_StartPhase_BuildCity_GameAction",
+  "CatanCak_StartPhase_BuildRoad_GameAction",
+  "CatanCak_StartPhase_BuildSettlement_GameAction",
+  "CatanCak_Trade_Bank_GameAction",
+  "CatanCak_UpgradeKnight_GameAction",
+  "CatanEnchantedLand_BuildCity_GameAction",
+  "CatanEnchantedLand_BuildFreeRoad_GameAction",
+  "CatanEnchantedLand_BuildRoad_GameAction",
+  "CatanEnchantedLand_Deserter_BuildKnight_GameAction",
+  "CatanEnchantedLand_Deserter_SelectKnight_GameAction",
+  "CatanEnchantedLand_KillingADragon_GameAction",
+  "CatanEnchantedLand_Medicine_BuildCity_GameAction",
+  "CatanEnchantedLand_MoveKnight_GameAction",
+  "CatanEnchantedLand_PlayProgressCard_Deserter_GameAction",
+  "CatanEnchantedLand_PlayProgressCard_Diplomat_PlaceRoad_GameAction",
+  "CatanEnchantedLand_PlayProgressCard_GameAction",
+  "CatanEnchantedLand_PlayProgressCard_Intrigue_GameAction",
+  "CatanEnchantedLand_PlayProgressCard_Inventor_GameAction",
+  "CatanEnchantedLand_RemoveKnight_GameAction",
+  "CatanEnchantedLand_ReplaceKnight_GameAction",
+  "CatanGreatCanal_BuildCanal_GameAction",
+  "CatanGreatCanal_BuildFreeRoad_GameAction",
+  "CatanGreatCanal_BuildSettlement_GameAction",
+  "CatanGreatCanal_BuildShip_GameAction",
+  "CatanGreatCanal_ChooseGoldfieldResource_GameAction",
+  "CatanGreatCanal_Deserter_BuildKnight_GameAction",
+  "CatanGreatCanal_DistributeResources_GameAction",
+  "CatanGreatCanal_MoveShip_GameAction",
+  "CatanGreatCanal_PlayProgressCard_Diplomat_PlaceRoad_GameAction",
+  "CatanGreatCanal_PlayProgressCard_Inventor_GameAction",
+  "CatanGreatCanal_StartPhase_TurnValueChips_GameAction",
+  "CatanGreatCanal_Trade_Bank_GameAction",
+  "CatanInka_BuildCity_GameAction",
+  "CatanInka_BuildFreeRoad_GameAction",
+  "CatanInka_BuildNewSettlement_GameAction",
+  "CatanInka_BuildRoad_GameAction",
+  "CatanInka_BuildSettlement_GameAction",
+  "CatanInka_CheckDevCardStack_GameAction",
+  "CatanInka_CheckFall_GameAction",
+  "CatanInka_CheckLargestArmy_GameAction",
+  "CatanInka_CheckLongestRoad_GameAction",
+  "CatanInka_DevCard_Monopoly_HandOverResourcesToPlayer_GameAction",
+  "CatanInka_DistributeResources_GameAction",
+  "CatanInka_Robber_HandOverResourcesToRobber_GameAction",
+  "CatanInka_Robber_Move_GameAction",
+  "CatanInka_SetupPlayerClans_GameAction",
+  "CatanInka_StartPhase_BuildRoad_GameAction",
+  "CatanInka_StartPhase_BuildSettlement_GameAction",
+  "CatanInka_StartPhase_DistributeStartResources_GameAction",
+  "CatanInka_Trade_Bank_GameAction",
+  "CatanInka_UseKnightBonus_GameAction",
+  "CatanSeafarer_BuildFreeRoad_GameAction",
+  "CatanSeafarer_BuildSettlement_GameAction",
+  "CatanSeafarer_BuildShip_GameAction",
+  "CatanSeafarer_Check_FogField_FogIsland_GameAction",
+  "CatanSeafarer_Check_FogField_GameAction",
+  "CatanSeafarer_Check_Treasure_GameAction",
+  "CatanSeafarer_ChooseGoldfieldResource_GameAction",
+  "CatanSeafarer_DistributeFogField_GameAction",
+  "CatanSeafarer_GoldDistributeFogField_GameAction",
+  "CatanSeafarer_MoveShip_GameAction",
+  "CatanSeafarer_PlaceValueChip_GameAction",
+  "CatanSeafarer_ReductionInResources_GameAction",
+  "CatanSeafarer_RobberPirat_Move_GameAction",
+  "CatanSeafarer_RobberPirat_SelectPlayer_GameAction",
+  "CatanSeafarer_Shuffle_Harbors_GameAction",
+  "CatanSeafarer_Shuffle_Islands_GameAction",
+  "CatanSeafarer_Shuffle_TileValueList_GameAction",
+  "CatanSeafarer_StartPhase_BuildFreeRoad_GameAction",
+  "CatanSeafarer_StartPhase_BuildRoadShip_GameAction",
+  "CatanSeafarer_StartPhase_BuildSettlement_GameAction",
+  "CatanSeafarer_StartPhase_DistributeFogField_GameAction",
+  "CatanSeafarer_StartPhase_GoldDistributeFogField_GameAction",
+  "CatanSeafarer_StartPhase_ShuffleTreasures_GameAction",
+  "CatanSeafarer_StartPhase_Treasure_BrickWoolGrain_GameAction",
+  "CatanSeafarer_StartPhase_Treasure_ChooseResource_GameAction",
+  "CatanSeafarer_StartPhase_Treasure_GetACard_GameAction",
+  "CatanSeafarer_StartPhase_Treasure_Roads_GameAction",
+  "CatanSeafarer_Treasure_BrickWoolGrain_GameAction",
+  "CatanSeafarer_Treasure_ChooseResource_GameAction",
+  "CatanSeafarer_Treasure_GetACard_GameAction",
+  "CatanSeafarer_Treasure_Roads_GameAction",
+  "CatanSpecialScenario_BuildKnight_GameAction",
+  "CatanSpecialScenario_StartPhase_BuildRoadShip_GameAction",
+  "CatanSpecialScenario_StartPhase_PlaceCity_GameAction",
+  "CatanSpecialScenario_StartPhase_PlaceSettlement_GameAction",
+  "CatanTest_SkipStart_GameAction",
+  "CatanTrade_BankSixPlayerExtraordinaryRound_GameAction",
+  "CatanTrade_Bank_GameAction",
+  "CatanTrade_CancelTrade_GameAction",
+  "CatanTrade_FinishTradeSixPlayer_GameAction",
+  "CatanTrade_FinishTrade_GameAction",
+  "RivalsBase_ActionCardBrigitta_GameAction",
+  "RivalsBase_ActionCardGoldsmith_GameAction",
+  "RivalsBase_ActionCardMerchantCaravan_GameAction",
+  "RivalsBase_ActionCardRelocation_GameAction",
+  "RivalsBase_ActionCardScoutSkip_GameAction",
+  "RivalsBase_ActionCardScout_GameAction",
+  "RivalsBase_ActiveSkillCancel_GameAction",
+  "RivalsBase_ActiveSkillEnter_GameAction",
+  "RivalsBase_ActiveSkill_LargeTradeShip_GameAction",
+  "RivalsBase_BonusResourcesAfterPlentifulHarvest_GameAction",
+  "RivalsBase_BuildCity_GameAction",
+  "RivalsBase_BuildHandCardInOppositePrincipality_GameAction",
+  "RivalsBase_BuildHandCard_GameAction",
+  "RivalsBase_BuildRegions_GameAction",
+  "RivalsBase_BuildRoad_GameAction",
+  "RivalsBase_BuildSettlement_GameAction",
+  "RivalsBase_CancelBuildChooseResource_GameAction",
+  "RivalsBase_CancelSelectResourcesForBuildInOppositePrincipality_GameAction",
+  "RivalsBase_CancelTradeResource_GameAction",
+  "RivalsBase_CelebrationResourceChoice_GameAction",
+  "RivalsBase_CheckVictoryConditions_GameAction",
+  "RivalsBase_ChooseAResource_GameAction",
+  "RivalsBase_CreateShuffledDrawStacks_GameAction",
+  "RivalsBase_DiceEventDrawEventCard_GameAction",
+  "RivalsBase_DiceEventTradeAdvanceGainResources_GameAction",
+  "RivalsBase_DiceEventTradeAdvancePayResources_GameAction",
+  "RivalsBase_DiscardACard_GameAction",
+  "RivalsBase_DrawACard_GameAction",
+  "RivalsBase_EventCardFeudSelectBuilding_GameAction",
+  "RivalsBase_EventCardFeudSelectPossibleBuildings_GameAction",
+  "RivalsBase_EventCardFraternalFeudsSelectCards_GameAction",
+  "RivalsBase_EventCardInventionGainResources_GameAction",
+  "RivalsBase_EventCardTradeShipRace_GameAction",
+  "RivalsBase_EventCardTravelingMerchant_GameAction",
+  "RivalsBase_EventCardYearOfPlentyGainResource_GameAction",
+  "RivalsBase_EventCardYuleShuffleStack_GameAction",
+  "RivalsBase_GameEnd_GameAction",
+  "RivalsBase_HandoverResourcesToRobber_GameAction",
+  "RivalsBase_MarketplaceBonusResource_GameAction",
+  "RivalsBase_NextPlayer_GameAction",
+  "RivalsBase_PlayActionCard_GameAction",
+  "RivalsBase_ProvideStrengthAdvantage_GameAction",
+  "RivalsBase_ProvideTradeAdvantage_GameAction",
+  "RivalsBase_ResourceDistribution_GameAction",
+  "RivalsBase_RollDice_GameAction",
+  "RivalsBase_SelectResourcesForBuildInOppositePrincipality_GameAction",
+  "RivalsBase_SelectResourcesForBuild_GameAction",
+  "RivalsBase_SetStartPlayer_GameAction",
+  "RivalsBase_ShuffleEventStack_GameAction",
+  "RivalsBase_ShuffleRegionStack_GameAction",
+  "RivalsBase_SkipSwapACard_GameAction",
+  "RivalsBase_StartGame_GameAction",
+  "RivalsBase_StartTradeResource_GameAction",
+  "RivalsBase_SwapHandCardDrawFromStack_GameAction",
+  "RivalsBase_SwapHandCardDropToStack_GameAction",
+  "RivalsBase_SwapHandCardPayResourcesCancel_GameAction",
+  "RivalsBase_SwapHandCardPayResourcesEnter_GameAction",
+  "RivalsBase_SwapHandCardPayResourcesForStackSearch_GameAction",
+  "RivalsBase_SwapHandCardStackSearch_GameAction",
+  "RivalsBase_TradeResource_GameAction",
+  "RivalsBase_TurnFinished_GameAction",
+  "RivalsEOB_ActionCardAllianceAgainstTheBarbarians_GameAction",
+  "RivalsEOB_ActionCardCastellan_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_GainResource_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_RoleDiceResult_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_RoleDice_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_SelectHeroes_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_StealResourceCancel_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_StealResourceGain_GameAction",
+  "RivalsEOB_ActionCardContestOfTheHeroes_StealResourcePay_GameAction",
+  "RivalsEOB_ActionCardSiegfried_GameAction",
+  "RivalsEOB_ActiveSkillBailiwick_GameAction",
+  "RivalsEOB_ActiveSkill_Bailiwick_GameAction",
+  "RivalsEOB_ActiveSkill_BorderFortressTradeCancel_GameAction",
+  "RivalsEOB_ActiveSkill_BorderFortressTrade_GameAction",
+  "RivalsEOB_ActiveSkill_MarieTheShieldmaiden_CreateHeroCandidates_GameAction",
+  "RivalsEOB_ActiveSkill_MarieTheShieldmaiden_OnlyOneHero_GameAction",
+  "RivalsEOB_ActiveSkill_MarieTheShieldmaiden_SelectHero_GameAction",
+  "RivalsEOB_ActiveSkill_SecretBrotherhoodSelectResources_GameAction",
+  "RivalsEOB_ActiveSkill_SecretBrotherhood_GameAction",
+  "RivalsEOB_ActiveSkill_Siward_ScoutingOpponentHand_GameAction",
+  "RivalsEOB_ActiveSkill_Siward_ScoutingStacks_GameAction",
+  "RivalsEOB_ActiveSkill_WhiteRavenTavern_GameAction",
+  "RivalsEOB_AutoSkipWolfgangBonusResources_GameAction",
+  "RivalsEOB_AutoSkipWolfgangTakeOver_GameAction",
+  "RivalsEOB_CancelResourcesForBorderFortress_GameAction",
+  "RivalsEOB_CancelSelectResourcesForWolfgangTakeover_GameAction",
+  "RivalsEOB_CancelSelectResourcesForWolfgangTheStreetPerformer_GameAction",
+  "RivalsEOB_CancelTakeOverWolfgang_GameAction",
+  "RivalsEOB_EventCardBarbarianAttackImminent_GameAction",
+  "RivalsEOB_EventCardRearrangeAfterBarbarianAttack_GameAction",
+  "RivalsEOB_EventCardRetreatOfTheBarbarians_GameAction",
+  "RivalsEOB_EventCardYuleShuffleStack_GameAction",
+  "RivalsEOB_PassiveSkillBaroc_GameAction",
+  "RivalsEOB_PlaceTriumphCard_GameAction",
+  "RivalsEOB_RemoveBarbarianStronghold_GameAction",
+  "RivalsEOB_SelectResourcesForBorderFortress_GameAction",
+  "RivalsEOB_SelectResourcesForWolfgangTakeover_GameAction",
+  "RivalsEOB_SelectResourcesForWolfgangTheStreetPerformer_GameAction",
+  "RivalsEOB_ShuffleEventStack_GameAction",
+  "RivalsEOB_SpecialBuildWolfgang_GameAction",
+  "RivalsEOB_TakeOverWolfgang_GameAction",
+  "RivalsEOE_ActionCardAmbassador_GameAction",
+  "RivalsEOE_ActionCardBroadside_GameAction",
+  "RivalsEOE_ActionCardCartographerDiscoverAndSwapSeatiles_GameAction",
+  "RivalsEOE_ActionCardLarsSkip_GameAction",
+  "RivalsEOE_ActionCardLars_GameAction",
+  "RivalsEOE_ActionCardNavigator_GameAction",
+  "RivalsEOE_ActiveSkill_Astronomer_GameAction",
+  "RivalsEOE_ActiveSkill_CannonFoundrySkip_GameAction",
+  "RivalsEOE_ActiveSkill_CannonFoundry_GameAction",
+  "RivalsEOE_ActiveSkill_ExplorerHarbor_BuildShip_GameAction",
+  "RivalsEOE_ActiveSkill_ExplorerHarbor_CancelBuildShip_GameAction",
+  "RivalsEOE_ActiveSkill_ExplorerHarbor_MoveShipCancel_GameAction",
+  "RivalsEOE_ActiveSkill_ExplorerHarbor_MoveShip_GameAction",
+  "RivalsEOE_ActiveSkill_ShipyardTrade_GameAction",
+  "RivalsEOE_EventCardFriendshipBetweenPeoples_GameAction",
+  "RivalsEOE_EventCardMostSuccessfullExplorerDiscover_GameAction",
+  "RivalsEOE_EventCard_FriendshipBetweenPeoples_GameAction",
+  "RivalsEOE_FightPirateLose_GameAction",
+  "RivalsEOE_FightPirateWon_GameAction",
+  "RivalsEOE_FightPirate_GameAction",
+  "RivalsEOE_IslandMissionNotEnoughResources_GameAction",
+  "RivalsEOE_IslandMission_CancelPayUpgrade_GameAction",
+  "RivalsEOE_IslandMission_GameAction",
+  "RivalsEOE_IslandOfBardsDiscover_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeDiscover_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeMissionEventDice_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeMissionLoseShip_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeMissionLostShip_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeMissionWon_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeMission_GameAction",
+  "RivalsEOE_IslandOfForgottenTribeMission_RollDice_GameAction",
+  "RivalsEOE_IslandOfMerchantsCancelDiscover_GameAction",
+  "RivalsEOE_IslandOfMerchantsDiscover_GameAction",
+  "RivalsEOE_IslandOfScolarsDiscover_GameAction",
+  "RivalsEOE_IslandOfScolarsSelectCards_GameAction",
+  "RivalsEOE_PayPirate_GameAction",
+  "RivalsEOE_RefusePayPirate_GameAction",
+  "RivalsEOE_ShipWreck_Discover_GameAction",
+  "RivalsEOE_ShipWreck_GameAction",
+  "RivalsEOG_ActionCardGudrunGain_GameAction",
+  "RivalsEOG_ActionCardGudrunPay_GameAction",
+  "RivalsEOG_ActionCardMerchantDefineAndGainResources_GameAction",
+  "RivalsEOG_ActionCardMerchantEnemyPayResources_GameAction",
+  "RivalsEOG_ActionCardMerchantEnemyStoreResources_GameAction",
+  "RivalsEOG_ActionCardMerchantReturnResources_GameAction",
+  "RivalsEOG_ActionCardReiner_GameAction",
+  "RivalsEOG_ActionCardTradeMasterGainResources_GameAction",
+  "RivalsEOG_ActionCardTradeMasterPayResources_GameAction",
+  "RivalsEOG_ActiveSkill_MintTradeGold_GameAction",
+  "RivalsEOG_EventCardGiftForThePrinceGain_GameAction",
+  "RivalsEOG_GoldCacheDistributeGold_GameAction",
+  "RivalsEOP_ActionCardBenjamin_GameAction",
+  "RivalsEOP_ActionCardDoctor_GameAction",
+  "RivalsEOP_ActionCardGuido_GameAction",
+  "RivalsEOP_ActionCardGustav_GameAction",
+  "RivalsEOP_ActionCardMineralMining_GameAction",
+  "RivalsEOP_ActionCardThreeFieldSystem_GameAction",
+  "RivalsEOP_BuildingCardPharmacy_GameAction",
+  "RivalsEOP_EventCardPlague_GameAction",
+  "RivalsEOT_ActionCardArcherDiscardUnit_GameAction",
+  "RivalsEOT_ActionCardArsonistDiscardBuilding_GameAction",
+  "RivalsEOT_ActionCardArsonistSelectSettlementBuilding_GameAction",
+  "RivalsEOT_ActionCardSebastianSkip_GameAction",
+  "RivalsEOT_ActionCardSebastian_GameAction",
+  "RivalsEOT_ActionCardTraitorStealCard_GameAction",
+  "RivalsEOT_ActionCardVoyageOfPlunderGainResources_GameAction",
+  "RivalsEOT_ActionCardVoyageOfPlunderPayResources_GameAction",
+  "RivalsEOT_BuildingCardChapel_GameAction",
+  "RivalsEOT_BuildingCardTitheBarn_GameAction",
+  "RivalsEOT_EventCardRiots_GameAction",
+  "RivalsEOT_Irmgard_GameAction",
+  "RivalsEOT_ProtectionAgainstActionCards_GameAction",
+  "RivalsFC_DrawStartCard_GameAction",
+  "RivalsTheme_ActionCardBrigandsSelectResourceGain_GameAction",
+  "RivalsTheme_ActionCardBrigandsSelectResourcePay_GameAction",
+  "RivalsTheme_BuildOpenBuildStackCard_GameAction",
+  "RivalsTheme_BuildOpenSpecialStackCard_GameAction",
+  "RivalsTheme_CreateShuffledSeaside_GameAction",
+  "RivalsTheme_DiscardBoardCard_GameAction",
+  "RivalsTheme_DrawStartCardStackSearch_GameAction",
+  "RivalsTheme_DrawStartCard_GameAction",
+  "RivalsTheme_EndTurnMoveExplorerShipBackToHarbor_GameAction",
+  "RivalsTheme_OnBuild_DestroyShip_GameAction",
+  "RivalsTheme_OnBuild_DrawStackSearchSelectCard_GameAction",
+  "RivalsTheme_OnBuild_DrawStackSearch_GameAction",
+  "RivalsTheme_OnBuild_GainResources_GameAction",
+  "RivalsTheme_RearrangeRegions_GameAction"
+ ],
+ "bytes": 9304064,
+ "colecciones_del_tablero": [
+  {
+   "campo": "GamePieces",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "Islands",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.CatanIslandState, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "ShuffleGroups",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.CatanBoardShuffeGroupState, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "AdditionalValueChips",
+   "tipo": "System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "AdditionalLandTiles",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.TileTypes, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "RandomValueChipList",
+   "tipo": "System.Collections.Generic.List`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "RandomLandTileList",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.TileTypes, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "VictoryPointPerIsland",
+   "tipo": "System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "Treasures",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.TreasureType, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "RandomTreasureList",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.TreasureType, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "StartIslandTiles",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.TileTypes, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"
+  },
+  {
+   "campo": "RandomStartTileList",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.TileTypes, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesTiles",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.FacePosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesValueChip",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.FacePosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesHarbors",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.EdgePosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesBuildings",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesPath",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesUnits",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesRobber",
+   "tipo": "Catan.GameLogic.Model.PositionedGamePiece"
+  },
+  {
+   "campo": "GamePiecesPirat",
+   "tipo": "Catan.GameLogic.Model.PositionedGamePiece"
+  },
+  {
+   "campo": "GamePiecesMerchant",
+   "tipo": "Catan.GameLogic.Model.PositionedGamePiece"
+  },
+  {
+   "campo": "GamePiecesBarbarIndicator",
+   "tipo": "Catan.GameLogic.Model.PositionedGamePiece"
+  },
+  {
+   "campo": "GamePiecesTreasures",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesWall",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "RevealedFogTiles",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesOvergrown",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesCanal",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesDragon",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesSeparators",
+   "tipo": "System.Collections.Generic.Dictionary`2[[Catan.GameLogic.Model.HexGridPosition, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesRobbers",
+   "tipo": "System.Collections.Generic.List`1[[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  },
+  {
+   "campo": "GamePiecesRobbersPerPlayerIdx",
+   "tipo": "System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Catan.GameLogic.Model.PositionedGamePiece, Assembly-CSharp, Version=3.0.0.0, Culture=neutral, PublicKeyToken=null]]"
+  }
+ ],
+ "de": "Assembly-CSharp.dll"
+}

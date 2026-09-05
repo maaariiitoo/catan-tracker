@@ -1,0 +1,16 @@
+# Sin dependencias.
+#
+# El fichero esta vacio a proposito, no por descuido: el mod, el importador,
+# la base, las vistas, el panel y las consultas funcionan con la biblioteca
+# estandar. Solo hace falta Python 3.7 o mas nuevo.
+#
+#     py panel.py
+#
+# Poner aqui algo que no se usa tendria un precio real: un `pip install -r`
+# de 2,5 GB (torch) que ademas puede fallar, y quien lo vea fallar pensara
+# que el proyecto no arranca. Arranca.
+#
+# La otra mitad del proyecto --leer el tablero de la pantalla-- si necesita
+# opencv-python, pytesseract, mss, numpy y torch, y Tesseract OCR aparte.
+# Esa mitad todavia no va en el repositorio; el .gitignore dice por que.
+# Cuando vuelva, vuelven estas lineas.
