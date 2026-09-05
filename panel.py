@@ -255,6 +255,168 @@ def _recopilando():
         return False
 
 
+# Lo que el mod lleva apuntado de la partida que se esta jugando ahora.
+#
+# Es la unica prueba que ve quien juega de que el mod hace algo. La banda
+# decia «EL MOD ESTA ENCENDIDO» igual estuviera apuntando o no, y el «y
+# grabando» que llevaba al lado NO era de esto: es de la captura de pantalla
+# de la vision, que ni siquiera se publica. Asi que en un clon recien bajado
+# esa palabra no salia nunca aunque el mod estuviera funcionando.
+_candado_apuntes = threading.Lock()
+_cuenta_apuntes = {"ruta": None, "byte": 0, "lineas": 0}
+
+
+def _apuntando():
+    """El .jsonl que el mod esta escribiendo, y cuantas acciones lleva.
+
+    La pagina pregunta cada 2 segundos y el fichero llega a varios MB, asi
+    que NO se relee entero: se recuerda por donde iba y solo se cuentan los
+    saltos de linea de los bytes NUEVOS. Cortar a mitad de linea no descuadra
+    la cuenta, porque el salto que falta se cuenta en la lectura siguiente.
+    Si el fichero cambia o encoge --otra partida, o se borro-- se reinicia.
+    """
+    carpeta = carpeta_de_verdad()
+    if not carpeta or not os.path.isdir(carpeta):
+        return None
+    nueva, cuando = None, -1
+    try:
+        nombres = os.listdir(carpeta)
+    except OSError:
+        return None
+    for nombre in nombres:
+        if not nombre.endswith(".jsonl"):
+            continue
+        ruta = os.path.join(carpeta, nombre)
+        try:
+            m = os.path.getmtime(ruta)
+        except OSError:
+            continue
+        if m > cuando:
+            nueva, cuando = ruta, m
+    if not nueva:
+        return None
+    c = _cuenta_apuntes
+    try:
+        tam = os.path.getsize(nueva)
+    except OSError:
+        return None
+    if c["ruta"] != nueva or tam < c["byte"]:
+        c.update({"ruta": nueva, "byte": 0, "lineas": 0})
+    if tam > c["byte"]:
+        try:
+            with open(nueva, "rb") as f:
+                f.seek(c["byte"])
+                trozo = f.read(tam - c["byte"])
+            c["lineas"] += trozo.count(b"\n")
+            c["byte"] = tam
+        except OSError:
+            pass
+    return {"fichero": os.path.basename(nueva),
+            "acciones": c["lineas"],
+            # 30 s sin crecer y ya no es «ahora mismo»: es la de antes.
+            "viva": (time.time() - cuando) < 30}
+
+
+# Cuantas acciones se mandan de golpe la primera vez. Sin tope, abrir el
+# panel a mitad de partida volcaria tres mil lineas en el registro.
+_TOPE_APUNTES = 300
+
+_cola_apuntes = {"ruta": None, "byte": 0, "n": 0}
+
+
+def _como_se_lee(cruda):
+    """Una linea del .jsonl, en algo que se entienda de un vistazo.
+
+    `CatanBase_StartPhase_BuildRoad_GameAction` no lo lee nadie: se le quita
+    el envoltorio que le pone el juego y queda `StartPhase BuildRoad`. La
+    primera linea del fichero es el esquema y no una accion, asi que se cae
+    sola al no tener `accion`.
+    """
+    try:
+        d = json.loads(cruda)
+    except ValueError:
+        return None
+    nombre = d.get("accion")
+    if not nombre:
+        return None
+    if nombre.startswith("CatanBase_"):
+        nombre = nombre[len("CatanBase_"):]
+    if nombre.endswith("_GameAction"):
+        nombre = nombre[:-len("_GameAction")]
+    turno = d.get("turno")
+    quien = d.get("accion_de")
+    linea = "t%-3s j%-3s %s" % ("?" if turno is None else turno,
+                                "?" if quien is None else quien,
+                                nombre.replace("_", " "))
+    # Los dados SOLO en la tirada. `dados` lleva el estado de la mesa, no lo
+    # que hizo esta accion: pintarlo en todas dejaba cosas como
+    # «BuildCity (2+3 = 5)», que se lee como que construir tiro los dados.
+    dados = d.get("dados") or []
+    if len(dados) == 2 and nombre.startswith("RollDice"):
+        linea += "   (%s+%s = %s)" % (dados[0], dados[1], dados[0] + dados[1])
+    return linea
+
+
+def _apuntes_desde(desde):
+    """Lo apuntado a partir de la accion numero `desde`.
+
+    Mismo contrato que el registro de una tarea --devuelve (hasta, lineas)--
+    para que la pagina pida solo lo nuevo, y por eso se puede enchufar en la
+    misma caja sin tocar nada del otro lado.
+
+    El fichero llega a varios MB y esto se pregunta cada 0,7 s, asi que se
+    recuerda en que byte se quedo: si la pagina viene por donde la dejamos,
+    solo se lee la cola. Y una linea a medio escribir --el juego esta
+    escribiendo mientras leemos-- se deja para la vuelta siguiente en vez de
+    contarla a medias.
+    """
+    carpeta = carpeta_de_verdad()
+    with _candado_apuntes:
+        ahora = _apuntando()
+        if not carpeta or not ahora:
+            return 0, []
+        ruta = os.path.join(carpeta, ahora["fichero"])
+        c = _cola_apuntes
+        if c["ruta"] != ruta or c["n"] != desde:
+            c.update({"ruta": ruta, "byte": 0, "n": 0})
+        lineas, byte, n = [], c["byte"], c["n"]
+        try:
+            with open(ruta, "rb") as f:
+                f.seek(byte)
+                for cruda in f:
+                    if not cruda.endswith(b"\n"):
+                        break
+                    byte += len(cruda)
+                    n += 1
+                    if n <= desde:
+                        continue
+                    dicho = _como_se_lee(cruda.decode("utf-8", "replace"))
+                    if dicho:
+                        lineas.append(dicho)
+        except OSError:
+            return desde, []
+        c.update({"byte": byte, "n": n})
+    # Las repetidas seguidas, en una sola con su cuenta. El mod apunta una
+    # foto por cada metodo que engancha, asi que la misma accion sale entre
+    # 5 y 30 veces seguidas -- es normal, viene de siempre, y el importador
+    # las agrupa al guardar. Aqui son ruido: cinco `BuildRoad` iguales tapan
+    # lo que pasa despues.
+    apretadas = []
+    for dicho in lineas:
+        if apretadas and apretadas[-1][0] == dicho:
+            apretadas[-1][1] += 1
+        else:
+            apretadas.append([dicho, 1])
+    lineas = [d if veces == 1 else "%s   x%d" % (d, veces)
+              for d, veces in apretadas]
+
+    if len(lineas) > _TOPE_APUNTES:
+        cuantas = len(lineas) - _TOPE_APUNTES
+        lineas = (["... %d acciones anteriores, no caben" % cuantas]
+                  + lineas[-_TOPE_APUNTES:])
+    return n, lineas
+
+
 _cache_partidas = {}
 
 
@@ -416,6 +578,8 @@ def estado():
         "mod": _mod_encendido(juego),
         "juego_abierto": _juego_abierto(),
         "grabando": _recopilando(),
+        # Lo que el mod lleva apuntado de la partida de ahora mismo.
+        "apunta": _apuntando(),
         "grabacion_viva": grabacion.vivo,
         "tarea": tarea.nombre if (tarea.vivo or tarea.acabado_en) else None,
         "tarea_viva": tarea.vivo,
@@ -2720,7 +2884,8 @@ boton("bQuitar", async () => {
   return {ok: true};
 });
 boton("bEmpezar", () => { fuente="grabacion"; pos=0; return pedir("/grabar",{arrancar:true}); });
-boton("bSoloMod", () => pedir("/grabar",{arrancar:true, solo_mod:true}));
+boton("bSoloMod", () => { fuente="mod"; pos=0;
+  return pedir("/grabar",{arrancar:true, solo_mod:true}); });
 boton("bParar",   () => pedir("/grabar",{arrancar:false}));
 boton("bMatar",   () => pedir("/matar",{}));
 for (const [id, que] of [["bComprobar","comprobar"],["bDataset","dataset"],
@@ -3365,7 +3530,13 @@ async function refrescar(){
     document.title = "Catan Tracker";
   } else if (e.mod){
     banda.className = "banda on";
-    banda.innerHTML = "EL MOD ESTA ENCENDIDO" + (e.grabando ? " y grabando" : "") +
+    let apunte = "";
+    if (e.apunta && e.apunta.viva){
+      apunte = " &mdash; apuntando: <b>" + e.apunta.acciones + "</b> acciones";
+    } else if (e.apunta){
+      apunte = " &mdash; ultima partida apuntada: " + e.apunta.acciones + " acciones";
+    }
+    banda.innerHTML = "EL MOD ESTA ENCENDIDO" + (e.grabando ? " y grabando" : "") + apunte +
       "<small>Modificar el cliente va contra las condiciones de uso de Catan " +
       "Universe, y esto se carga en todas las partidas mientras este puesto. " +
       "Apagalo al terminar.</small>";
@@ -3407,8 +3578,15 @@ async function refrescar(){
     : "Enciende el mod y se pone a grabar. Despues abre Catan y juega. ";
       
 
+  // Al recargar la pagina, `fuente` vuelve a "tarea". Si el mod esta
+  // encendido y no hay ninguna tarea de la que enseniar nada, el registro se
+  // quedaba vacio teniendo cosas que contar: se engancha solo al mod. Con
+  // una tarea detras NO se toca, que su log es lo que se ha ido a mirar.
+  if (fuente === "tarea" && !e.tarea && e.mod){ fuente = "mod"; pos = 0; }
+
   const t = document.getElementById("tituloReg");
-  t.textContent = fuente === "grabacion" ? "Registro · grabacion"
+  t.textContent = fuente === "mod" ? "Registro · lo que apunta el mod"
+    : fuente === "grabacion" ? "Registro · grabacion"
     : (e.tarea ? "Registro · " + e.tarea : "Registro");
 
   const filas = e.partidas.length
@@ -3514,6 +3692,17 @@ class Manejador(BaseHTTPRequestHandler):
                                         partida, ambito, mesa))
         if ruta == "/registro":
             args = dict(p.split("=", 1) for p in consulta.split("&") if "=" in p)
+            # El mod no es una tarea del panel --escribe el juego, en un
+            # fichero-- asi que no tiene un proceso del que leer la salida.
+            # Se le da la misma forma para que la caja no note la diferencia.
+            if args.get("fuente") == "mod":
+                try:
+                    desde = int(args.get("desde", 0))
+                except ValueError:
+                    desde = 0
+                hasta, lineas = _apuntes_desde(desde)
+                return self._json({"hasta": hasta, "lineas": lineas,
+                                   "reinicio": desde > hasta})
             proceso = grabacion if args.get("fuente") == "grabacion" else tarea
             try:
                 desde = int(args.get("desde", 0))
