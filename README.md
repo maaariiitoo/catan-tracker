@@ -70,7 +70,10 @@ Y debajo los **récords**: la mejor marca de una sola partida, con la partida
 en que fue. Ahí no hay mínimo — un titular es una costumbre y pide partidas;
 un récord es de un día.
 
-![Los récords de una sola partida, con la partida y el día en que fueron](docs/records.png)
+![Los récords de una sola partida, en modo oscuro](docs/records.png)
+
+*El panel arranca en claro o en oscuro según lo que prefiera tu sistema, y
+hay un botón para cambiarlo cuando quieras.*
 
 Y dos filtros que se combinan: **con quién** se jugó —de serie sólo las
 de personas, porque la IA no propone tratos ni bloquea igual— y **de
