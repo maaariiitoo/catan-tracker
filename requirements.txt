@@ -1,9 +1,16 @@
-# NADA. Cero dependencias. No hay ningun `pip install` que dar.
+# Python 3.7 o mas nuevo. Y nada mas: cero dependencias, ningun pip install.
 #
-# Medido, no supuesto: bloqueando a la fuerza cv2, numpy, torch, pillow, mss
-# y pytesseract, los 17 modulos que se publican cargan igual y las vistas se
-# montan. Solo hace falta Python 3.7 o mas nuevo, que ya trae todo lo que
-# esto usa: sqlite3, http.server, json, urllib, zipfile, hashlib.
+#     minimo    Python 3.7
+#     probado   Python 3.14.6
+#
+# El minimo no es una promesa a ojo: `db/pruebas.py` analiza todo el codigo
+# haciendose el de la 3.7, y si alguien cuela un walrus o un `int | None` la
+# prueba salta y avisa de que el requisito ha subido.
+#
+# NADA QUE INSTALAR, medido y no supuesto: bloqueando a la fuerza cv2, numpy,
+# torch, pillow, mss y pytesseract, los 17 modulos que se publican cargan
+# igual y las vistas se montan. Todo lo que esto usa ya viene con Python:
+# sqlite3, http.server, json, urllib, zipfile, hashlib.
 #
 #     py panel.py --simple
 #
