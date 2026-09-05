@@ -6,8 +6,6 @@ uno el ladrón, quién comercia con quién y quién sale ganando.
 
 No hay que apuntar nada a mano. Juegas, le das a un botón y ya está.
 
-![Los titulares del panel: conclusiones ya escritas, cada una con su número](docs/titulares.png)
-
 ---
 
 ## Empezar
@@ -65,6 +63,8 @@ el número que la sostiene y un enlace a la tabla de donde sale. No hay ni un
 nombre escrito a mano: salen de las mismas consultas que pintan las tablas,
 se recalculan en cada visita y sólo entran los que llevan 10 partidas o más,
 para que no se lo lleve el que jugó una vez y tuvo un buen día.
+
+![Los titulares del panel: conclusiones ya escritas, cada una con su número](docs/titulares.png)
 
 Y debajo los **récords**: la mejor marca de una sola partida, con la partida
 en que fue. Ahí no hay mínimo — un titular es una costumbre y pide partidas;
