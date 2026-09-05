@@ -3797,6 +3797,158 @@ def prueba_ningun_idioma_se_queda_a_medias():
     comprobar("y el boton de idioma le llega al usuario",
               'id="bIdioma"' in panel._pagina_para(panel.PAGINA, False, False))
 
+
+def prueba_el_javascript_tampoco_se_queda_en_castellano():
+    """Las cadenas que escribe el JavaScript, todas traducidas. Todas.
+
+    La prueba de al lado mira el texto de la pagina y las frases que manda el
+    servidor. No ve una tercera cosa: lo que el guion PINTA. Un
+    `"guardar"` dentro de un `<script>` no es texto de la pagina, es codigo,
+    y para el que recorre etiquetas no existe. Asi se quedaron 21 cadenas en
+    castellano en la version inglesa hasta que se vieron en una captura, ya a
+    punto de publicarla.
+
+    Como se separa el texto del codigo, que es lo dificil:
+
+      1. Las cadenas se leen recorriendo el guion de izquierda a derecha, no
+         con un regex. `'<div class="x">hola '` lleva comillas dobles DENTRO
+         de unas simples: cualquier alternancia empieza a contar por la de
+         dentro y se lleva media linea por delante. Ese fallo es el que
+         escondio las 21.
+      2. Lo que despues de quitarle las etiquetas no tiene ni dos letras
+         seguidas no es texto para nadie.
+      3. Lo que encaja en `CODIGO` --un identificador, un selector, una ruta,
+         una opcion, una declaracion de CSS-- tampoco.
+      4. Y lo que sobrevive a eso y aun asi es codigo esta escrito en
+         `PERDONADAS`, una por una. Es a proposito que sea una lista y no una
+         regla: cuando aparezca una cadena nueva, esta prueba falla y alguien
+         tiene que mirarla y decidir. Traducirla o apuntarla aqui. Lo que no
+         puede es colarse sola.
+    """
+    import re
+    import panel
+    import idiomas
+
+    # Codigo que parece texto. No se traduce ninguna: son selectores,
+    # rutas, nombres de clase y trozos de etiqueta a medio abrir.
+    PERDONADAS = {
+        '" &rarr;</button></div>"',
+        '"#botonesVista button"',
+        '"#tablaVista th.orden"',
+        '"&ambito="',
+        '"&desde="',
+        '"&mesa="',
+        '"&partida="',
+        '"(prefers-color-scheme:dark)"',
+        '"/preguntar?q="',
+        '"/registro?fuente="',
+        '"/vista?nombre="',
+        '";path=/;max-age=31536000"',
+        '"application/json"',
+        '"banda off"',
+        '"banda ojo"',
+        '"banda on"',
+        '"button[data-vista]"',
+        '"Catan Tracker"',
+        '"var(--alerta)"',
+        '"var(--borde)"',
+        '"var(--tinta)"',
+        '\' data-partida="\'',
+        '\'" data-col="\'',
+        '\'" value="\'',
+        '\'<button data-vista="\'',
+        '\'<button id="pAnt"\'',
+        '\'<button id="pSig"\'',
+        '\'<option value="\'',
+        '\'<td class="\'',
+        '\'<td><button data-i="\'',
+        '\'<td><button data-id="\'',
+        '\'<td><input type="text" maxlength="40" data-red="\'',
+        '\'<th class="orden\'',
+        '\'<tr class="\'',
+    }
+
+    CODIGO = re.compile(r"""^(?:
+          [A-Za-z_][A-Za-z0-9_\-]*
+        | [#.][A-Za-z][\w\-]*
+        | /[a-z]+
+        | --?[a-z\-]+
+        | [a-z\-]+:[^;]*;?
+        | &[a-z]+;
+        | [\W\d]+
+        | [A-Za-z_][\w\-]*=
+        | (?:py|SELECT)\s.*
+    )$""", re.X)
+
+    def literales(js):
+        """Las cadenas del guion, leyendo de izquierda a derecha."""
+        fuera, i, n, antes = [], 0, len(js), ""
+        while i < n:
+            c = js[i]
+            if c == "/" and i + 1 < n and js[i + 1] == "/":
+                i = js.find("\n", i)
+                if i < 0:
+                    break
+            elif c == "/" and i + 1 < n and js[i + 1] == "*":
+                i = js.find("*/", i) + 2
+            elif c == "/" and antes in "(,=:[!&|?{};\n":
+                j = i + 1                       # una expresion regular
+                while j < n and js[j] not in "/\n":
+                    j += 2 if js[j] == "\\" else 1
+                i = j + 1
+            elif c in "\"'`":
+                j = i + 1
+                while j < n and js[j] != c:
+                    if js[j] == "\\":
+                        j += 1
+                    elif js[j] == "\n" and c != "`":
+                        break
+                    j += 1
+                if j < n and js[j] == c:
+                    fuera.append(js[i:j + 1])
+                i = j + 1
+            else:
+                if not c.isspace():
+                    antes = c
+                i += 1
+        return fuera
+
+    js = "\n".join(re.findall(r"<script[^>]*>(.*?)</script>",
+                              panel.PAGINA, re.S))
+    LETRAS = re.compile(r"[A-Za-z\xc1\xc9\xcd\xd3\xda\xe1\xe9\xed"
+                        r"\xf3\xfa\xd1\xf1]{2,}")
+
+    de_texto, codigo = [], []
+    for lit in dict.fromkeys(literales(js)):
+        d = lit[1:-1]
+        if not LETRAS.search(re.sub(r"<[^>]*>", " ", d)):
+            continue
+        if CODIGO.match(d.strip()) or lit in PERDONADAS:
+            codigo.append(lit)
+        else:
+            de_texto.append(lit)
+
+    comprobar("el guion de la pagina escribe %d cadenas de texto"
+              % len(de_texto), len(de_texto) > 60)
+
+    for clave in sorted(idiomas.IDIOMAS):
+        guion = idiomas.IDIOMAS[clave]["guion"]
+        faltan = [l for l in de_texto if l not in guion]
+        comprobar("y «%s» las traduce todas" % clave, not faltan,
+                  "en castellano: %s" % [l[:50] for l in faltan[:3]])
+        # Y al reves: una cadena traducida que ya no existe en el guion es
+        # una traduccion caduca, que es peor porque parece hecha.
+        huerfanas = [k for k in guion if k not in js]
+        comprobar("y no le sobra ninguna", not huerfanas,
+                  "ya no aparecen: %s" % [k[:50] for k in huerfanas[:3]])
+
+    # Perdonar es una decision, no un descuido: si una de la lista deja de
+    # existir, se quita de la lista.
+    fantasmas = [l for l in PERDONADAS if l not in js]
+    comprobar("y las %d cadenas perdonadas por ser codigo siguen ahi"
+              % len(PERDONADAS), not fantasmas,
+              "ya no existen: %s" % [l[:50] for l in fantasmas[:3]])
+
 def prueba_ponerselo_a_uno_mismo_cuadra(conn):
     """Las dos vistas del ladron tienen que cuadrar quitando lo de uno mismo.
 
@@ -4124,6 +4276,7 @@ def main():
         prueba_ponerselo_a_uno_mismo_cuadra(conn)
         prueba_los_dos_temas_definen_los_mismos_colores()
         prueba_ningun_idioma_se_queda_a_medias()
+        prueba_el_javascript_tampoco_se_queda_en_castellano()
         prueba_lo_que_se_publica_no_lleva_el_nombre_de_nadie(conn)
         prueba_el_catalogo_no_lleva_datos_de_nadie(conn)
         partidas = [r[0] for r in conn.execute(

@@ -433,47 +433,135 @@ TEXTO = {
 # Las cadenas que escribe el JavaScript. Van CON las comillas: así no hay
 # forma de que un reemplazo toque un nombre de variable por accidente.
 GUION = {
-    '"✕ sin panel — Catan Tracker"': '"✕ no panel — Catan Tracker"',
-    '"☀︎  Claro"': '"☀︎  Light"',
-    '"☽  Oscuro"': '"☽  Dark"',
-    '"● MOD ENCENDIDO — Catan Tracker"': '"● MOD ON — Catan Tracker"',
-    '"El mod no esta instalado en el juego."':
-        '"The mod is not installed in the game."',
+    '"  ·  SIN plugin instalado"': '"  ·  NO plugin installed"',
+    '"  ·  pagina "': '"  ·  page "',
+    '"  ·  plugin instalado"': '"  ·  plugin installed"',
+    '" &mdash; apuntando: <b>"': '" &middot; recording: <b>"',
+    '" &mdash; ultima partida apuntada: "': '" &middot; last game recorded: "',
+    '" <small>(IA)</small>"': '" <small>(AI)</small>"',
+    '" acciones"': '" actions"',
+    '" con "': '" with "',
+    '" de "': '" of "',
+    '" fila" : " filas"': '" row" : " rows"',
+    '" fotos · "': '" photos · "',
+    '" partida"': '" game"',
+    '" partidas"': '" games"',
+    '" y grabando"': '" and recording"',
+    '"(nada todavia)"': '"(nothing yet)"',
+    '", columna <code>"': '", column <code>"',
+    '".  En la ventana negra:  <code>"': '".  In the black window:  <code>"',
+    '"</b> acciones"': '"</b> actions"',
     '"<small>Dale a <b>Dejarlo listo</b>, aqui debajo.</small>"':
         '"<small>Press <b>Get it ready</b>, just below.</small>"',
+    '"<small>El mod se mete dentro del juego al arrancarlo, asi que si abriste "':
+        '"<small>The mod goes inside the game when the game starts, so if you opened "',
+    '"<small>Modificar el cliente va contra las condiciones de uso de Catan "':
+        '"<small>Modifying the client goes against Catan "',
+    '"<tr><td>Ninguna todavia.</td></tr>"': '"<tr><td>None yet.</td></tr>"',
+    '"<tr><td>partida "': '"<tr><td>game "',
+    '">&lsaquo; anteriores</button>"': '">&lsaquo; previous</button>"',
+    '">siguientes &rsaquo;</button>"': '">next &rsaquo;</button>"',
+    '"Ahora mismo llegan "': '"Right now that\'s "',
+    '"Apagalo al terminar.</small>"':
+        '"Switch it off when you are done.</small>"',
+    '"BepInEx ya esta; falta compilar el <b>plugin</b>. Un boton."':
+        '"BepInEx is in; the <b>plugin</b> still needs compiling. One button."',
+    '"Cuando termines del todo, <b>Parar y apagar el mod</b>."':
+        '"When you are completely done, <b>Stop and switch the mod off</b>."',
     '"EL MOD ESTA ENCENDIDO"': '"THE MOD IS ON"',
-    '" y grabando"': '" and recording"',
-    '" &mdash; apuntando: <b>"': '" &mdash; recording: <b>"',
-    '" &mdash; ultima partida apuntada: "':
-        '" &mdash; last game recorded: "',
-    '" acciones"': '" actions"',
-    '"</b> acciones"': '"</b> actions"',
     '"El interruptor esta apagado, pero Catan esta abierto."':
         '"The switch is off, but Catan is open."',
-    '"Registro · lo que apunta el mod"': '"Log · what the mod is recording"',
-    '"Registro · grabacion"': '"Log · recording"',
-    '"Registro · "': '"Log · "',
-    # Estas dos van con comilla SIMPLE en el guion, porque llevan HTML con
-    # comillas dobles dentro. La clave tiene que ser el literal tal cual.
-    "'<p class=\"vacio\">No hay ninguna partida guardada.</p>'":
-        "'<p class=\"vacio\">No games saved yet.</p>'",
-    '"Todavia no hay ninguna partida guardada."': '"No games saved yet."',
-    '"Todas las partidas"': '"All games"',
-    "'<p class=\"vacio\">buscando...</p>'":
-        "'<p class=\"vacio\">searching...</p>'",
-    '"no se ha podido"': '"it didn\'t work"',
-    '"No se ha podido quitar: "': '"Could not remove it: "',
-    '"Ahora mismo llegan "': '"Right now that\'s "',
-    '"Todavia no llega nadie: el que mas lleva es "':
-        '"Nobody qualifies yet: the highest is "',
-    # Las cuatro veces que sale «En la ventana negra», con su espaciado y su
-    # <code> tal cual: son literales distintos aunque digan lo mismo.
+    '"El juego arrancara limpio."': '"The game will start clean."',
+    '"El mod esta apagado y Catan cerrado. "':
+        '"The mod is off and Catan is closed. "',
+    '"El mod no esta instalado en el juego."':
+        '"The mod is not installed in the game."',
     '"En la ventana negra:  "': '"In the black window:  "',
-    '".  En la ventana negra:  <code>"': '".  In the black window:  <code>"',
     '"En la ventana negra: <code>py db/vistas.py --crear</code></p>"':
         '"In the black window: <code>py db/vistas.py --crear</code></p>"',
-    # El contador de filas de debajo del filtro.
-    '" fila" : " filas"': '" row" : " rows"',
+    '"Enciende el mod y se pone a grabar. Despues abre Catan y juega. "':
+        '"Switch the mod on and it starts recording. Then open Catan and play. "',
+    '"Falta <b>BepInEx</b>, que es lo que deja que el mod se "':
+        '"<b>BepInEx</b> is missing, which is what lets the mod "',
+    '"Grabando. Abre Catan y juega. Puedes encadenar <b>varias partidas "':
+        '"Recording. Open Catan and play. You can chain <b>several games "',
+    '"Guarda una partida primero.</p>"': '"Save a game first.</p>"',
+    '"IA, las vistas de amigos salen vacias a proposito."':
+        '"AI, the friends views come out empty on purpose."',
+    '"No encuentro Catan Universe. Abre Steam una vez si lo has movido."':
+        '"Can\'t find Catan Universe. Open Steam once if you have moved it."',
+    '"No encuentro Catan Universe. Abre Steam una vez, o instala "':
+        '"Can\'t find Catan Universe. Open Steam once, or install "',
+    '"No hay nada que enseñar aqui. Si has elegido una partida contra la "':
+        '"There is nothing to show here. If you picked a game against the "',
+    '"No se ha podido quitar: "': '"Could not remove it: "',
+    '"Quitar la partida "': '"Remove game "',
+    '"Registro · "': '"Log · "',
+    '"Registro · grabacion"': '"Log · recording"',
+    '"Registro · lo que apunta el mod"': '"Log · what the mod is recording"',
+    '"Registro"': '"Log"',
+    '"Todas las partidas"': '"All games"',
+    '"Todavia no hay ninguna partida guardada."': '"No games saved yet."',
+    '"Todavia no llega nadie: el que mas lleva es "':
+        '"Nobody qualifies yet: the highest is "',
+    '"Universe, y esto se carga en todas las partidas mientras este puesto. "':
+        '"Universe\'s terms of use, and this loads in every game while it is on. "',
+    '"\\n\\nSe hace una copia de la base antes, pero no hay "':
+        '"\\n\\nA copy of the database is made first, but there is no "',
+    '"\\n\\nSi pone 404, este panel lleva abierto desde antes de que "':
+        '"\\n\\nIf it says 404, this panel has been open since before "',
+    '"cargue, y el plugin. Un boton."':
+        '"load, and the plugin too. One button."',
+    '"de 10 en 10"': '"10 at a time"',
+    '"deshacer."': '"undo."',
+    '"el boton existiera. Cierra la ventana negra y vuelve a abrirla."':
+        '"the button existed. Close the black window and open it again."',
+    '"el juego, y recarga esta pagina."': '"the game, and reload this page."',
+    '"el panel ha respondido "': '"the panel answered "',
+    '"esta partida con el mod encendido, sigue cargado. <b>Para descargarlo hay "':
+        '"this game with the mod on, it is still loaded. <b>To unload it you have "',
+    '"no hay vistas"': '"no views"',
+    '"no se ha podido"': '"it didn\'t work"',
+    '"preparada"': '"ready"',
+    '"que cerrar Catan y volver a abrirlo.</b></small>"':
+        '"to close Catan and open it again.</b></small>"',
+    '"seguidas sin tocar nada</b>: cada una se guarda en su carpeta sola. "':
+        '"in a row without touching anything</b>: each one saves to its own folder. "',
+    '"sin nombre"': '"unnamed"',
+    '"sin preparar"': '"not ready"',
+    '"solo con amigos"': '"friends only"',
+    '"ver todas"': '"see all"',
+    '"»"': '"”"',
+    '"▲ cierra Catan — Catan Tracker"': '"▲ close Catan · Catan Tracker"',
+    '"● MOD ENCENDIDO — Catan Tracker"': '"● MOD ON · Catan Tracker"',
+    '"☀︎  Claro"': '"☀︎  Light"',
+    '"☽  Oscuro"': '"☽  Dark"',
+    '"✕ sin panel — Catan Tracker"': '"✕ no panel · Catan Tracker"',
+    '\'" placeholder="como se llama"></td>\'':
+        '\'" placeholder="their name"></td>\'',
+    '\'" title="Ordenar por esta columna">\'':
+        '\'" title="Sort by this column">\'',
+    '\'">guardar</button></td></tr>\'': '\'">save</button></td></tr>\'',
+    '\'">partida \'': '\'">game \'',
+    '\'">quitar</button></td></tr>\'': '\'">remove</button></td></tr>\'',
+    '\'<div class="cuando">partida \'': '\'<div class="cuando">game \'',
+    '\'<div class="fuente">De «\'': '\'<div class="fuente">From “\'',
+    '\'<div class="otras">Si no era eso: \'':
+        '\'<div class="otras">If that was not it: \'',
+    '\'<optgroup label="Una sola partida">\'':
+        '\'<optgroup label="A single game">\'',
+    '\'<p class="vacio">Faltan vistas por crear (\'':
+        '\'<p class="vacio">Views still to create (\'',
+    '\'<p class="vacio">Nada con «\'': '\'<p class="vacio">Nothing with “\'',
+    '\'<p class="vacio">No hay ninguna partida guardada.</p>\'':
+        '\'<p class="vacio">No games saved yet.</p>\'',
+    '\'<p class="vacio">Todavia no hay ninguna cuenta. \'':
+        '\'<p class="vacio">No accounts yet. \'',
+    '\'<p class="vacio">buscando...</p>\'':
+        '\'<p class="vacio">searching...</p>\'',
+    '\'<p class="vacio">leyendo...</p>\'':
+        '\'<p class="vacio">reading...</p>\'',
+    "'».</p>'": "'”.</p>'",
 }
 
 
@@ -487,275 +575,186 @@ GUION = {
 # deja un `{victorias}` en crudo en la pantalla. `db/pruebas.py` comprueba que
 # los huecos de la traducción son EXACTAMENTE los mismos que los del original.
 FRASES = {
-    # --- los siete grupos de tablas ---------------------------------------
-    "Las partidas": "The games",
-    "Puntos y ritmo": "Score and pace",
-    "Cartas de desarrollo": "Development cards",
-    "El ladrón": "The robber",
-    "Comercio": "Trade",
-    "Puertos": "Ports",
-    "El tablero y los dados": "The board and the dice",
-
-    # --- las 32 tablas: título y qué contesta ------------------------------
-    "Partidas": "Games",
-    "una por partida, con quién ganó, cuántas casillas tenía el tablero y si "
-    "eran todos personas":
-        "one row per game, with who won, how many tiles the board had and "
-        "whether everyone was human",
-    "Jugadores": "Players",
-    "una fila por jugador y partida, con el nombre ya resuelto":
-        "one row per player per game, with the name already resolved",
-    "Marcador": "Scoreboard",
-    "partidas, victorias y puntos medios de cada uno, por tamaño de mesa":
-        "games, wins and average score for each player, by table size",
-    "El orden de salida": "Turn order",
-    "en qué puesto salió cada uno y en cuál acabó":
-        "which seat each player started from and where they finished",
-    "¿Importa salir primero?": "Does going first matter?",
-    "qué tal le va a cada puesto de salida, sumando todas las partidas":
-        "how each starting seat does, across every game",
-    "Con qué salida le toca a cada uno": "Which seat each player gets",
-    "cuántas veces ha salido primero, segundo, tercero… cada persona":
-        "how many times each person has started first, second, third…",
-    "De cada salida, cómo acabó": "From each seat, how it ended",
-    "de las veces que salió en cada puesto, en cuáles acabó":
-        "of the times they started from each seat, where they finished",
-    "De dónde salió cada punto": "Where each point came from",
-    "edificios, premios y — por resta — las cartas de punto":
-        "buildings, awards and — by subtraction — the victory point cards",
-    "qué le tocó a cada uno de las cartas que compró":
-        "what each player got out of the cards they bought",
-    "El mazo": "The deck",
-    "qué salió contra lo que el mazo lleva dentro":
-        "what came out against what the deck actually holds",
-    "Los monopolios": "The monopolies",
-    "quién tiró cada monopolio y qué recurso pidió":
-        "who played each monopoly and which resource they called",
-    "El monopolio, uno a uno": "Monopolies, one by one",
-    "cuántas cartas de cada recurso le ha sacado cada uno a cada uno":
-        "how many cards of each resource each player has taken off each other",
-    "recursos que no dejó producir, contra los que sí se cobraron":
-        "resources it stopped from being produced, against the ones that were "
-        "collected anyway",
-    "¿A quién se ceba el ladrón?": "Who does the robber pick on?",
-    "si a alguien le ponen el ladrón más de lo que le toca, descontando "
-    "cuánto juega y cuántas casillas tiene":
-        "whether anyone gets the robber more than their share, allowing for "
-        "how much they play and how many tiles they hold",
-    "El ladrón, uno a uno": "The robber, one by one",
-    "quién se lo puso a quién, cuántas veces le tocó y qué le costó":
-        "who put it on whom, how many times it landed and what it cost them",
-    "El ladron: a quien y en que numero": "The robber: on whom and on which "
-                                          "number",
-    "a quien se lo puso cada uno y sobre que numero":
-        "who each player put it on and on which number",
-    "Dónde pone el ladrón cada uno": "Where each player puts the robber",
-    "a qué número lo manda cada uno, cuántas veces, y si por el 7 o con un "
-    "caballero":
-        "which number each player sends it to, how often, and whether by a 7 "
-        "or with a knight",
-    "Los números que más tapa el ladrón": "The numbers the robber blocks most",
-    "a qué números va el ladrón, sumando a todo el mundo":
-        "which numbers the robber goes to, adding everyone together",
-    "Producción": "Production",
-    "qué recursos le dio el tablero a cada uno, y de qué anda corto":
-        "which resources the board gave each player, and what they're short of",
-    "Los números de cada uno": "Each player's numbers",
-    "en qué números se puso, cuántas veces salieron y qué sacó":
-        "which numbers they settled on, how often those came up and what they "
-        "got",
-    "La suerte de cada uno": "Everyone's dice luck",
-    "de las casillas donde está puesto, cuántas veces le pagó el tablero "
-    "contra las que le debía. 100 es la suerte normal":
-        "for the tiles they're on, how many times the board paid out against "
-        "how many it owed. 100 is normal luck",
-    "Quién propone tratos a quién": "Who proposes trades to whom",
-    "quién mueve ficha: sólo los tratos que propuso cada uno, y cómo le "
-    "salieron ESOS":
-        "who makes the first move: only the trades each player proposed, and "
-        "how THOSE went for them",
-    "El saldo con cada uno": "The balance with each player",
-    "quién gana cartas con quién y quién las pierde: el saldo de verdad, con "
-    "TODOS sus tratos dentro, los propusiera quien los propusiera (sin la "
-    "banca)":
-        "who gains cards off whom and who loses them: the real balance, with "
-        "ALL their trades in it, whoever proposed them (bank trades excluded)",
-    "Trato a trato": "Trade by trade",
-    "cada intercambio con los dos lados: quién dio qué y a cambio de qué":
-        "every trade with both sides: who gave what and in exchange for what",
-    "Qué se comercia": "What gets traded",
-    "qué recurso da y cuál recibe cada uno, y con quién":
-        "which resource each player gives and which they get, and with whom",
-    "Puerto a puerto": "Port by port",
-    "una fila por puerto usado: cuál, cuántas veces y entre qué turnos":
-        "one row per port used: which one, how many times and between which "
-        "turns",
-    "Quién pilló cada puerto": "Who claimed each port",
-    "los nueve puertos del mapa y quién se quedó cada uno, incluidos los que "
-    "no pilló nadie":
-        "the nine ports on the map and who ended up with each, including the "
-        "ones nobody took",
-    "Cuántos, por jugador": "How many, per player",
-    "una fila por jugador: cuántos puertos se le pueden contar y cuáles":
-        "one row per player: how many ports can be counted for them, and "
-        "which",
-    "El ritmo de cada uno": "Everyone's pace",
-    "en qué turno llegó a su primera ciudad, su primera carta...":
-        "which turn they reached their first city, their first card...",
-    "Robos de la mano": "Steals from the hand",
-    "cuántos hizo y cuántos sufrió cada uno (cuántos, no cuáles)":
-        "how many each player made and how many they suffered (how many, not "
-        "which)",
-    "Las tiradas": "The dice rolls",
-    "qué salió contra lo que debería haber salido":
-        "what came up against what should have come up",
-    "Los sietes de cada uno": "Everyone's sevens",
-    "quién saca más sietes al tirar, contra el 16,7% que toca":
+    'Aquí sólo entran los monopolios de los que se sabe cuánto se llevaron. Si en esta partida se jugó alguno y no sale, es de antes del 22/8/2026: el mod no leía el reparto todavía. Están en «Los monopolios», con quién lo tiró y qué pidió.':
+        "Only monopolies whose haul is known get in here. If one was played in this game and doesn't show up, it's from before 22/8/2026: the mod wasn't reading the handover yet. They're in «The monopolies», with who played it and what they called.",
+    'Cartas de desarrollo': 'Development cards',
+    'Comercio': 'Trade',
+    'Con quién se ceba el ladrón': 'Who the robber picks on, and by whom',
+    'Con qué salida le toca a cada uno': 'Which seat each player gets',
+    'Cuántos, por jugador': 'How many, per player',
+    'De cada salida, cómo acabó': 'From each seat, how it ended',
+    'De dónde salió cada punto': 'Where each point came from',
+    'De esta partida no se puede saber. Que alguien USE un puerto se deduce de los comercios y eso está en «Puerto a puerto»; PILLARLO es otra cosa y necesita saber dónde está cada puerto en el tablero. El mod no lo leía bien hasta el 22/8/2026 -- la posición viene en una `EdgePosition` y se estaba leyendo como si fuera otra clase, así que llegaba vacía -- y eso no se puede recuperar sin volver a jugar la partida.':
+        "There's no way to know for this game. That someone USES a port is deduced from their trades and that's in «Port by port»; CLAIMING one is a different thing and needs to know where each port sits on the board. The mod wasn't reading that correctly until 22/8/2026 -- the position comes in an `EdgePosition` and was being read as if it were another class, so it arrived empty -- and that can't be recovered without playing the game again.",
+    'Dónde pone el ladrón cada uno': 'Where each player puts the robber',
+    'El ladron: a quien y en que numero':
+        'The robber: on whom and on which number',
+    'El ladrón': 'The robber',
+    'El ladrón, uno a uno': 'The robber, one by one',
+    'El mazo': 'The deck',
+    'El monopolio, uno a uno': 'Monopolies, one by one',
+    'El orden de salida': 'Turn order',
+    'El ritmo de cada uno': "Everyone's pace",
+    'El saldo con cada uno': 'The balance with each player',
+    'El tablero y los dados': 'The board and the dice',
+    'En mesa de 5 y 6 manda {quien}, con {victorias} de {partidas}.':
+        'At 5- and 6-player tables {quien} leads, with {victorias} of {partidas}.',
+    'En mesa de 5 y 6 no ha ganado todavía ninguno de los que llegan al mínimo.':
+        'At 5- and 6-player tables none of the players who reach the minimum has won yet.',
+    'Jugadores': 'Players',
+    'La mejor suerte en una partida': 'Best luck in a single game',
+    'La suerte de cada uno': "Everyone's dice luck",
+    'Las partidas': 'The games',
+    'Las tiradas': 'The dice rolls',
+    'Los monopolios': 'The monopolies',
+    'Los números de cada uno': "Each player's numbers",
+    'Los números que más tapa el ladrón': 'The numbers the robber blocks most',
+    'Los sietes de cada uno': "Everyone's sevens",
+    'Marcador': 'Scoreboard',
+    'Más ladrones en una partida': 'Most robbers in a single game',
+    'Ninguno todavía. Si en la partida se jugó alguno y aquí no sale, es que la carta no llegó a apuntarse: el recurso sólo se engancha a una jugada del mismo jugador y el mismo turno.':
+        "None yet. If one was played in the game and doesn't show up here, the card never got recorded: the resource is only tied to a play by the same player on the same turn.",
+    'Partidas': 'Games',
+    'Producción': 'Production',
+    'Puerto a puerto': 'Port by port',
+    'Puertos': 'Ports',
+    'Puntos y ritmo': 'Score and pace',
+    'Quién compra más cartas de desarrollo':
+        'Who buys the most development cards',
+    'Quién elige mejor las casillas': 'Who picks the best tiles',
+    'Quién gana más': 'Who wins most',
+    'Quién pilló cada puerto': 'Who claimed each port',
+    'Quién propone tratos a quién': 'Who proposes trades to whom',
+    'Quién saca más sietes': 'Who rolls the most sevens',
+    'Quién tiene más suerte': 'Who has the most luck',
+    'Quién va más en positivo, y con quién':
+        'Who comes out most ahead, and with whom',
+    'Qué se comercia': 'What gets traded',
+    'Robos de la mano': 'Steals from the hand',
+    'Trato a trato': 'Trade by trade',
+    'a quien se lo puso cada uno y sobre que numero':
+        'who each player put it on and on which number',
+    'a qué número lo manda cada uno, cuántas veces, y si por el 7 o con un caballero':
+        'which number each player sends it to, how often, and whether by a 7 or with a knight',
+    'a qué números va el ladrón, sumando a todo el mundo':
+        'which numbers the robber goes to, adding everyone together',
+    'cada intercambio con los dos lados: quién dio qué y a cambio de qué':
+        'every trade with both sides: who gave what and in exchange for what',
+    'cobró {le_toco} veces contra las {le_tocaba} que le tocaban, y con sólo {casillas} casillas. Se sale {se_sale} márgenes de lo normal — el azar por sí solo ya mueve un {margen}%.':
+        "collected {le_toco} times against the {le_tocaba} they were due, and with only {casillas} tiles. That's {se_sale} margins out from normal, and chance alone already moves it {margen}%.",
+    'como va mejorando': "how it's improving",
+    'comprobar lo grabado': 'check the recording',
+    'cuántas cartas de cada recurso le ha sacado cada uno a cada uno':
+        'how many cards of each resource each player has taken off each other',
+    'cuántas veces ha salido primero, segundo, tercero… cada persona':
+        'how many times each person has started first, second, third…',
+    'cuántos hizo y cuántos sufrió cada uno (cuántos, no cuáles)':
+        'how many each player made and how many they suffered (how many, not which)',
+    'de las casillas donde está puesto, cuántas veces le pagó el tablero contra las que le debía. 100 es la suerte normal':
+        "for the tiles they're on, how many times the board paid out against how many it owed. 100 is normal luck",
+    'de las veces que salió en cada puesto, en cuáles acabó':
+        'of the times they started from each seat, where they finished',
+    'de lo que le tocaba — cobró {le_toco} veces contra las {le_tocaba} que le debía el tablero, y 100% es lo normal. Se sale {se_sale} márgenes: hace falta pasar de 2 para que sea suerte y no ruido.':
+        "of what they were due: collected {le_toco} times against the {le_tocaba} the board owed them, and 100% is normal. That's {se_sale} margins out: it takes more than 2 for it to be luck and not noise.",
+    'de media por casilla suya, cuando un sitio cualquiera de sus tableros vale {lo_normal}. Con eso le tocaron {le_toco} cobros de los {le_tocaba} que le tocaban.':
+        'on average per tile of theirs, when any spot on their boards is worth {lo_normal}. That earned them {le_toco} payouts of the {le_tocaba} they were due.',
+    'de más en los {tratos} tratos entre los dos: se llevó {recibio} y soltó {dio}. Son cartas, no acierto — dar tres por una puede ser el mejor trato de la partida.':
+        "up across the {tratos} trades between the two: took {recibio} and gave up {dio}. That's cards, not judgement: giving three for one can be the best trade of the game.",
+    'de sus tiradas: {sietes} sietes en {tiros} tiros. Lo normal es {porcentaje_normal}%.':
+        'of their rolls: {sietes} sevens in {tiros} throws. Normal is {porcentaje_normal}%.',
+    'dejar el mod listo': 'get the mod ready',
+    'edificios, premios y — por resta — las cartas de punto':
+        'buildings, awards and, by subtraction, the victory point cards',
+    'el ciclo entero (convertir, examinar, entrenar)':
+        'the whole cycle (convert, test, train)',
+    'el informe de las partidas': 'the games report',
+    'en mesa de {eran}. Acaba de media en el puesto {puesto_medio}, con {puntos_medios} puntos.':
+        'at a {eran}-player table. Finishes {puesto_medio} on average, with {puntos_medios} points.',
+    'en qué números se puso, cuántas veces salieron y qué sacó':
+        'which numbers they settled on, how often those came up and what they got',
+    'en qué puesto salió cada uno y en cuál acabó':
+        'which seat each player started from and where they finished',
+    'en qué turno llegó a su primera ciudad, su primera carta...':
+        'which turn they reached their first city, their first card...',
+    'entrenar (apartando una partida para medir)':
+        'train (holding one game back to measure)',
+    'guardar las partidas en la base de datos':
+        'save the games to the database',
+    'los nueve puertos del mapa y quién se quedó cada uno, incluidos los que no pilló nadie':
+        'the nine ports on the map and who ended up with each, including the ones nobody took',
+    'medir el ladron y los dados contra lo que dice el mod':
+        'measure the robber and the dice against what the mod says',
+    'medir el tablero entero, como lo leeria jugando':
+        'measure the whole board, as it would read it in play',
+    'medir la red, foto a foto': 'measure the network, frame by frame',
+    'mesas de cualquier tamaño': 'tables of any size',
+    'mirar la pantalla': 'watch the screen',
+    'partidas, victorias y puntos medios de cada uno, por tamaño de mesa':
+        'games, wins and average score for each player, by table size',
+    'preparar los datos': 'prepare the data',
+    'probar la lectura en vivo sobre una partida grabada':
+        'try live reading on a recorded game',
+    'pruebas de la red': 'network tests',
+    'pruebas de las vistas': 'view tests',
+    'quién gana cartas con quién y quién las pierde: el saldo de verdad, con TODOS sus tratos dentro, los propusiera quien los propusiera (sin la banca)':
+        'who gains cards off whom and who loses them: the real balance, with ALL their trades in it, whoever proposed them (bank trades excluded)',
+    'quién mueve ficha: sólo los tratos que propuso cada uno, y cómo le salieron ESOS':
+        'who makes the first move: only the trades each player proposed, and how THOSE went for them',
+    'quién saca más sietes al tirar, contra el 16,7% que toca':
         "who rolls the most sevens, against the 16.7% that's expected",
-
-    # --- lo que dice una tabla cuando no tiene filas -----------------------
-    "Ninguno todavía. Si en la partida se jugó alguno y aquí no sale, es que "
-    "la carta no llegó a apuntarse: el recurso sólo se engancha a una jugada "
-    "del mismo jugador y el mismo turno.":
-        "None yet. If one was played in the game and doesn't show up here, "
-        "the card never got recorded: the resource is only tied to a play by "
-        "the same player on the same turn.",
-    "Aquí sólo entran los monopolios de los que se sabe cuánto se llevaron. "
-    "Si en esta partida se jugó alguno y no sale, es de antes del 22/8/2026: "
-    "el mod no leía el reparto todavía. Están en «Los monopolios», con quién "
-    "lo tiró y qué pidió.":
-        "Only monopolies whose haul is known get in here. If one was played "
-        "in this game and doesn't show up, it's from before 22/8/2026: the mod "
-        "wasn't reading the handover yet. They're in «The monopolies», with "
-        "who played it and what they called.",
-    "De esta partida no se puede saber. Que alguien USE un puerto se deduce "
-    "de los comercios y eso está en «Puerto a puerto»; PILLARLO es otra cosa "
-    "y necesita saber dónde está cada puerto en el tablero. El mod no lo leía "
-    "bien hasta el 22/8/2026 -- la posición viene en una `EdgePosition` y se "
-    "estaba leyendo como si fuera otra clase, así que llegaba vacía -- y eso "
-    "no se puede recuperar sin volver a jugar la partida.":
-        "There's no way to know for this game. That someone USES a port is "
-        "deduced from their trades and that's in «Port by port»; CLAIMING one "
-        "is a different thing and needs to know where each port sits on the "
-        "board. The mod wasn't reading that correctly until 22/8/2026 -- the "
-        "position comes in an `EdgePosition` and was being read as if it were "
-        "another class, so it arrived empty -- and that can't be recovered "
-        "without playing the game again.",
-
-    # --- los dos filtros ----------------------------------------------------
-    "solo con amigos (sin la IA)": "only with friends (no AI)",
-    "todas, la IA incluida": "all of them, AI included",
-    "solo las partidas contra la IA": "only the games against the AI",
-    "mesas de cualquier tamaño": "tables of any size",
-    "solo mesas de 4": "only 4-player tables",
-    "solo mesas de 5 y 6": "only 5- and 6-player tables",
-
-    # --- los titulares. OJO CON LAS LLAVES ---------------------------------
-    # Las dos parejas: el titular no es una persona, son dos.
-    "{quien} a {a_quien}": "{quien} on {a_quien}",
-    "{quien} con {con_quien}": "{quien} with {con_quien}",
-    "Quién gana más": "Who wins most",
-    "{victorias} de {partidas}": "{victorias} of {partidas}",
-    "en mesa de {eran}. Acaba de media en el puesto {puesto_medio}, con "
-    "{puntos_medios} puntos.":
-        "at a {eran}-player table. Finishes {puesto_medio} on average, with "
-        "{puntos_medios} points.",
-    "En mesa de 5 y 6 manda {quien}, con {victorias} de {partidas}.":
-        "At 5- and 6-player tables {quien} leads, with {victorias} of "
-        "{partidas}.",
-    "En mesa de 5 y 6 no ha ganado todavía ninguno de los que llegan al "
-    "mínimo.":
-        "At 5- and 6-player tables none of the players who reach the minimum "
-        "has won yet.",
-    "Quién saca más sietes": "Who rolls the most sevens",
-    "{porcentaje}%": "{porcentaje}%",
-    "de sus tiradas: {sietes} sietes en {tiros} tiros. Lo normal es "
-    "{porcentaje_normal}%.":
-        "of their rolls: {sietes} sevens in {tiros} throws. Normal is "
-        "{porcentaje_normal}%.",
-    "Quién compra más cartas de desarrollo":
-        "Who buys the most development cards",
-    "{por_partida} por partida": "{por_partida} per game",
-    "{compradas} cartas en {partidas} partidas, {caballero} de ellas "
-    "caballeros.":
-        "{compradas} cards in {partidas} games, {caballero} of them knights.",
-    "Quién elige mejor las casillas": "Who picks the best tiles",
-    "{por_casilla} puntitos": "{por_casilla} pips",
-    "de media por casilla suya, cuando un sitio cualquiera de sus tableros "
-    "vale {lo_normal}. Con eso le tocaron {le_toco} cobros de los {le_tocaba} "
-    "que le tocaban.":
-        "on average per tile of theirs, when any spot on their boards is worth "
-        "{lo_normal}. That earned them {le_toco} payouts of the {le_tocaba} "
-        "they were due.",
-    "Con quién se ceba el ladrón": "Who the robber picks on, and by whom",
-    "{se_lo_puso} veces": "{se_lo_puso} times",
-    "{con_7} veces obligado por un 7 y {con_caballero} eligiéndolo con un "
-    "caballero. En {le_bloqueo} de esas veces salió el número y {a_quien} no "
-    "cobró: son {le_costo} cartas que se quedó sin producir. Y aparte le "
-    "quitó {le_robo} cartas de la mano.":
-        "{con_7} times forced by a 7 and {con_caballero} by choice with a "
-        "knight. On {le_bloqueo} of those the number came up and {a_quien} "
-        "collected nothing: {le_costo} cards never produced. And on top of "
-        "that took {le_robo} cards out of their hand.",
-    "Quién va más en positivo, y con quién":
-        "Who comes out most ahead, and with whom",
-    "{neto} cartas": "{neto} cards",
-    "de más en los {tratos} tratos entre los dos: se llevó {recibio} y soltó "
-    "{dio}. Son cartas, no acierto — dar tres por una puede ser el mejor "
-    "trato de la partida.":
-        "up across the {tratos} trades between the two: took {recibio} and "
-        "gave up {dio}. That's cards, not judgement — giving three for one can "
-        "be the best trade of the game.",
-    "Quién tiene más suerte": "Who has the most luck",
-    "{suerte}%": "{suerte}%",
-    "de lo que le tocaba — cobró {le_toco} veces contra las {le_tocaba} que "
-    "le debía el tablero, y 100% es lo normal. Se sale {se_sale} márgenes: "
-    "hace falta pasar de 2 para que sea suerte y no ruido.":
-        "of what they were due — collected {le_toco} times against the "
-        "{le_tocaba} the board owed them, and 100% is normal. That's {se_sale} "
-        "margins out: it takes more than 2 for it to be luck and not noise.",
-
-    # --- los records --------------------------------------------------------
-    "La mejor suerte en una partida": "Best luck in a single game",
-    "cobró {le_toco} veces contra las {le_tocaba} que le tocaban, y con sólo "
-    "{casillas} casillas. Se sale {se_sale} márgenes de lo normal — el azar "
-    "por sí solo ya mueve un {margen}%.":
-        "collected {le_toco} times against the {le_tocaba} they were due, and "
-        "with only {casillas} tiles. That's {se_sale} margins out from normal "
-        "— chance alone already moves it {margen}%.",
-    "Más ladrones en una partida": "Most robbers in a single game",
-    "{se_lo_pusieron} ladrones": "{se_lo_pusieron} robbers",
-    "se lo pusieron encima. En {le_bloquearon} de esas veces salió el número "
-    "y no cobró: {perdido} cartas que se quedó sin producir. Más "
-    "{le_robaron} que le robaron de la mano, {en_total} cartas en total.":
-        "were put on them. On {le_bloquearon} of those the number came up and "
-        "they collected nothing: {perdido} cards never produced. Plus "
-        "{le_robaron} taken out of their hand, {en_total} cards in total.",
-
-    # --- los nombres de tarea, que salen en el titulo del registro ---------
-    "comprobar lo grabado": "check the recording",
-    "preparar los datos": "prepare the data",
-    "el ciclo entero (convertir, examinar, entrenar)":
-        "the whole cycle (convert, test, train)",
-    "como va mejorando": "how it's improving",
-    "medir la red, foto a foto": "measure the network, frame by frame",
-    "medir el tablero entero, como lo leeria jugando":
-        "measure the whole board, as it would read it in play",
-    "mirar la pantalla": "watch the screen",
-    "probar la lectura en vivo sobre una partida grabada":
-        "try live reading on a recorded game",
-    "medir el ladron y los dados contra lo que dice el mod":
-        "measure the robber and the dice against what the mod says",
-    "entrenar (apartando una partida para medir)":
-        "train (holding one game back to measure)",
-    "reentrenar con todo (para jugar)": "retrain on everything (to play with)",
-    "pruebas de la red": "network tests",
-    "dejar el mod listo": "get the mod ready",
-    "guardar las partidas en la base de datos":
-        "save the games to the database",
-    "el informe de las partidas": "the games report",
-    "pruebas de las vistas": "view tests",
-    "rehacer las vistas de la base": "rebuild the database views",
+    'quién se lo puso a quién, cuántas veces le tocó y qué le costó':
+        'who put it on whom, how many times it landed and what it cost them',
+    'quién tiró cada monopolio y qué recurso pidió':
+        'who played each monopoly and which resource they called',
+    'qué le tocó a cada uno de las cartas que compró':
+        'what each player got out of the cards they bought',
+    'qué recurso da y cuál recibe cada uno, y con quién':
+        'which resource each player gives and which they get, and with whom',
+    'qué recursos le dio el tablero a cada uno, y de qué anda corto':
+        "which resources the board gave each player, and what they're short of",
+    'qué salió contra lo que debería haber salido':
+        'what came up against what should have come up',
+    'qué salió contra lo que el mazo lleva dentro':
+        'what came out against what the deck actually holds',
+    'qué tal le va a cada puesto de salida, sumando todas las partidas':
+        'how each starting seat does, across every game',
+    'recursos que no dejó producir, contra los que sí se cobraron':
+        'resources it stopped from being produced, against the ones that were collected anyway',
+    'reentrenar con todo (para jugar)': 'retrain on everything (to play with)',
+    'rehacer las vistas de la base': 'rebuild the database views',
+    'se lo pusieron encima. En {le_bloquearon} de esas veces salió el número y no cobró: {perdido} cartas que se quedó sin producir. Más {le_robaron} que le robaron de la mano, {en_total} cartas en total.':
+        'were put on them. On {le_bloquearon} of those the number came up and they collected nothing: {perdido} cards never produced. Plus {le_robaron} taken out of their hand, {en_total} cards in total.',
+    'si a alguien le ponen el ladrón más de lo que le toca, descontando cuánto juega y cuántas casillas tiene':
+        'whether anyone gets the robber more than their share, allowing for how much they play and how many tiles they hold',
+    'solo con amigos (sin la IA)': 'only with friends (no AI)',
+    'solo las partidas contra la IA': 'only the games against the AI',
+    'solo mesas de 4': 'only 4-player tables',
+    'solo mesas de 5 y 6': 'only 5- and 6-player tables',
+    'todas, la IA incluida': 'all of them, AI included',
+    'una fila por jugador y partida, con el nombre ya resuelto':
+        'one row per player per game, with the name already resolved',
+    'una fila por jugador: cuántos puertos se le pueden contar y cuáles':
+        'one row per player: how many ports can be counted for them, and which',
+    'una fila por puerto usado: cuál, cuántas veces y entre qué turnos':
+        'one row per port used: which one, how many times and between which turns',
+    'una por partida, con quién ganó, cuántas casillas tenía el tablero y si eran todos personas':
+        'one row per game, with who won, how many tiles the board had and whether everyone was human',
+    '{compradas} cartas en {partidas} partidas, {caballero} de ellas caballeros.':
+        '{compradas} cards in {partidas} games, {caballero} of them knights.',
+    '{con_7} veces obligado por un 7 y {con_caballero} eligiéndolo con un caballero. En {le_bloqueo} de esas veces salió el número y {a_quien} no cobró: son {le_costo} cartas que se quedó sin producir. Y aparte le quitó {le_robo} cartas de la mano.':
+        '{con_7} times forced by a 7 and {con_caballero} by choice with a knight. On {le_bloqueo} of those the number came up and {a_quien} collected nothing: {le_costo} cards never produced. And on top of that took {le_robo} cards out of their hand.',
+    '{neto} cartas': '{neto} cards',
+    '{por_casilla} puntitos': '{por_casilla} pips',
+    '{por_partida} por partida': '{por_partida} per game',
+    '{porcentaje}%': '{porcentaje}%',
+    '{quien} a {a_quien}': '{quien} on {a_quien}',
+    '{quien} con {con_quien}': '{quien} with {con_quien}',
+    '{se_lo_pusieron} ladrones': '{se_lo_pusieron} robbers',
+    '{se_lo_puso} veces': '{se_lo_puso} times',
+    '{suerte}%': '{suerte}%',
+    '{victorias} de {partidas}': '{victorias} of {partidas}',
+    '¿A quién se ceba el ladrón?': 'Who does the robber pick on?',
+    '¿Importa salir primero?': 'Does going first matter?',
 }
 
 
