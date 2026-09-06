@@ -76,8 +76,8 @@ INTERRUPTOR = os.path.join(RAIZ, "mod_verdad", "interruptor.ps1")
 _PACIENCIA = 20.0
 
 
-def _entorno_hijo():
-    """Para que los hijos escriban en UTF-8 y sin buffer.
+def _entorno_hijo(idioma=None):
+    """Para que los hijos escriban en UTF-8, sin buffer y en su idioma.
 
     Sin PYTHONIOENCODING, un `print` con acentos por una tuberia revienta o
     sale mal en Windows. Sin PYTHONUNBUFFERED, la salida llega toda de golpe
@@ -86,6 +86,12 @@ def _entorno_hijo():
     env = dict(os.environ)
     env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONUNBUFFERED"] = "1"
+    # El instalador y el importador escriben en el registro del panel, y no
+    # reciben el idioma por ningun argumento: se lo pasamos aqui. En una
+    # variable de entorno y no en un `--idioma` porque estos scripts se
+    # lanzan de muchos sitios y habria que anadirlo a cada llamada.
+    if idioma:
+        env["CATAN_IDIOMA"] = idioma
     return env
 
 
@@ -110,7 +116,7 @@ class Proceso:
     def vivo(self):
         return self.proc is not None and self.proc.poll() is None
 
-    def arrancar(self, nombre, orden, cwd=RAIZ):
+    def arrancar(self, nombre, orden, cwd=RAIZ, idioma=None):
         with self.cerrojo:
             if self.vivo:
                 return False, "ya hay algo corriendo: %s" % self.nombre
@@ -135,7 +141,7 @@ class Proceso:
             try:
                 self.proc = subprocess.Popen(
                     orden, cwd=cwd, stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT, env=_entorno_hijo(),
+                    stderr=subprocess.STDOUT, env=_entorno_hijo(idioma),
                     creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
             except OSError as e:
                 self.proc = None
@@ -2062,7 +2068,7 @@ def gente():
         conn.close()
 
 
-def poner_nombre(red, nombre):
+def poner_nombre(red, nombre, idioma=None):
     """Ponerle nombre a una cuenta, por el mismo camino que la consola.
 
     Llama a `importar.py --llamar`, que es donde vive esa logica: renombra la
@@ -2091,7 +2097,7 @@ def poner_nombre(red, nombre):
     return tarea.arrancar(
         "ponerle nombre a %s" % red,
         [sys.executable, "-u", "mod_verdad/importar.py", "--llamar",
-         red, nombre])
+         red, nombre], idioma=idioma)
 
 
 def titulares(idioma=None):
@@ -3936,14 +3942,16 @@ class Manejador(BaseHTTPRequestHandler):
                     or (script and not os.path.isfile(script))):
                 return self._json({"ok": False, "error":
                                    "«%s» no esta disponible" % nombre})
-            ok, error = tarea.arrancar(nombre, orden)
+            ok, error = tarea.arrancar(
+                nombre, orden, idioma=_idioma_pedido(self.headers, ""))
             print("[panel] %s%s" % (nombre, "" if ok else "  FALLO: %s" % error))
             return self._json({"ok": ok, "error": error})
 
         if self.path == "/llamar":
             red = str(cuerpo.get("red") or "")
             nombre = str(cuerpo.get("nombre") or "")
-            ok, error = poner_nombre(red, nombre)
+            ok, error = poner_nombre(
+                red, nombre, _idioma_pedido(self.headers, ""))
             print("[panel] ponerle nombre a %s: %s"
                   % (red, "hecho" if ok else "FALLO: %s" % error))
             return self._json({"ok": ok, "error": None if ok else error})

@@ -91,6 +91,10 @@ def _cargar():
             # Y con lo que CONTESTA. Son plantillas de `%`, no de
             # `{}`: los huecos van por orden y no por nombre.
             "respuestas": getattr(modulo, "RESPUESTAS", {}),
+            # Lo que escriben por pantalla el instalador y el
+            # importador. No pasan por el panel: son procesos
+            # aparte y su salida se ve tal cual en el registro.
+            "consola": getattr(modulo, "CONSOLA", {}),
             # Las fichas de columna, con la MISMA forma que
             # `db/columnas.py`: las comunes por un lado y las propias de cada
             # vista por otro. Así el fichero de un idioma y el original se
@@ -207,6 +211,34 @@ def doc(vista, col, idioma):
     propias = lengua["por_vista"].get(vista) or {}
     # Lo propio de la vista gana a lo común: mismo nombre, otro significado.
     return propias.get(col) or lengua["comunes"].get(col)
+
+
+def consola(frase, idioma=None):
+    """Una línea de las que escriben el instalador y el importador.
+
+    Son procesos aparte, lanzados por el panel, y su salida se ve tal cual en
+    el registro. Como no reciben el idioma por ningún argumento, se lo pasa el
+    panel en la variable de entorno `CATAN_IDIOMA`; sin ella, castellano.
+
+    Como en `respuesta()`, son plantillas de `%` y los huecos van por orden.
+    """
+    if idioma is None:
+        idioma = del_entorno()
+    lengua = IDIOMAS.get(idioma)
+    if lengua is None or not isinstance(frase, str):
+        return frase
+    return lengua["consola"].get(frase, frase)
+
+
+def del_entorno():
+    """El idioma que le ha dicho el panel a este proceso, o el original.
+
+    En una variable de entorno y no en un argumento porque estos scripts se
+    lanzan de muchos sitios --el panel, la consola, otro script-- y añadir un
+    `--idioma` a cada uno sería añadirlo también a cada llamada.
+    """
+    dicho = os.environ.get("CATAN_IDIOMA", "")
+    return dicho if dicho in IDIOMAS else ORIGINAL
 
 
 def fila_es(vista, idioma):

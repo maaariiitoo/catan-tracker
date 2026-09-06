@@ -64,6 +64,7 @@ sys.path.insert(0, AQUI)
 from red.sitios import Alineador, TERRENO_DEL_JUEGO  # noqa: E402
 from vision.board_graph import TILE_AXIAL, axial_to_pixel  # noqa: E402
 from donde_esta_el_juego import carpeta_de_verdad  # noqa: E402
+import idiomas  # noqa: E402
 
 BASE = os.path.join(RAIZ, "catan_stats.db")
 DATOS = os.path.join(RAIZ, "mod_verdad", "datos")
@@ -89,6 +90,17 @@ _MISMO_MS = 200
 # --------------------------------------------------------------------------
 # leer el fichero del mod
 # --------------------------------------------------------------------------
+
+
+def _t(frase):
+    """Una línea de salida, en el idioma que le haya dicho el panel.
+
+    Se envuelve la PLANTILLA y no la frase montada: para cuando está montada
+    lleva dentro nombres y números, y buscarla en el diccionario no la
+    encontraría nunca.
+    """
+    return idiomas.consola(frase)
+
 
 def _abrir(ruta):
     """Vale igual el fichero del juego que la copia comprimida del repo."""
@@ -209,9 +221,9 @@ def guardar_copia(ruta):
             # sin avisar de que le faltaba el resto.
             if _tamano_descomprimido(destino) == origen_bytes:
                 return None
-            nota = "copia actualizada"
+            nota = _t("copia actualizada")
         else:
-            nota = "copia guardada"
+            nota = _t("copia guardada")
         with open(ruta, "rb") as origen:
             with gzip.open(destino, "wb") as salida:
                 shutil.copyfileobj(origen, salida)
@@ -812,14 +824,14 @@ def importar(conn, ruta, rehacer=False, callado=False):
 
     aviso = guardar_copia(ruta)
     if aviso:
-        di("     %s" % aviso)
+        di(_t("     %s") % aviso)
     for red, nombre in nuevos:
-        di("    [!] identificador nuevo sin nombre: %s -> se ha llamado '%s'"
+        di(_t("    [!] identificador nuevo sin nombre: %s -> se ha llamado '%s'")
            % (red, nombre))
-        di("        ponle el suyo con el boton «Ponerle nombre a alguien» del")
-        di("        panel, o aqui:  py mod_verdad/importar.py --llamar %s Pedro"
+        di(_t("        ponle el suyo con el boton «Ponerle nombre a alguien» del"))
+        di(_t("        panel, o aqui:  py mod_verdad/importar.py --llamar %s Pedro")
            % red)
-    detalle = "%d eventos -> %s" % (
+    detalle = _t("%d eventos -> %s") % (
         len(evs), ", ".join("%s %d" % (k, v) for k, v in sorted(contador.items())))
     # Sin la acción de ganar, o la partida se abandonó o TODAVÍA SE ESTÁ
     # JUGANDO. Importa decirlo: la grabación se lee entera aunque el juego
@@ -837,30 +849,30 @@ def importar(conn, ruta, rehacer=False, callado=False):
             de_quien = lambda _a: None
         familias = sorted(set(
             f for f in (de_quien(a) for a in estado.desconocidas) if f))
-        di("     [!] %d acciones que no entiendo, de %d tipos distintos%s."
+        di(_t("     [!] %d acciones que no entiendo, de %d tipos distintos%s.")
            % (sum(estado.desconocidas.values()), len(estado.desconocidas),
               (" -- " + ", ".join(familias)) if familias else ""))
         for a, n in estado.desconocidas.most_common(8):
-            di("         %-58s x%d" % (a, n))
-        di("         La grabación está entera y guardada: cuando el importador")
-        di("         aprenda estas acciones, `--rehacer` mete la partida sin")
-        di("         perder nada.")
+            di(_t("         %-58s x%d") % (a, n))
+        di(_t("         La grabación está entera y guardada: cuando el importador"))
+        di(_t("         aprenda estas acciones, `--rehacer` mete la partida sin"))
+        di(_t("         perder nada."))
     if contador.get("ladron sin sitio"):
-        di("     [!] EL LADRON NO SE HA PODIDO LEER en %d movimientos."
+        di(_t("     [!] EL LADRON NO SE HA PODIDO LEER en %d movimientos.")
            % contador["ladron sin sitio"])
-        di("         Sin su posición no hay bloqueos Y LA PRODUCCIÓN SALE DE MÁS:")
-        di("         se cuenta como si el ladrón no estuviera en el tablero.")
-        di("         Le pasaba al tablero de 5-6 jugadores: ahí el juego deja")
-        di("         `GamePiecesRobber` vacío y guarda al ladrón en")
-        di("         `GamePiecesRobbers[0]`. Ya arreglado -- el mod")
-        di("         usa ya `BoardQuery.GetRobberTile`, que es el accesor del")
-        di("         propio juego. Si esto sale en una grabación NUEVA, el")
-        di("         juego ha vuelto a moverlo de sitio: mira `ladron_donde_buscar`")
-        di("         en el .jsonl, que trae los nombres candidatos.")
+        di(_t("         Sin su posición no hay bloqueos Y LA PRODUCCIÓN SALE DE MÁS:"))
+        di(_t("         se cuenta como si el ladrón no estuviera en el tablero."))
+        di(_t("         Le pasaba al tablero de 5-6 jugadores: ahí el juego deja"))
+        di(_t("         `GamePiecesRobber` vacío y guarda al ladrón en"))
+        di(_t("         `GamePiecesRobbers[0]`. Ya arreglado -- el mod"))
+        di(_t("         usa ya `BoardQuery.GetRobberTile`, que es el accesor del"))
+        di(_t("         propio juego. Si esto sale en una grabación NUEVA, el"))
+        di(_t("         juego ha vuelto a moverlo de sitio: mira `ladron_donde_buscar`"))
+        di(_t("         en el .jsonl, que trae los nombres candidatos."))
     if not contador.get("final"):
-        di("     [!] esta partida no tiene final: o se abandonó o se está")
-        di("         jugando ahora mismo. Si era lo segundo, cuando acabe:")
-        di("         py mod_verdad/importar.py --rehacer")
+        di(_t("     [!] esta partida no tiene final: o se abandonó o se está"))
+        di(_t("         jugando ahora mismo. Si era lo segundo, cuando acabe:"))
+        di(_t("         py mod_verdad/importar.py --rehacer"))
     return game_id, detalle
 
 
@@ -1703,29 +1715,31 @@ def mandar_quien(conn):
         "SELECT network_id, display_name, is_bot, first_seen, last_seen "
         "FROM mod_identities ORDER BY is_bot, display_name").fetchall()
     if not filas:
-        print("Todavía no hay ningún identificador. Importa una partida primero.")
+        print(_t("Todavía no hay ningún identificador. Importa una partida primero."))
         return
-    print("%-40s %-16s %s" % ("identificador de la cuenta", "nombre", "partidas"))
+    print(_t("%-40s %-16s %s")
+          % (_t("identificador de la cuenta"), _t("nombre"),
+             _t("partidas")))
     for red, nombre, es_bot, _pri, _ult in filas:
         n = conn.execute(
             "SELECT COUNT(*) FROM players p JOIN games g ON g.game_id=p.game_id "
             "WHERE g.source='mod' AND p.name=?", (nombre,)).fetchone()[0]
         marca = " (IA)" if es_bot else ""
-        print("%-40s %-16s %d%s" % (red, nombre, n, marca))
+        print(_t("%-40s %-16s %d%s") % (red, nombre, n, marca))
     print()
-    print("Para ponerle nombre a alguien:")
-    print("  py mod_verdad/importar.py --llamar <identificador> Pedro")
+    print(_t("Para ponerle nombre a alguien:"))
+    print(_t("  py mod_verdad/importar.py --llamar <identificador> Pedro"))
 
 
 def mandar_llamar(conn, red, nombre):
     fila = conn.execute(
         "SELECT display_name FROM mod_identities WHERE network_id=?", (red,)).fetchone()
     if fila is None:
-        print("No conozco el identificador %s. Míralos con --quien." % red)
+        print(_t("No conozco el identificador %s. Míralos con --quien.") % red)
         return
     viejo = fila[0]
     if viejo == nombre:
-        print("Ya se llamaba así.")
+        print(_t("Ya se llamaba así."))
         return
     conn.execute("INSERT OR IGNORE INTO people (display_name) VALUES (?)", (nombre,))
     conn.execute("UPDATE mod_identities SET display_name=? WHERE network_id=?",
@@ -1750,7 +1764,7 @@ def mandar_llamar(conn, red, nombre):
         "AND NOT EXISTS (SELECT 1 FROM players WHERE person_name=?)",
         (viejo, viejo))
     conn.commit()
-    print("%s ahora se llama '%s' (antes '%s'); %d partidas actualizadas."
+    print(_t("%s ahora se llama '%s' (antes '%s'); %d partidas actualizadas.")
           % (red, nombre, viejo, n))
 
 
@@ -1789,15 +1803,15 @@ def main():
             if not elegidas and os.path.isfile(args.carpeta):
                 elegidas = [args.carpeta]
             if not elegidas:
-                print("No encuentro '%s'. Las que hay:" % args.carpeta)
+                print(_t("No encuentro '%s'. Las que hay:") % args.carpeta)
                 for f in todos:
-                    print("   %s" % nombre_de(f))
+                    print(_t("   %s") % nombre_de(f))
                 return 1
         else:
             elegidas = todos
         if not elegidas:
-            print("No hay ficheros del mod en %s" % (carpeta_de_verdad() or "?"))
-            print("¿Has jugado alguna partida con el mod encendido?")
+            print(_t("No hay ficheros del mod en %s") % (carpeta_de_verdad() or "?"))
+            print(_t("¿Has jugado alguna partida con el mod encendido?"))
             return 1
 
         hechas = 0
@@ -1805,12 +1819,12 @@ def main():
             nombre = nombre_de(ruta)
             gid, detalle = importar(conn, ruta, rehacer=args.rehacer)
             if gid is None:
-                print("  -  %-28s %s" % (nombre, detalle))
+                print(_t("  -  %-28s %s") % (nombre, detalle))
             else:
                 hechas += 1
-                print("  OK %-28s partida %d: %s" % (nombre, gid, detalle))
+                print(_t("  OK %-28s partida %d: %s") % (nombre, gid, detalle))
         print()
-        print("%d partidas importadas." % hechas)
+        print(_t("%d partidas importadas.") % hechas)
 
         # LAS VISTAS SE REHACEN AQUI, SIEMPRE. No es un capricho de limpieza:
         # las 28 vistas viven DENTRO del fichero .db, no en el codigo.
@@ -1833,18 +1847,18 @@ def main():
         except Exception as e:
             # Que fallen las vistas no puede tirar una importacion que ya
             # esta guardada. Se dice y se sigue.
-            print("Aviso: no se han podido rehacer las vistas (%s)." % e)
-            print("       Hazlo a mano: py db/vistas.py --crear")
+            print(_t("Aviso: no se han podido rehacer las vistas (%s).") % e)
+            print(_t("       Hazlo a mano: py db/vistas.py --crear"))
         sin_nombre = conn.execute(
             "SELECT network_id, display_name FROM mod_identities "
             "WHERE is_bot=0 AND display_name LIKE 'jugador\\_%' ESCAPE '\\'"
         ).fetchall()
         if sin_nombre:
             print()
-            print("Hay %d persona(s) sin nombre de verdad:" % len(sin_nombre))
+            print(_t("Hay %d persona(s) sin nombre de verdad:") % len(sin_nombre))
             for red, nombre in sin_nombre:
-                print("  %s  (ahora '%s')" % (red, nombre))
-            print("  py mod_verdad/importar.py --llamar <identificador> <nombre>")
+                print(_t("  %s  (ahora '%s')") % (red, nombre))
+            print(_t("  py mod_verdad/importar.py --llamar <identificador> <nombre>"))
         return 0
     finally:
         conn.close()

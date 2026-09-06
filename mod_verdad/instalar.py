@@ -40,6 +40,7 @@ import zipfile
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from mod_verdad.donde_esta_el_juego import carpeta_del_juego
+import idiomas  # noqa: E402
 
 AQUI = os.path.dirname(os.path.abspath(__file__))
 RAIZ = os.path.dirname(AQUI)
@@ -60,6 +61,16 @@ PAQUETES = {
     "x64": ("BepInEx_win_x64_5.4.23.2.zip",
             "f752ce4e838f4c305b9da1404b6745f2cff23b8bfd494f79f0c84d0a01f59b46"),
 }
+
+
+def _t(frase):
+    """Una línea de salida, en el idioma que le haya dicho el panel.
+
+    Se envuelve la PLANTILLA y no la frase montada: para cuando está
+    montada lleva dentro rutas y números, y buscarla en el diccionario no
+    la encontraría nunca.
+    """
+    return idiomas.consola(frase)
 
 
 def _di(texto=""):
@@ -121,7 +132,7 @@ def dependencias():
             pedidas = [l.strip() for l in f
                        if l.strip() and not l.strip().startswith("#")]
     if not pedidas:
-        return True, "ninguna: esto va con la biblioteca estandar"
+        return True, _t("ninguna: esto va con la biblioteca estandar")
     faltan = []
     for modulo, nombre in (("cv2", "opencv-python"), ("numpy", "numpy"),
                            ("PIL", "pillow"), ("mss", "mss")):
@@ -130,8 +141,8 @@ def dependencias():
         except ImportError:
             faltan.append(nombre)
     if not faltan:
-        return True, "ya estan"
-    _di("   faltan: %s" % ", ".join(faltan))
+        return True, _t("ya estan")
+    _di(_t("   faltan: %s") % ", ".join(faltan))
     r = subprocess.run([sys.executable, "-m", "pip", "install", "-r", req])
     return True, ("instaladas" if r.returncode == 0
                   else "pip ha fallado, y se sigue igual: eso es de la mitad"
@@ -140,7 +151,7 @@ def dependencias():
 
 def bajar_bepinex(juego, arq):
     nombre, huella = PAQUETES[arq]
-    _di("   bajando %s ..." % nombre)
+    _di(_t("   bajando %s ...") % nombre)
     import urllib.request
     with urllib.request.urlopen(DESCARGA % (BEPINEX, nombre), timeout=180) as r:
         datos = r.read()
@@ -152,7 +163,7 @@ def bajar_bepinex(juego, arq):
     z = zipfile.ZipFile(io.BytesIO(datos))
     dentro = z.namelist()
     if "winhttp.dll" not in dentro:
-        return False, "el paquete no trae winhttp.dll; no se toca nada"
+        return False, _t("el paquete no trae winhttp.dll; no se toca nada")
     z.extractall(juego)
     # BepInEx viene ENCENDIDO de fabrica (`enabled = true`). Descomprimirlo y
     # ya esta dejaria el mod cargandose en la siguiente partida sin que nadie
@@ -160,7 +171,7 @@ def bajar_bepinex(juego, arq):
     # de lo unico que sujeta la parte de las condiciones de uso. Se apaga
     # aqui, antes de decir que esta puesto.
     apagar(juego)
-    return True, "puesto en %s, y APAGADO" % juego
+    return True, _t("puesto en %s, y APAGADO") % juego
 
 
 def apagar(juego):
@@ -197,70 +208,70 @@ def main():
                     help="di que falta, sin tocar nada")
     args = ap.parse_args()
 
-    _di("Dejar el mod listo")
+    _di(_t("Dejar el mod listo"))
     _di("=" * 52)
 
     _di()
-    _di("1. Catan Universe")
+    _di(_t("1. Catan Universe"))
     juego = carpeta_del_juego()
     if not juego:
-        _di("   NO LO ENCUENTRO. Se le pregunta a Steam, asi que:")
-        _di("   abre Steam una vez, o instala el juego, y vuelve a pasar esto.")
+        _di(_t("   NO LO ENCUENTRO. Se le pregunta a Steam, asi que:"))
+        _di(_t("   abre Steam una vez, o instala el juego, y vuelve a pasar esto."))
         return 1
     arq = arquitectura(juego)
-    _di("   %s" % juego)
-    _di("   es de %s" % ("32 bits" if arq == "x86" else "64 bits"))
+    _di(_t("   %s") % juego)
+    _di(_t("   es de %s") % (_t("32 bits") if arq == "x86" else _t("64 bits")))
 
     hay_bep, hay_plug = ya_esta(juego)
     if args.ver:
         _di()
-        _di("2. BepInEx          %s" % ("ya esta" if hay_bep else "FALTA"))
-        _di("3. el plugin        %s" % ("ya esta" if hay_plug else "FALTA"))
+        _di(_t("2. BepInEx          %s") % (_t("ya esta") if hay_bep else _t("FALTA")))
+        _di(_t("3. el plugin        %s") % (_t("ya esta") if hay_plug else _t("FALTA")))
         _di()
-        _di("Nada tocado (--ver). Pasa esto sin --ver para dejarlo listo.")
+        _di(_t("Nada tocado (--ver). Pasa esto sin --ver para dejarlo listo."))
         return 0
 
     _di()
-    _di("2. Dependencias de Python")
+    _di(_t("2. Dependencias de Python"))
     ok, detalle = dependencias()
-    _di("   %s" % detalle)
+    _di(_t("   %s") % detalle)
 
     _di()
-    _di("3. BepInEx %s" % BEPINEX)
+    _di(_t("3. BepInEx %s") % BEPINEX)
     if hay_bep:
-        _di("   ya esta puesto, no se toca")
+        _di(_t("   ya esta puesto, no se toca"))
     else:
         ok, detalle = bajar_bepinex(juego, arq)
-        _di("   %s" % detalle)
+        _di(_t("   %s") % detalle)
         if not ok:
             return 1
 
     _di()
-    _di("4. El plugin")
+    _di(_t("4. El plugin"))
     ok, detalle = compilar()
     for linea in detalle.splitlines():
-        _di("   %s" % linea)
+        _di(_t("   %s") % linea)
     if not ok:
-        _di("   No ha compilado. Hace falta el csc que trae Windows, en")
-        _di("   C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe")
+        _di(_t("   No ha compilado. Hace falta el csc que trae Windows, en"))
+        _di(_t("   C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe"))
         return 1
 
     _di()
     _di("=" * 52)
-    _di("Listo, y APAGADO.")
+    _di(_t("Listo, y APAGADO."))
     _di()
-    _di("El mod modifica el cliente del juego, y las condiciones de uso de")
-    _di("Catan Universe no lo permiten. Instalarlo y encenderlo son dos")
-    _di("decisiones distintas, y esto solo ha tomado la primera. Lee el")
-    _di("apartado del README antes de encenderlo.")
+    _di(_t("El mod modifica el cliente del juego, y las condiciones de uso de"))
+    _di(_t("Catan Universe no lo permiten. Instalarlo y encenderlo son dos"))
+    _di(_t("decisiones distintas, y esto solo ha tomado la primera. Lee el"))
+    _di(_t("apartado del README antes de encenderlo."))
     _di()
-    _di("Cuando quieras:")
-    _di("   py panel.py                        y el boton «Encender el mod»")
-    _di("o a mano:")
-    _di("   .\\mod_verdad\\interruptor.ps1 on        y DESPUES abrir Catan")
-    _di("   ... jugar ...")
-    _di("   .\\mod_verdad\\interruptor.ps1 off")
-    _di("   py mod_verdad\\importar.py")
+    _di(_t("Cuando quieras:"))
+    _di(_t("   py panel.py                        y el boton «Encender el mod»"))
+    _di(_t("o a mano:"))
+    _di(_t("   .\\mod_verdad\\interruptor.ps1 on        y DESPUES abrir Catan"))
+    _di(_t("   ... jugar ..."))
+    _di(_t("   .\\mod_verdad\\interruptor.ps1 off"))
+    _di(_t("   py mod_verdad\\importar.py"))
     return 0
 
 

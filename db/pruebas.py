@@ -4307,6 +4307,76 @@ def prueba_la_caja_contesta_en_el_idioma_del_panel():
                   dicho and not asoman,
                   "asoma el castellano: %s" % [a[:40] for a in asoman[:2]])
 
+
+def prueba_el_instalador_y_el_importador_hablan_el_idioma_del_panel():
+    """Lo que escriben los dos scripts que se ven desde el panel.
+
+    No son la pagina ni el servidor: son procesos aparte que el panel lanza,
+    y su salida se ve tal cual en el registro de abajo. Traducir la pagina no
+    los toca, y por eso se quedaron fuera la primera vez.
+
+    Los dos que importan son estos y no los demas. El INSTALADOR es el paso
+    0, lo primero que hace alguien que acaba de clonar esto, y ahi es donde
+    lee por que no encuentra Catan, por que no ha compilado el plugin y el
+    aviso de que el mod va contra las condiciones de uso. El IMPORTADOR es el
+    paso 2 y sale cada vez que se guardan partidas. El informe y la bateria
+    de pruebas se quedan en castellano a proposito: uno es opcional y la otra
+    son 15 KB de etiquetas de desarrollo.
+
+    COMO LLEGA EL IDIOMA. No por un argumento: por la variable de entorno
+    `CATAN_IDIOMA`, que pone el panel al lanzar la tarea. Estos scripts se
+    llaman desde muchos sitios --el panel, la consola, otro script-- y un
+    `--idioma` habria que anadirlo a cada llamada.
+
+    Y como en las respuestas de la caja, se envuelve la PLANTILLA y no la
+    frase montada: para cuando esta montada lleva dentro rutas, nombres y
+    numeros, y no se encontraria en el diccionario.
+    """
+    import ast
+    import io
+    import re
+    import idiomas
+
+    FICHEROS = ("mod_verdad/instalar.py", "mod_verdad/importar.py")
+    piden = set()
+    for fichero in FICHEROS:
+        fuente = io.open(fichero, encoding="utf-8").read()
+        for n in ast.walk(ast.parse(fuente)):
+            if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+                    and n.func.id == "_t" and n.args
+                    and isinstance(n.args[0], ast.Constant)
+                    and isinstance(n.args[0].value, str)):
+                piden.add(n.args[0].value)
+
+    comprobar("el instalador y el importador escriben %d lineas distintas"
+              % len(piden), len(piden) > 70)
+
+    # Los huecos de `%`, con su ancho y su relleno: `%-28s` tiene que seguir
+    # siendo `%-28s` o la tabla de `--quien` se desalinea.
+    HUECO = re.compile(r"%[-#0 +]*\d*(?:\.\d+)?[sdifr%]")
+
+    for clave in sorted(idiomas.IDIOMAS):
+        dice = idiomas.IDIOMAS[clave]["consola"]
+        faltan = sorted(piden - set(dice))
+        comprobar("y «%s» las traduce todas" % clave, not faltan,
+                  "en castellano: %s" % [f[:45] for f in faltan[:3]])
+        sobran = sorted(set(dice) - piden)
+        comprobar("y no le sobra ninguna", not sobran,
+                  "ya no se escriben: %s" % [f[:45] for f in sobran[:3]])
+        malas = [k for k in dice
+                 if HUECO.findall(k) != HUECO.findall(dice[k])]
+        comprobar("y los huecos %s van en el mismo orden y con el mismo ancho",
+                  not malas, "no cuadran: %s" % [m[:45] for m in malas[:3]])
+
+    # Y que el panel se lo diga de verdad. Sin esto, los diccionarios podrian
+    # estar llenos y los scripts seguir escribiendo en castellano.
+    import panel
+    entorno = panel._entorno_hijo("fr")
+    comprobar("y el panel les pasa el idioma en CATAN_IDIOMA",
+              entorno.get("CATAN_IDIOMA") == "fr")
+    comprobar("y en castellano no les pasa nada",
+              "CATAN_IDIOMA" not in panel._entorno_hijo(None))
+
 def prueba_la_caja_distingue_el_mas_del_menos():
     """Pedir «el que mas» y que conteste «el que menos» es un fallo entero,
     y la nota de arriba no lo ve.
@@ -4416,6 +4486,7 @@ def main():
         prueba_la_caja_de_preguntas_no_empeora()
         prueba_la_caja_de_preguntas_entiende_los_otros_idiomas()
         prueba_la_caja_contesta_en_el_idioma_del_panel()
+        prueba_el_instalador_y_el_importador_hablan_el_idioma_del_panel()
         prueba_la_caja_distingue_el_mas_del_menos()
         prueba_ponerselo_a_uno_mismo_cuadra(conn)
         prueba_los_dos_temas_definen_los_mismos_colores()

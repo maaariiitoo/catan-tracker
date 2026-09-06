@@ -1099,6 +1099,146 @@ RESPUESTAS = {
 }
 
 
+# Y lo que escriben por pantalla el INSTALADOR y el IMPORTADOR. No son la
+# pagina ni el servidor: son dos procesos aparte que el panel lanza, y su
+# salida se ve tal cual en el registro de abajo. El instalador es el paso 0,
+# lo primero que hace alguien que acaba de clonar esto, y ahi es donde lee
+# por que no encuentra Catan o por que no ha compilado el plugin.
+#
+# Los comandos y las rutas se traducen a si mismos, a proposito: escritos de
+# otra forma no existirian. Estan en la lista para que `db/pruebas.py` pueda
+# exigirlas todas sin excepciones que alguien tenga que mantener.
+CONSOLA = {
+    '         %-58s x%d': '         %-58s x%d',
+    '         La grabación está entera y guardada: cuando el importador':
+        '         The recording is whole and saved: when the importer',
+    '         Le pasaba al tablero de 5-6 jugadores: ahí el juego deja':
+        '         It happened on the 5-6 player board: there the game leaves',
+    '         Sin su posición no hay bloqueos Y LA PRODUCCIÓN SALE DE MÁS:':
+        '         Without its position there are no blocks AND PRODUCTION COMES OUT HIGH:',
+    '         `GamePiecesRobber` vacío y guarda al ladrón en':
+        '         `GamePiecesRobber` empty and keeps the robber in',
+    '         `GamePiecesRobbers[0]`. Ya arreglado -- el mod':
+        '         `GamePiecesRobbers[0]`. Already fixed: the mod',
+    '         aprenda estas acciones, `--rehacer` mete la partida sin':
+        '         learns these actions, `--rehacer` brings the game in',
+    '         en el .jsonl, que trae los nombres candidatos.':
+        '         in the .jsonl, which carries the candidate names.',
+    '         juego ha vuelto a moverlo de sitio: mira `ladron_donde_buscar`':
+        '         game has moved it again: look at `ladron_donde_buscar`',
+    '         jugando ahora mismo. Si era lo segundo, cuando acabe:':
+        '         being played right now. If it was the latter, when it ends:',
+    '         perder nada.': '         without losing anything.',
+    '         propio juego. Si esto sale en una grabación NUEVA, el':
+        '         own accessor. If this shows up in a NEW recording, the',
+    '         py mod_verdad/importar.py --rehacer':
+        '         py mod_verdad/importar.py --rehacer',
+    '         se cuenta como si el ladrón no estuviera en el tablero.':
+        '         it is counted as if the robber were not on the board.',
+    '         usa ya `BoardQuery.GetRobberTile`, que es el accesor del':
+        "         now uses `BoardQuery.GetRobberTile`, which is the game's",
+    '        panel, o aqui:  py mod_verdad/importar.py --llamar %s Pedro':
+        '        panel, or here:  py mod_verdad/importar.py --llamar %s Pedro',
+    '        ponle el suyo con el boton «Ponerle nombre a alguien» del':
+        '        give them theirs with the «Name someone» button on the',
+    '       Hazlo a mano: py db/vistas.py --crear':
+        '       Do it by hand: py db/vistas.py --crear',
+    '     %s': '     %s',
+    '     [!] %d acciones que no entiendo, de %d tipos distintos%s.':
+        '     [!] %d actions I do not understand, of %d different kinds%s.',
+    '     [!] EL LADRON NO SE HA PODIDO LEER en %d movimientos.':
+        '     [!] THE ROBBER COULD NOT BE READ in %d moves.',
+    '     [!] esta partida no tiene final: o se abandonó o se está':
+        '     [!] this game has no ending: either it was abandoned or it is',
+    "    [!] identificador nuevo sin nombre: %s -> se ha llamado '%s'":
+        "    [!] new identifier with no name: %s -> it was called '%s'",
+    '   %s': '   %s',
+    '   ... jugar ...': '   ... play ...',
+    '   .\\mod_verdad\\interruptor.ps1 off':
+        '   .\\mod_verdad\\interruptor.ps1 off',
+    '   .\\mod_verdad\\interruptor.ps1 on        y DESPUES abrir Catan':
+        '   .\\mod_verdad\\interruptor.ps1 on        and THEN open Catan',
+    '   C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe':
+        '   C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe',
+    '   NO LO ENCUENTRO. Se le pregunta a Steam, asi que:':
+        '   CANNOT FIND IT. Steam is the one being asked, so:',
+    '   No ha compilado. Hace falta el csc que trae Windows, en':
+        '   It did not compile. It needs the csc that ships with Windows, at',
+    '   abre Steam una vez, o instala el juego, y vuelve a pasar esto.':
+        '   open Steam once, or install the game, and run this again.',
+    '   bajando %s ...': '   downloading %s ...',
+    '   es de %s': '   it is %s',
+    '   faltan: %s': '   missing: %s',
+    '   py mod_verdad\\importar.py': '   py mod_verdad\\importar.py',
+    '   py panel.py                        y el boton «Encender el mod»':
+        '   py panel.py                        and the «Switch the mod on» button',
+    '   ya esta puesto, no se toca': '   already in place, not touched',
+    "  %s  (ahora '%s')": "  %s  (now '%s')",
+    '  -  %-28s %s': '  -  %-28s %s',
+    '  OK %-28s partida %d: %s': '  OK %-28s game %d: %s',
+    '  py mod_verdad/importar.py --llamar <identificador> <nombre>':
+        '  py mod_verdad/importar.py --llamar <identifier> <name>',
+    '  py mod_verdad/importar.py --llamar <identificador> Pedro':
+        '  py mod_verdad/importar.py --llamar <identifier> Pedro',
+    '%-40s %-16s %d%s': '%-40s %-16s %d%s',
+    '%-40s %-16s %s': '%-40s %-16s %s',
+    '%d eventos -> %s': '%d events -> %s',
+    '%d partidas importadas.': '%d games imported.',
+    "%s ahora se llama '%s' (antes '%s'); %d partidas actualizadas.":
+        "%s is now called '%s' (was '%s'); %d games updated.",
+    '1. Catan Universe': '1. Catan Universe',
+    '2. BepInEx          %s': '2. BepInEx          %s',
+    '2. Dependencias de Python': '2. Python dependencies',
+    '3. BepInEx %s': '3. BepInEx %s',
+    '3. el plugin        %s': '3. the plugin       %s',
+    '32 bits': '32-bit',
+    '4. El plugin': '4. The plugin',
+    '64 bits': '64-bit',
+    'Aviso: no se han podido rehacer las vistas (%s).':
+        'Warning: could not rebuild the views (%s).',
+    'Catan Universe no lo permiten. Instalarlo y encenderlo son dos':
+        'Universe do not allow that. Installing it and switching it on are',
+    'Cuando quieras:': 'Whenever you want:',
+    'Dejar el mod listo': 'Get the mod ready',
+    'El mod modifica el cliente del juego, y las condiciones de uso de':
+        'The mod modifies the game client, and the terms of use of Catan',
+    'FALTA': 'MISSING',
+    'Hay %d persona(s) sin nombre de verdad:':
+        'There are %d person(s) with no real name:',
+    'Listo, y APAGADO.': 'Ready, and SWITCHED OFF.',
+    'Nada tocado (--ver). Pasa esto sin --ver para dejarlo listo.':
+        'Nothing touched (--ver). Run this without --ver to get it ready.',
+    'No conozco el identificador %s. Míralos con --quien.':
+        'I do not know the identifier %s. List them with --quien.',
+    "No encuentro '%s'. Las que hay:":
+        "I cannot find '%s'. The ones there are:",
+    'No hay ficheros del mod en %s': 'There are no mod files in %s',
+    'Para ponerle nombre a alguien:': 'To give someone a name:',
+    'Todavía no hay ningún identificador. Importa una partida primero.':
+        'There are no identifiers yet. Import a game first.',
+    'Ya se llamaba así.': 'It was already called that.',
+    'apartado del README antes de encenderlo.':
+        'Read that section of the README before switching it on.',
+    'copia actualizada': 'copy updated',
+    'copia guardada': 'copy saved',
+    'decisiones distintas, y esto solo ha tomado la primera. Lee el':
+        'two different decisions, and this has only taken the first one.',
+    'el paquete no trae winhttp.dll; no se toca nada':
+        'the package has no winhttp.dll; nothing touched',
+    'identificador de la cuenta': 'account identifier',
+    'ninguna: esto va con la biblioteca estandar':
+        'none: this runs on the standard library',
+    'nombre': 'name',
+    'o a mano:': 'or by hand:',
+    'partidas': 'games',
+    'puesto en %s, y APAGADO': 'installed in %s, and SWITCHED OFF',
+    'ya esta': 'already there',
+    'ya estan': 'already there',
+    '¿Has jugado alguna partida con el mod encendido?':
+        'Have you played a game with the mod switched on?',
+}
+
+
 # Qué quiere decir cada columna y qué es una fila. NO está aquí: vive en
 # `catalogEN.py`, al lado, y está escrito ENTERO en inglés -- los nombres de
 # vista y de columna incluidos. Quien lo abre ya está leyendo en inglés; no
