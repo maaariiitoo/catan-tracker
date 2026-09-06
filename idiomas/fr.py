@@ -45,25 +45,25 @@ TEXTO = {
         '&laquo;&hellip;et enregistrer des captures&raquo;',
     '&laquo;Medir el tablero entero&raquo; es el numero que importa: cuanto del tablero final queda bien leido, que es lo que tendria delante quien juega. &laquo;Foto a foto&raquo; mira recortes sueltos, donde el tablero vacio arrastra la media hacia arriba.':
         "&laquo;Mesurer le plateau entier&raquo; est le chiffre qui compte : quelle part du plateau final est lue correctement, ce qu'un joueur aurait devant lui. &laquo;Image par image&raquo; regarde des découpes isolées, où le plateau vide tire la moyenne vers le haut.",
-    '&mdash; no hay dos consultas que puedan decir cosas distintas. La base se abre aqui en':
-        ": il n'y a pas deux requêtes qui pourraient se contredire. La base s'ouvre ici",
+    ', y no hay dos consultas que puedan decir cosas distintas. La base se abre aqui en':
+        ", et il n'y a pas deux requêtes qui pourraient se contredire. La base s'ouvre ici",
     '(nada todavia)': "(rien pour l'instant)",
-    ') &mdash; ese usa Tesseract y': ') : celui-là utilise Tesseract et',
-    ') &mdash; lee que hay en cada vertice y cada arista. Es la que se entrena con el boton de aqui abajo.':
-        ") : lit ce qu'il y a sur chaque sommet et chaque arête. C'est celui que le bouton ci-dessous entraîne.",
+    ') usa Tesseract y': ') utilise Tesseract et',
+    ') lee que hay en cada vertice y cada arista. Es la que se entrena con el boton de aqui abajo.':
+        ") lit ce qu'il y a sur chaque sommet et chaque arête. C'est celui que le bouton ci-dessous entraîne.",
     '); ponle el suyo ahi arriba y se arreglan tambien':
         ') ; donne-lui son vrai nom là-haut et ça corrige aussi',
     ', a prop&oacute;sito: un titular es una costumbre y pide partidas; un r&eacute;cord es de un d&iacute;a, y si en tu primera te pusieron veintiún ladrones, te los pusieron. El enlace abre esa tabla':
         ", exprès : un titre est une habitude et demande des parties derrière ; un record est d'un jour, et si tu as reçu le voleur vingt et une fois dès ta première partie, eh bien c'est comme ça. Le lien ouvre cette table",
     ', arriba del todo, junto al boton de encender. Cada foto va emparejada con el estado exacto que apunto el mod en ese instante, asi que las etiquetas las escribe el juego y no hay que anotar nada a mano. Alimentan tres cosas distintas, y solo la primera se &laquo;entrena&raquo;:':
         ", tout en haut, à côté de l'interrupteur. Chaque image est appariée à l'état exact que le mod a enregistré à cet instant, donc les étiquettes sont écrites par le jeu et rien n'a à être annoté à la main. Elles alimentent trois choses différentes, et seule la première est &laquo;entraînée&raquo; :",
-    ', as&iacute; que de serie salen todas &mdash; separarlas lo decides t&uacute;.':
-        ", donc par défaut tu les as toutes : les séparer, c'est à toi de voir.",
+    ', as&iacute; que de serie salen todas. Separarlas lo decides t&uacute;.':
+        ", donc par défaut tu les as toutes. Les séparer, c'est à toi de voir.",
     ', comprueba su SHA-256 antes de tocar nada y compila el plugin. Lo deja':
         ', vérifie son SHA-256 avant de toucher à quoi que ce soit et compile le plugin. Il le laisse',
     ', de los paneles de jugador de las esquinas, que es de donde los lees tu. Se abre una ventana con lo que va viendo.':
         ", depuis les panneaux des joueurs dans les coins, qui est là où tu les lis toi aussi. Une fenêtre s'ouvre avec ce qu'il voit.",
-    ', los digitos) &mdash; no son una red: son el promedio de miles de recortes ya etiquetados. De ahi salen los contadores de los paneles, con 97,3% en caballeros y 98,9% en desarrollo.':
+    ', los digitos) no son una red: son el promedio de miles de recortes ya etiquetados. De ahi salen los contadores de los paneles, con 97,3% en caballeros y 98,9% en desarrollo.':
         ", les chiffres) : ce n'est pas un réseau, c'est la moyenne de milliers de découpes déjà étiquetées. Les compteurs du panneau viennent de là, à 97,3 % sur les chevaliers et 98,9 % sur le développement.",
     ', no s&oacute;lo la p&aacute;gina. La p&aacute;gina se relee sola y con':
         'a changé, pas seulement la page. La page se recharge toute seule et',
@@ -74,11 +74,11 @@ TEXTO = {
     ', que si no el historico se parte en dos personas. Por consola es':
         ", parce que sinon son historique se coupe en deux personnes. Depuis la console c'est",
     ', sin dar un solo error.': 'se charge, sans une seule erreur.',
-    ', solo hace capturas. No hay nada que configurar &mdash; dale y ya.':
+    ', solo hace capturas. No hay nada que configurar: dale y ya.':
         ", il prend seulement des captures. Il n'y a rien à configurer : appuie, c'est tout.",
     ', y apunta la grabacion para que el importador no la vuelva a meter.':
         ", et note l'enregistrement pour que l'importateur ne le remette pas.",
-    ', y eso no se nota en la tabla &mdash; se nota en las medias. Antes de borrar hace una':
+    ', y eso no se nota en la tabla: se nota en las medias. Antes de borrar hace una':
         ', et ça ne se voit pas dans la table : ça se voit dans les moyennes. Avant de supprimer il fait une',
     '. Las capturas sirven para MEDIRLO (20 robos de 20, 23 comercios de 30) y para ajustar el recorte y el umbral de tinta.':
         ". Les captures servent à le MESURER (20 vols sur 20, 23 échanges sur 30) et à régler la découpe et le seuil d'encre.",
@@ -125,7 +125,7 @@ TEXTO = {
     'El de siempre, en texto: quien construyo que, en que numeros se puso cada uno, el ladron, los comercios y las tiradas.':
         "Le classique, en texte : qui a construit quoi, sur quels numéros chacun s'est installé, le voleur, les échanges et les dés.",
     'El mod apunta': 'Le mod enregistre',
-    'El mod no guarda nombres, guarda el identificador de cada cuenta &mdash; que es estable, asi que reconoce a la misma persona partida tras partida. La primera vez que juegue alguien nuevo saldra con un nombre provisional (':
+    'El mod no guarda nombres, guarda el identificador de cada cuenta, que es estable, asi que reconoce a la misma persona partida tras partida. La primera vez que juegue alguien nuevo saldra con un nombre provisional (':
         "Le mod ne stocke pas de noms, il stocke l'identifiant de chaque compte : il est stable, donc il reconnaît la même personne partie après partie. La première fois que quelqu'un de nouveau joue, il apparaît sous un nom provisoire (",
     'El modelo de ahora': 'Le modèle actuel',
     'El panel no responde.': 'Le panneau ne répond pas.',
@@ -164,7 +164,7 @@ TEXTO = {
         "Il regarde l'écran et lit le plateau :",
     'Mirar la pantalla': "Regarder l'écran",
     'No borra las capturas': 'Il ne supprime pas les captures',
-    'O preguntalo en cristiano y te lo busco en las tablas &mdash;':
+    'O preguntalo en cristiano y te lo busco en las tablas:':
         'Ou demande simplement en langage courant et il le cherche dans les tables :',
     'Ordenar por esta columna': 'Trier par cette colonne',
     'Para desarrollar el proyecto': 'Pour travailler sur le projet',
@@ -219,12 +219,12 @@ TEXTO = {
     'dentro': 'dedans',
     'despues': 'ensuite',
     'donde esta el ladron': 'où est le voleur',
-    'el modelo de antes con la partida nueva &mdash; que no ha visto &mdash; y solo entonces entrena con ella. En ese orden, porque al reves el numero sale inflado y no avisa de nada.':
+    'el modelo de antes con la partida nueva (que no ha visto) y solo entonces entrena con ella. En ese orden, porque al reves el numero sale inflado y no avisa de nada.':
         "le modèle précédent sur la nouvelle partie, qu'il n'a pas vue, et seulement après il s'entraîne dessus. Dans cet ordre, parce que dans l'autre sens le chiffre sort gonflé et n'avertit de rien.",
     'es para las que no deberian contar: una que se cancelo a medias entra':
         'sert à celles qui ne doivent pas compter : une partie abandonnée à moitié va dans',
     'examina': 'tests',
-    'filtrar &mdash; un texto busca por dentro (carla, 2:1); un numero busca exacto (4)':
+    'filtrar: un texto busca por dentro (carla, 2:1); un numero busca exacto (4)':
         "filtre : le texte cherche à l'intérieur (carla, 2:1) ; un nombre correspond exactement (4)",
     'jugador_4645eb8a': 'jugador_4645eb8a',
     'la ultima tirada': 'le dernier jet',
@@ -246,13 +246,13 @@ TEXTO = {
         'parties ou plus entrent. Sans cette coupure le titre revient toujours à celui qui a joué une fois et a eu un bon jour, et tout le monde est dans les tables ci-dessous de toute façon.',
     'plantillas_cartas.npz': 'plantillas_cartas.npz',
     'plantillas_puntos.npz': 'plantillas_puntos.npz',
-    'preguntame algo &mdash; cuantos caballeros le han caido a elGato':
+    'preguntame algo: cuantos caballeros le han caido a elGato':
         'demande-moi quelque chose : combien de chevaliers a eus elGato',
     'py mod_verdad/importar.py --llamar &lt;identificador&gt; Pedro':
         'py mod_verdad/importar.py --llamar &lt;identifiant&gt; Pedro',
     'py sql.py "SELECT * FROM amigos_marcador"':
         'py sql.py "SELECT * FROM amigos_marcador"',
-    'que pinta la tabla de abajo &mdash; dale al enlace de cada uno y la tienes delante.':
+    'que pinta la tabla de abajo. Dale al enlace de cada uno y la tienes delante.':
         'qui dessine la table ci-dessous : clique sur le lien de chacun et la voilà.',
     'quien ha tenido mas suerte': 'qui a eu le plus de chance',
     'red_de_sitios.pt': 'red_de_sitios.pt',
@@ -262,7 +262,7 @@ TEXTO = {
     'se descarga el BepInEx que toca': 'télécharge le BepInEx qui convient',
     'se ha cerrado, o nunca llegó a abrirse. Vuelve a abrirla y recarga esta página; mientras tanto los botones de aquí no hacen nada.':
         "a été fermée, ou n'a jamais été ouverte. Rouvre-la et recharge cette page ; en attendant, les boutons ici ne font rien.",
-    'si puedes: la referencia del sitio vacio &mdash; la mitad de lo que se mira &mdash; se toma de las primeras fotos y se congela con la primera pieza. Arrancando a mitad de partida, lo que ya estuviera puesto se toma por tablero y no se ve. Ademas de las piezas se lee':
+    'si puedes: la referencia del sitio vacio (la mitad de lo que se mira) se toma de las primeras fotos y se congela con la primera pieza. Arrancando a mitad de partida, lo que ya estuviera puesto se toma por tablero y no se ve. Ademas de las piezas se lee':
         "si tu peux : la référence d'un emplacement vide, la moitié de ce qui est regardé, est prise dans les premières images et figée avec la première pièce. En commençant en cours de partie, tout ce qui était déjà construit est pris pour du plateau et jamais vu. En plus des pièces il lit aussi",
     'sin ganador y sin puntos': 'sans vainqueur et sans score',
     'sin tocar el cliente': 'sans toucher au client',
@@ -282,8 +282,8 @@ GUION = {
     '"  ·  SIN plugin instalado"': '"  ·  SANS plugin installé"',
     '"  ·  pagina "': '"  ·  page "',
     '"  ·  plugin instalado"': '"  ·  plugin installé"',
-    '" &mdash; apuntando: <b>"': '" &middot; enregistre : <b>"',
-    '" &mdash; ultima partida apuntada: "':
+    '" &middot; apuntando: <b>"': '" &middot; enregistre : <b>"',
+    '" &middot; ultima partida apuntada: "':
         '" &middot; dernière partie enregistrée : "',
     '" <small>(IA)</small>"': '" <small>(IA)</small>"',
     '" acciones"': '" actions"',
@@ -384,11 +384,11 @@ GUION = {
     '"solo con amigos"': '"entre amis uniquement"',
     '"ver todas"': '"tout voir"',
     '"»"': '"»"',
-    '"▲ cierra Catan — Catan Tracker"': '"▲ ferme Catan · Catan Tracker"',
-    '"● MOD ENCENDIDO — Catan Tracker"': '"● MOD ALLUMÉ · Catan Tracker"',
+    '"▲ cierra Catan · Catan Tracker"': '"▲ ferme Catan · Catan Tracker"',
+    '"● MOD ENCENDIDO · Catan Tracker"': '"● MOD ALLUMÉ · Catan Tracker"',
     '"☀︎  Claro"': '"☀︎  Clair"',
     '"☽  Oscuro"': '"☽  Sombre"',
-    '"✕ sin panel — Catan Tracker"': '"✕ sans panneau · Catan Tracker"',
+    '"✕ sin panel · Catan Tracker"': '"✕ sans panneau · Catan Tracker"',
     '\'" placeholder="como se llama"></td>\'':
         '\'" placeholder="son nom"></td>\'',
     '\'" title="Ordenar por esta columna">\'':
@@ -487,7 +487,7 @@ FRASES = {
         'vers quels numéros va le voleur, tout le monde confondu',
     'cada intercambio con los dos lados: quién dio qué y a cambio de qué':
         'chaque échange des deux côtés : qui a donné quoi et contre quoi',
-    'cobró {le_toco} veces contra las {le_tocaba} que le tocaban, y con sólo {casillas} casillas. Se sale {se_sale} márgenes de lo normal — el azar por sí solo ya mueve un {margen}%.':
+    'cobró {le_toco} veces contra las {le_tocaba} que le tocaban, y con sólo {casillas} casillas. Se sale {se_sale} márgenes de lo normal: el azar por sí solo ya mueve un {margen}%.':
         'a encaissé {le_toco} fois contre les {le_tocaba} qui lui revenaient, et avec seulement {casillas} tuiles. Ça fait {se_sale} écarts hors du normal, et le hasard seul le déplace déjà de {margen} %.',
     'como va mejorando': "comment ça s'améliore",
     'comprobar lo grabado': "vérifier l'enregistrement",
@@ -501,16 +501,16 @@ FRASES = {
         'pour les tuiles où il est, combien de fois le plateau a payé contre combien il devait. 100 est la chance normale',
     'de las veces que salió en cada puesto, en cuáles acabó':
         'sur les fois où il est parti de chaque place, où il a fini',
-    'de lo que le tocaba — cobró {le_toco} veces contra las {le_tocaba} que le debía el tablero, y 100% es lo normal. Se sale {se_sale} márgenes: hace falta pasar de 2 para que sea suerte y no ruido.':
+    'de lo que le tocaba: cobró {le_toco} veces contra las {le_tocaba} que le debía el tablero, y 100% es lo normal. Se sale {se_sale} márgenes: hace falta pasar de 2 para que sea suerte y no ruido.':
         'de ce qui lui revenait : a encaissé {le_toco} fois contre les {le_tocaba} que le plateau lui devait, et 100 % est normal. Ça fait {se_sale} écarts : il en faut plus de 2 pour que ce soit de la chance et pas du bruit.',
     'de media por casilla suya, cuando un sitio cualquiera de sus tableros vale {lo_normal}. Con eso le tocaron {le_toco} cobros de los {le_tocaba} que le tocaban.':
         "en moyenne par tuile à lui, quand n'importe quel emplacement de ses plateaux vaut {lo_normal}. Ça lui a valu {le_toco} encaissements sur les {le_tocaba} qui lui revenaient.",
-    'de más en los {tratos} tratos entre los dos: se llevó {recibio} y soltó {dio}. Son cartas, no acierto — dar tres por una puede ser el mejor trato de la partida.':
+    'de más en los {tratos} tratos entre los dos: se llevó {recibio} y soltó {dio}. Son cartas, no acierto: dar tres por una puede ser el mejor trato de la partida.':
         'de plus sur les {tratos} échanges entre les deux : a pris {recibio} et a lâché {dio}. Ce sont des cartes, pas un jugement : donner trois pour une peut être le meilleur échange de la partie.',
     'de sus tiradas: {sietes} sietes en {tiros} tiros. Lo normal es {porcentaje_normal}%.':
         'de ses jets : {sietes} sept sur {tiros} lancers. Le normal est {porcentaje_normal} %.',
     'dejar el mod listo': 'préparer le mod',
-    'edificios, premios y — por resta — las cartas de punto':
+    'edificios, premios y, por resta, las cartas de punto':
         'constructions, récompenses et, par soustraction, les cartes point de victoire',
     'el ciclo entero (convertir, examinar, entrenar)':
         'le cycle entier (convertir, tester, entraîner)',

@@ -156,7 +156,7 @@ TITULARES = (
      # mas cartas NO es comerciar mejor. Dar tres por una puede ser el mejor
      # trato de la partida si esa una es la que te faltaba para la ciudad.
      "detalle": "de más en los {tratos} tratos entre los dos: se llevó "
-                "{recibio} y soltó {dio}. Son cartas, no acierto — dar tres "
+                "{recibio} y soltó {dio}. Son cartas, no acierto: dar tres "
                 "por una puede ser el mejor trato de la partida."},
 
     {"id": "suerte",
@@ -176,7 +176,7 @@ TITULARES = (
      # La frase no dice si es suerte o no: dice el numero y la regla, y que
      # la lea quien mira. Una plantilla no puede ramificar, y escribir «y eso
      # es ruido» seria mentira el dia que alguien pase de 2.
-     "detalle": "de lo que le tocaba — cobró {le_toco} veces contra las "
+     "detalle": "de lo que le tocaba: cobró {le_toco} veces contra las "
                 "{le_tocaba} que le debía el tablero, y 100% es lo normal. "
                 "Se sale {se_sale} márgenes: hace falta pasar de 2 para "
                 "que sea suerte y no ruido."},
@@ -218,7 +218,7 @@ RECORDS = (
      "detalle": "cobró {le_toco} veces contra las {le_tocaba} que le "
                 "tocaban, "
                 "y con s\u00f3lo {casillas} casillas. Se sale {se_sale} m\u00e1rgenes "
-                "de lo normal \u2014 el azar por s\u00ed solo ya mueve un {margen}%."},
+                "de lo normal: el azar por s\u00ed solo ya mueve un {margen}%."},
 
     {"id": "ladron_de_un_dia",
      "titulo": "M\u00e1s ladrones en una partida",

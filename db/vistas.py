@@ -524,7 +524,7 @@ VISTAS = [
     """},
 
     {"nombre": "amigos_puntos", "titulo": "De dónde salió cada punto",
-     "que": "edificios, premios y — por resta — las cartas de punto",
+     "que": "edificios, premios y, por resta, las cartas de punto",
      "global": "con_amigos = 1", "partida": "game_id = ?",
      "sql": _con(_J, _PTS) + """
         -- La fila suma los puntos del final: poblados + 2 por ciudad + 2 por

@@ -2694,7 +2694,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   <div id="gente"></div>
   <div id="quitables"></div>
   <p class="pista">El mod no guarda nombres, guarda el identificador de cada
-  cuenta &mdash; que es estable, asi que reconoce a la misma persona partida
+  cuenta, que es estable, asi que reconoce a la misma persona partida
   tras partida. La primera vez que juegue alguien nuevo saldra con un nombre
   provisional (<code>jugador_4645eb8a</code>); ponle el suyo ahi arriba y se
   arreglan tambien <b>las partidas ya guardadas</b>, que si no el historico se
@@ -2703,7 +2703,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   que es exactamente lo que hace el boton.</p>
   <p class="pista"><b>Quitar una partida</b> es para las que no deberian
   contar: una que se cancelo a medias entra <b>sin ganador y sin puntos</b>, y
-  eso no se nota en la tabla &mdash; se nota en las medias. Antes de borrar
+  eso no se nota en la tabla: se nota en las medias. Antes de borrar
   hace una <b>copia de la base</b> en <code>copias/</code>, y apunta la
   grabacion para que el importador no la vuelva a meter. <b>No borra las
   capturas</b>: quitar una partida del historico no le hace perder un recorte
@@ -2716,7 +2716,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   nombre ni un n&uacute;mero escritos a mano: se recalculan en cada visita,
   as&iacute; que el d&iacute;a que alguien adelante a otro el titular cambia
   solo. Y el n&uacute;mero <b>sale de la misma consulta</b> que pinta la
-  tabla de abajo &mdash; dale al enlace de cada uno y la tienes delante.</p>
+  tabla de abajo. Dale al enlace de cada uno y la tienes delante.</p>
   <p class="paso">Solo entra quien lleve <b id="titMinimo">10</b> partidas o
   m&aacute;s. Sin ese corte el titular se lo lleva siempre el que
   jug&oacute; una vez y tuvo un buen d&iacute;a, y en las tablas de abajo
@@ -2743,14 +2743,14 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   juego -- la maquina no propone tratos ni bloquea igual -- y mezclarla con
   las de la mesa no ensucia un poco la media, la deja sin significado. Las
   otras dos opciones estan para cuando SI las quieres.</p>
-  <p class="paso">O preguntalo en cristiano y te lo busco en las tablas
-  &mdash; <i>cuantos caballeros le han caido a elGato</i>, <i>quien ha tenido
+  <p class="paso">O preguntalo en cristiano y te lo busco en las tablas:
+  <i>cuantos caballeros le han caido a elGato</i>, <i>quien ha tenido
   mas suerte</i>, <i>cuanto mineral ha producido carla</i>. No hay ninguna
   inteligencia artificial detras y no sale nada de este ordenador: la pregunta
   se parte en palabras y se busca entre los nombres de las vistas. Debajo
   de la respuesta sale siempre <b>de donde ha salido el numero</b>.</p>
   <div class="mando">
-    <input id="pregunta" type="search" placeholder="preguntame algo &mdash; cuantos caballeros le han caido a elGato">
+    <input id="pregunta" type="search" placeholder="preguntame algo: cuantos caballeros le han caido a elGato">
     <button id="bPreguntar">Buscar</button>
   </div>
   <div id="respuesta"></div>
@@ -2768,17 +2768,17 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   m&aacute;s: el tablero tiene 30 casillas en vez de 19 y no reparte los
   n&uacute;meros igual, y se juega a 12 puntos y no a 10. Mezclarlas es el
   mismo problema que mezclar las de la IA, por eso el filtro se parece.
-  Ahora mismo son <b>3 de 18</b>, as&iacute; que de serie salen todas
-  &mdash; separarlas lo decides t&uacute;.</p>
+  Ahora mismo son <b>3 de 18</b>, as&iacute; que de serie salen todas.
+  Separarlas lo decides t&uacute;.</p>
   <div id="botonesVista">cargando...</div>
   <p class="pista" id="queEs"></p>
   <div class="mando">
-    <input id="filtro" type="search" placeholder="filtrar &mdash; un texto busca por dentro (carla, 2:1); un numero busca exacto (4)">
+    <input id="filtro" type="search" placeholder="filtrar: un texto busca por dentro (carla, 2:1); un numero busca exacto (4)">
     <span class="cuantas" id="cuantas"></span>
   </div>
   <div id="tablaVista" class="rejilla"></div>
   <p class="pista">Sale de las mismas vistas que <code>py sql.py "SELECT *
-  FROM amigos_marcador"</code> &mdash; no hay dos consultas que puedan decir
+  FROM amigos_marcador"</code>, y no hay dos consultas que puedan decir
   cosas distintas. La base se abre aqui en <b>solo lectura</b>.</p>
 <!--dev-->  <button id="bVistas">Rehacer las vistas</button>
   <button id="bPruebasDatos">Comprobar que cuadran</button>
@@ -2799,7 +2799,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
 <!--vision--><div class="bloque">
   <h2>4 &middot; Leer el tablero de la pantalla</h2>
   <p class="paso">Mira la pantalla y lee el tablero: <b>no toca el juego</b>,
-  solo hace capturas. No hay nada que configurar &mdash; dale y ya. <b>Los
+  solo hace capturas. No hay nada que configurar: dale y ya. <b>Los
   colores de la mesa los lee solo</b>, de los paneles de jugador de las
   esquinas, que es de donde los lees tu. Se abre una ventana con lo que va
   viendo.</p>
@@ -2807,7 +2807,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
 <!--dev-->  <button id="bEnsayo">Probarlo sobre una partida grabada</button>
   <button id="bMesa">Medir el ladron y los dados</button>
 <!--/dev-->  <p class="pista">Empieza con el <b>tablero vacio</b> si puedes: la
-  referencia del sitio vacio &mdash; la mitad de lo que se mira &mdash; se toma
+  referencia del sitio vacio (la mitad de lo que se mira) se toma
   de las primeras fotos y se congela con la primera pieza. Arrancando a mitad
   de partida, lo que ya estuviera puesto se toma por tablero y no se ve.
   Ademas de las piezas se lee <b>donde esta el ladron</b> y <b>la ultima
@@ -2832,14 +2832,14 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   estado exacto que apunto el mod en ese instante, asi que las etiquetas las
   escribe el juego y no hay que anotar nada a mano. Alimentan tres cosas
   distintas, y solo la primera se &laquo;entrena&raquo;:</p>
-  <p class="pista"><b>La red</b> (<code>red_de_sitios.pt</code>) &mdash; lee
+  <p class="pista"><b>La red</b> (<code>red_de_sitios.pt</code>) lee
   que hay en cada vertice y cada arista. Es la que se entrena con el boton de
   aqui abajo.<br>
   <b>Las plantillas</b> (<code>plantillas_puntos.npz</code>,
-  <code>plantillas_cartas.npz</code>, los digitos) &mdash; no son una red: son
+  <code>plantillas_cartas.npz</code>, los digitos) no son una red: son
   el promedio de miles de recortes ya etiquetados. De ahi salen los
   contadores de los paneles, con 97,3% en caballeros y 98,9% en desarrollo.<br>
-  <b>El aviso de la esquina</b> (<code>ocr/ticker.py</code>) &mdash; ese usa
+  <b>El aviso de la esquina</b> (<code>ocr/ticker.py</code>) usa
   Tesseract y <b>no se entrena</b>. Las capturas sirven para MEDIRLO (20 robos
   de 20, 23 comercios de 30) y para ajustar el recorte y el umbral de tinta.</p>
 </div>
@@ -2847,7 +2847,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
 <div class="bloque">
   <h2>Entrenar la red con lo grabado</h2>
   <p class="paso">Un boton. Convierte lo grabado, <b>examina</b> el modelo de
-  antes con la partida nueva &mdash; que no ha visto &mdash; y solo entonces
+  antes con la partida nueva (que no ha visto) y solo entonces
   entrena con ella. En ese orden, porque al reves el numero sale inflado y no
   avisa de nada.</p>
   <button class="principal" id="bRutina">Hacerlo todo</button>
@@ -2900,7 +2900,7 @@ function marcarCaido(si){
   if (caido === si) return;
   caido = si;
   document.getElementById("caido").style.display = si ? "block" : "none";
-  if (si) document.title = "✕ sin panel — Catan Tracker";
+  if (si) document.title = "✕ sin panel · Catan Tracker";
 }
 
 function recado(texto, malo){
@@ -3703,15 +3703,15 @@ async function refrescar(){
     banda.className = "banda on";
     let apunte = "";
     if (e.apunta && e.apunta.viva){
-      apunte = " &mdash; apuntando: <b>" + e.apunta.acciones + "</b> acciones";
+      apunte = " &middot; apuntando: <b>" + e.apunta.acciones + "</b> acciones";
     } else if (e.apunta){
-      apunte = " &mdash; ultima partida apuntada: " + e.apunta.acciones + " acciones";
+      apunte = " &middot; ultima partida apuntada: " + e.apunta.acciones + " acciones";
     }
     banda.innerHTML = "EL MOD ESTA ENCENDIDO" + (e.grabando ? " y grabando" : "") + apunte +
       "<small>Modificar el cliente va contra las condiciones de uso de Catan " +
       "Universe, y esto se carga en todas las partidas mientras este puesto. " +
       "Apagalo al terminar.</small>";
-    document.title = "● MOD ENCENDIDO — Catan Tracker";
+    document.title = "● MOD ENCENDIDO · Catan Tracker";
   } else if (e.juego_abierto){
     // apagado en el fichero, pero el proceso que hay abierto pudo arrancar
     // con el mod dentro: el interruptor solo decide como arranca la
@@ -3721,7 +3721,7 @@ async function refrescar(){
       "<small>El mod se mete dentro del juego al arrancarlo, asi que si abriste " +
       "esta partida con el mod encendido, sigue cargado. <b>Para descargarlo hay " +
       "que cerrar Catan y volver a abrirlo.</b></small>";
-    document.title = "▲ cierra Catan — Catan Tracker";
+    document.title = "▲ cierra Catan · Catan Tracker";
   } else {
     banda.className = "banda off";
     banda.innerHTML = "El mod esta apagado y Catan cerrado. " +

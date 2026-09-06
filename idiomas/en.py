@@ -132,12 +132,12 @@ TEXTO = {
     "Guardar en la base de datos": "Save to the database",
     "Ponerle nombre a alguien": "Name someone",
     "Quitar una partida": "Remove a game",
-    "El mod no guarda nombres, guarda el identificador de cada cuenta &mdash; "
+    "El mod no guarda nombres, guarda el identificador de cada cuenta, "
     "que es estable, asi que reconoce a la misma persona partida tras partida. "
     "La primera vez que juegue alguien nuevo saldra con un nombre provisional "
     "(":
-        "The mod doesn't store names, it stores each account's identifier "
-        "&mdash; which is stable, so it recognises the same person game after "
+        "The mod doesn't store names, it stores each account's identifier, "
+        "which is stable, so it recognises the same person game after "
         "game. The first time someone new plays they show up under a "
         "placeholder name (",
     "jugador_4645eb8a": "jugador_4645eb8a",
@@ -155,9 +155,9 @@ TEXTO = {
         "is for the ones that shouldn't count: a game abandoned halfway goes "
         "in",
     "sin ganador y sin puntos": "with no winner and no score",
-    ", y eso no se nota en la tabla &mdash; se nota en las medias. Antes de "
+    ", y eso no se nota en la tabla: se nota en las medias. Antes de "
     "borrar hace una":
-        ", and that doesn't show up in the table &mdash; it shows up in the "
+        ", and that doesn't show up in the table: it shows up in the "
         "averages. Before deleting it makes a",
     "copia de la base": "backup of the database",
     "copias/": "copias/",
@@ -180,9 +180,9 @@ TEXTO = {
         "on every visit, so the day someone overtakes someone else the "
         "headline changes by itself. And the number",
     "sale de la misma consulta": "comes from the same query",
-    "que pinta la tabla de abajo &mdash; dale al enlace de cada uno y la "
+    "que pinta la tabla de abajo. Dale al enlace de cada uno y la "
     "tienes delante.":
-        "that draws the table below &mdash; click each one's link and there it "
+        "that draws the table below. Click each one's link and there it "
         "is.",
     "Solo entra quien lleve": "Only people with",
     "partidas o m&aacute;s. Sin ese corte el titular se lo lleva siempre el "
@@ -219,9 +219,9 @@ TEXTO = {
         "real table doesn't make the average slightly dirty, it makes it "
         "meaningless. The other two options are there for when you DO want "
         "them.",
-    "O preguntalo en cristiano y te lo busco en las tablas &mdash;":
-        "Or just ask in plain language and it looks it up in the tables "
-        "&mdash;",
+    "O preguntalo en cristiano y te lo busco en las tablas:":
+        "Or just ask in plain language and it looks it up in the tables"
+        ":",
     "cuantos caballeros le han caido a elGato":
         "how many knights has elGato had",
     "quien ha tenido mas suerte": "who has had the most luck",
@@ -250,16 +250,16 @@ TEXTO = {
         "mixing in the AI games, which is why the filter looks alike. Right "
         "now that's",
     "3 de 18": "3 out of 18",
-    ", as&iacute; que de serie salen todas &mdash; separarlas lo decides "
+    ", as&iacute; que de serie salen todas. Separarlas lo decides "
     "t&uacute;.":
-        ", so by default you get all of them &mdash; splitting them up is your "
+        ", so by default you get all of them. Splitting them up is your "
         "call.",
     "Sale de las mismas vistas que": "This comes from the same views as",
     'py sql.py "SELECT * FROM amigos_marcador"':
         'py sql.py "SELECT * FROM amigos_marcador"',
-    "&mdash; no hay dos consultas que puedan decir cosas distintas. La base se "
+    ", y no hay dos consultas que puedan decir cosas distintas. La base se "
     "abre aqui en":
-        "&mdash; there aren't two queries that could disagree. The database is "
+        ", and there aren't two queries that could disagree. The database is "
         "opened here",
     "solo lectura": "read-only",
 
@@ -281,11 +281,11 @@ TEXTO = {
     # el gris de una caja de busqueda y el globo del raton.
     "Cambiar de idioma": "Change language",
     "Cambiar entre claro y oscuro": "Switch between light and dark",
-    "preguntame algo &mdash; cuantos caballeros le han caido a elGato":
-        "ask me something &mdash; how many knights has elGato had",
-    "filtrar &mdash; un texto busca por dentro (carla, 2:1); un numero busca "
+    "preguntame algo: cuantos caballeros le han caido a elGato":
+        "ask me something: how many knights has elGato had",
+    "filtrar: un texto busca por dentro (carla, 2:1); un numero busca "
     "exacto (4)":
-        "filter &mdash; text searches inside (carla, 2:1); a number matches "
+        "filter: text searches inside (carla, 2:1); a number matches "
         "exactly (4)",
     "como se llama": "their name",
     "Ordenar por esta columna": "Sort by this column",
@@ -322,8 +322,8 @@ TEXTO = {
     "Mira la pantalla y lee el tablero:":
         "It watches the screen and reads the board:",
     "no toca el juego": "it doesn't touch the game",
-    ", solo hace capturas. No hay nada que configurar &mdash; dale y ya.":
-        ", it only takes screenshots. There's nothing to configure &mdash; "
+    ", solo hace capturas. No hay nada que configurar: dale y ya.":
+        ", it only takes screenshots. There's nothing to configure: "
         "just press it.",
     "Los colores de la mesa los lee solo":
         "It works out the table's colours on its own",
@@ -336,12 +336,12 @@ TEXTO = {
     "Medir el ladron y los dados": "Measure the robber and the dice",
     "Empieza con el": "Start with the",
     "tablero vacio": "board empty",
-    "si puedes: la referencia del sitio vacio &mdash; la mitad de lo que se "
-    "mira &mdash; se toma de las primeras fotos y se congela con la primera "
+    "si puedes: la referencia del sitio vacio (la mitad de lo que se "
+    "mira) se toma de las primeras fotos y se congela con la primera "
     "pieza. Arrancando a mitad de partida, lo que ya estuviera puesto se toma "
     "por tablero y no se ve. Ademas de las piezas se lee":
-        "if you can: the reference for an empty spot &mdash; half of what gets "
-        "looked at &mdash; is taken from the first frames and frozen with the "
+        "if you can: the reference for an empty spot (half of what gets "
+        "looked at) is taken from the first frames and frozen with the "
         "first piece. Starting mid-game, whatever was already built is taken "
         "for board and never seen. Besides the pieces it also reads",
     "donde esta el ladron": "where the robber is",
@@ -372,22 +372,22 @@ TEXTO = {
         "&raquo;:",
     "La red": "The network",
     "red_de_sitios.pt": "red_de_sitios.pt",
-    ") &mdash; lee que hay en cada vertice y cada arista. Es la que se entrena "
+    ") lee que hay en cada vertice y cada arista. Es la que se entrena "
     "con el boton de aqui abajo.":
-        ") &mdash; reads what's on each vertex and each edge. This is the one "
+        ") reads what's on each vertex and each edge. This is the one "
         "the button below trains.",
     "Las plantillas": "The templates",
     "plantillas_puntos.npz": "plantillas_puntos.npz",
     "plantillas_cartas.npz": "plantillas_cartas.npz",
-    ", los digitos) &mdash; no son una red: son el promedio de miles de "
+    ", los digitos) no son una red: son el promedio de miles de "
     "recortes ya etiquetados. De ahi salen los contadores de los paneles, con "
     "97,3% en caballeros y 98,9% en desarrollo.":
-        ", the digits) &mdash; these aren't a network: they're the average of "
+        ", the digits) these aren't a network: they're the average of "
         "thousands of already-labelled crops. The panel counters come from "
         "them, at 97.3% on knights and 98.9% on development.",
     "El aviso de la esquina": "The corner ticker",
     "ocr/ticker.py": "ocr/ticker.py",
-    ") &mdash; ese usa Tesseract y": ") &mdash; that one uses Tesseract and",
+    ") usa Tesseract y": ") uses Tesseract and",
     "no se entrena": "isn't trained",
     ". Las capturas sirven para MEDIRLO (20 robos de 20, 23 comercios de 30) "
     "y para ajustar el recorte y el umbral de tinta.":
@@ -397,11 +397,11 @@ TEXTO = {
         "Train the network on what's been recorded",
     "Un boton. Convierte lo grabado,": "One button. It converts the recording,",
     "examina": "tests",
-    "el modelo de antes con la partida nueva &mdash; que no ha visto &mdash; y "
+    "el modelo de antes con la partida nueva (que no ha visto) y "
     "solo entonces entrena con ella. En ese orden, porque al reves el numero "
     "sale inflado y no avisa de nada.":
-        "the previous model on the new game &mdash; which it hasn't seen "
-        "&mdash; and only then trains on it. In that order, because the other "
+        "the previous model on the new game (which it hasn't seen) "
+        "and only then trains on it. In that order, because the other "
         "way round the number comes out inflated and warns you of nothing.",
     "Hacerlo todo": "Do all of it",
     "Como va mejorando": "How it's improving",
@@ -437,8 +437,8 @@ GUION = {
     '"  ·  SIN plugin instalado"': '"  ·  NO plugin installed"',
     '"  ·  pagina "': '"  ·  page "',
     '"  ·  plugin instalado"': '"  ·  plugin installed"',
-    '" &mdash; apuntando: <b>"': '" &middot; recording: <b>"',
-    '" &mdash; ultima partida apuntada: "': '" &middot; last game recorded: "',
+    '" &middot; apuntando: <b>"': '" &middot; recording: <b>"',
+    '" &middot; ultima partida apuntada: "': '" &middot; last game recorded: "',
     '" <small>(IA)</small>"': '" <small>(AI)</small>"',
     '" acciones"': '" actions"',
     '" con "': '" with "',
@@ -533,11 +533,11 @@ GUION = {
     '"solo con amigos"': '"friends only"',
     '"ver todas"': '"see all"',
     '"»"': '"”"',
-    '"▲ cierra Catan — Catan Tracker"': '"▲ close Catan · Catan Tracker"',
-    '"● MOD ENCENDIDO — Catan Tracker"': '"● MOD ON · Catan Tracker"',
+    '"▲ cierra Catan · Catan Tracker"': '"▲ close Catan · Catan Tracker"',
+    '"● MOD ENCENDIDO · Catan Tracker"': '"● MOD ON · Catan Tracker"',
     '"☀︎  Claro"': '"☀︎  Light"',
     '"☽  Oscuro"': '"☽  Dark"',
-    '"✕ sin panel — Catan Tracker"': '"✕ no panel · Catan Tracker"',
+    '"✕ sin panel · Catan Tracker"': '"✕ no panel · Catan Tracker"',
     '\'" placeholder="como se llama"></td>\'':
         '\'" placeholder="their name"></td>\'',
     '\'" title="Ordenar por esta columna">\'':
@@ -641,7 +641,7 @@ FRASES = {
         'which numbers the robber goes to, adding everyone together',
     'cada intercambio con los dos lados: quién dio qué y a cambio de qué':
         'every trade with both sides: who gave what and in exchange for what',
-    'cobró {le_toco} veces contra las {le_tocaba} que le tocaban, y con sólo {casillas} casillas. Se sale {se_sale} márgenes de lo normal — el azar por sí solo ya mueve un {margen}%.':
+    'cobró {le_toco} veces contra las {le_tocaba} que le tocaban, y con sólo {casillas} casillas. Se sale {se_sale} márgenes de lo normal: el azar por sí solo ya mueve un {margen}%.':
         "collected {le_toco} times against the {le_tocaba} they were due, and with only {casillas} tiles. That's {se_sale} margins out from normal, and chance alone already moves it {margen}%.",
     'como va mejorando': "how it's improving",
     'comprobar lo grabado': 'check the recording',
@@ -655,16 +655,16 @@ FRASES = {
         "for the tiles they're on, how many times the board paid out against how many it owed. 100 is normal luck",
     'de las veces que salió en cada puesto, en cuáles acabó':
         'of the times they started from each seat, where they finished',
-    'de lo que le tocaba — cobró {le_toco} veces contra las {le_tocaba} que le debía el tablero, y 100% es lo normal. Se sale {se_sale} márgenes: hace falta pasar de 2 para que sea suerte y no ruido.':
+    'de lo que le tocaba: cobró {le_toco} veces contra las {le_tocaba} que le debía el tablero, y 100% es lo normal. Se sale {se_sale} márgenes: hace falta pasar de 2 para que sea suerte y no ruido.':
         "of what they were due: collected {le_toco} times against the {le_tocaba} the board owed them, and 100% is normal. That's {se_sale} margins out: it takes more than 2 for it to be luck and not noise.",
     'de media por casilla suya, cuando un sitio cualquiera de sus tableros vale {lo_normal}. Con eso le tocaron {le_toco} cobros de los {le_tocaba} que le tocaban.':
         'on average per tile of theirs, when any spot on their boards is worth {lo_normal}. That earned them {le_toco} payouts of the {le_tocaba} they were due.',
-    'de más en los {tratos} tratos entre los dos: se llevó {recibio} y soltó {dio}. Son cartas, no acierto — dar tres por una puede ser el mejor trato de la partida.':
+    'de más en los {tratos} tratos entre los dos: se llevó {recibio} y soltó {dio}. Son cartas, no acierto: dar tres por una puede ser el mejor trato de la partida.':
         "up across the {tratos} trades between the two: took {recibio} and gave up {dio}. That's cards, not judgement: giving three for one can be the best trade of the game.",
     'de sus tiradas: {sietes} sietes en {tiros} tiros. Lo normal es {porcentaje_normal}%.':
         'of their rolls: {sietes} sevens in {tiros} throws. Normal is {porcentaje_normal}%.',
     'dejar el mod listo': 'get the mod ready',
-    'edificios, premios y — por resta — las cartas de punto':
+    'edificios, premios y, por resta, las cartas de punto':
         'buildings, awards and, by subtraction, the victory point cards',
     'el ciclo entero (convertir, examinar, entrenar)':
         'the whole cycle (convert, test, train)',

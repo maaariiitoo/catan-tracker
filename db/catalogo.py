@@ -48,7 +48,7 @@ ANCHO = 8          # columnas que caben antes de que la tabla no se lea
 #
 # El número de tablas se pone solo (`{cuantas}`). Estaba escrito a mano, y el
 # día que apareció la vista número 29 el fichero siguió diciendo 28 sin que
-# nada avisara — que es justo lo que este fichero existe para evitar.
+# nada avisara, que es justo lo que este fichero existe para evitar.
 ENTRADA = """# Las vistas, una a una
 
 Las {cuantas} tablas que salen de tus partidas, qué contesta cada una y qué
@@ -62,7 +62,7 @@ py sql.py "SELECT * FROM amigos_marcador"
 
 > Este fichero **no está escrito a mano**: lo genera `py db/catalogo.py`, y
 > hay una prueba que comprueba que está al día. Los ejemplos también se
-> generan — son las vistas de verdad ejecutadas sobre una partida inventada
+> generan, y son las vistas de verdad ejecutadas sobre una partida inventada
 > de cuatro jugadores (Ana, Bruno, Carla y Dani), así que los números no los
 > ha puesto nadie a mano y no traen datos de nadie.
 
@@ -73,7 +73,7 @@ py sql.py "SELECT * FROM amigos_marcador"
 Diez líneas y ya se puede leer todo lo demás. Si juegas, sáltatelo.
 
 Se juega en un tablero de 19 casillas hexagonales. Cada casilla da un
-**material** — madera, arcilla, lana, cereales o mineral — y lleva un número
+**material** (madera, arcilla, lana, cereales o mineral) y lleva un número
 del 2 al 12.
 
 En tu turno tiras dos dados. **Todo el que tenga un poblado tocando una
@@ -84,10 +84,10 @@ llega a 10.
 
 También se pueden **cambiar cartas** con los demás o con la banca, y comprar
 **cartas de desarrollo**: la mayoría son caballeros, y las demás hacen cosas
-sueltas — el *monopolio*, por ejemplo, te da todas las cartas de un material
+sueltas: el *monopolio*, por ejemplo, te da todas las cartas de un material
 que tenga la mesa.
 
-Y está **el ladrón**. Quien saca un 7 —o juega un caballero— mueve una ficha
+Y está **el ladrón**. Quien saca un 7 (o juega un caballero) mueve una ficha
 sobre una casilla: mientras esté ahí, **esa casilla no paga a nadie**, y
 además le robas una carta al azar a alguien que tenga algo pegado. Es lo que
 más discusiones da, y por eso tiene cuatro tablas para él solo.
@@ -106,7 +106,7 @@ tres se leen distinto.
 
 **2. Todo se puede pedir de una partida suelta.** En el panel hay un
 desplegable. Es el mismo SQL con el filtro cambiado, así que el total y una
-partida no pueden decir cosas distintas — no son dos consultas, es una.
+partida no pueden decir cosas distintas: no son dos consultas, es una.
 
 **3. Un guion (—) es que ahí no hay dato**, no un cero. «No compró ninguna
 carta» y «no se sabe qué carta era» son cosas distintas y se ven distintas.
@@ -267,7 +267,7 @@ def _ancla(encabezado):
 
 
 def _encabezado(nombre):
-    return "`%s` — %s" % (nombre, V.POR_NOMBRE[nombre]["titulo"])
+    return "`%s`: %s" % (nombre, V.POR_NOMBRE[nombre]["titulo"])
 
 
 def main():

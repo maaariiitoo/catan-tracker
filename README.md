@@ -59,8 +59,8 @@ arreglan también las partidas ya guardadas.
 
 ### 3 · Mirar los datos
 
-Arriba, **los titulares**: conclusiones ya escritas — quién gana más, a quién
-le sale el 7 más de la cuenta, quién elige mejor las casillas — cada una con
+Arriba, **los titulares**: conclusiones ya escritas: quién gana más, a quién
+le sale el 7 más de la cuenta, quién elige mejor las casillas, cada una con
 el número que la sostiene y un enlace a la tabla de donde sale. No hay ni un
 nombre escrito a mano: salen de las mismas consultas que pintan las tablas,
 se recalculan en cada visita y sólo entran los que llevan 10 partidas o más,
@@ -69,7 +69,7 @@ para que no se lo lleve el que jugó una vez y tuvo un buen día.
 ![Los titulares del panel: conclusiones ya escritas, cada una con su número](docs/titulares.png)
 
 Y debajo los **récords**: la mejor marca de una sola partida, con la partida
-en que fue. Ahí no hay mínimo — un titular es una costumbre y pide partidas;
+en que fue. Ahí no hay mínimo: un titular es una costumbre y pide partidas;
 un récord es de un día.
 
 ![Los récords de una sola partida, en modo oscuro](docs/records.png)
@@ -77,8 +77,8 @@ un récord es de un día.
 *El panel arranca en claro o en oscuro según lo que prefiera tu sistema, y
 hay un botón para cambiarlo cuando quieras.*
 
-Y dos filtros que se combinan: **con quién** se jugó —de serie sólo las
-de personas, porque la IA no propone tratos ni bloquea igual— y **de
+Y dos filtros que se combinan: **con quién** se jugó (de serie sólo las
+de personas, porque la IA no propone tratos ni bloquea igual) y **de
 cuántos era la mesa**, porque una de 5 o 6 tiene 30 casillas en vez de 19 y
 se juega a 12 puntos y no a 10. Mezclarlas no ensucia la media un poco: la
 deja sin significado.
@@ -179,8 +179,8 @@ py sql.py "SELECT * FROM amigos_marcador"
 py sql.py --tablas
 ```
 
-Y el catálogo entero — las **32 vistas** agrupadas, qué contesta cada una,
-qué quiere decir cada columna y un ejemplo de cada tabla — te lo escribes
+Y el catálogo entero (las **32 vistas** agrupadas, qué contesta cada una,
+qué quiere decir cada columna y un ejemplo de cada tabla) te lo escribes
 con:
 
 ```powershell

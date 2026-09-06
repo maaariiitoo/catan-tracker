@@ -29,7 +29,7 @@ no `pip install` that can fail on you.
 
 > **Windows only.** The mod hooks into the game through `winhttp.dll`, which
 > is a Windows mechanism, and Catan Universe itself is a Windows game. The
-> half that reads the data — the panel, the SQL, the views — is plain Python
+> half that reads the data (the panel, the SQL, the views) is plain Python
 > and runs anywhere, but you won't be able to record a game on Linux or macOS.
 
 ---
@@ -64,8 +64,8 @@ games already saved get fixed too.
 
 ### 3 · Look at the data
 
-At the top, **the headlines**: conclusions already written out — who wins
-most, who gets the 7 more often than they should, who picks the best tiles —
+At the top, **the headlines**: conclusions already written out: who wins
+most, who gets the 7 more often than they should, who picks the best tiles,
 each with the number behind it and a link to the table it came from. Not one
 name is hardcoded: they come from the same queries that draw the tables, they
 are recomputed on every visit, and only people with 10 games or more get in,
@@ -74,7 +74,7 @@ so it isn't won by someone who played once and had a good day.
 ![The panel's headlines: conclusions already written, each with its number](docs/titulares.png)
 
 Below that, the **records**: the best single-game mark, and which game it was.
-No minimum there — a headline is a habit and needs games behind it; a record
+No minimum there: a headline is a habit and needs games behind it; a record
 is one good day.
 
 ![Single-game records, in dark mode](docs/records.png)
@@ -82,8 +82,8 @@ is one good day.
 *The panel starts in light or dark depending on what your system prefers, and
 there's a button to switch whenever you want.*
 
-And two filters that combine: **who you played with** — by default only games
-against people, because the AI doesn't propose trades or block the same way —
+And two filters that combine: **who you played with** (by default only games
+against people, because the AI doesn't propose trades or block the same way)
 and **how big the table was**, because a 5–6 player game has 30 tiles instead
 of 19 and is played to 12 points instead of 10. Mixing them doesn't make the
 average slightly dirty: it makes it meaningless.
@@ -189,8 +189,8 @@ py sql.py "SELECT * FROM amigos_marcador"
 py sql.py --tablas
 ```
 
-And the full catalogue — the **32 views** grouped, what each one answers, what
-each column means and a sample of every table — writes itself with:
+And the full catalogue (the **32 views** grouped, what each one answers, what
+each column means and a sample of every table) writes itself with:
 
 ```powershell
 py db/catalogo.py
@@ -204,7 +204,7 @@ a view changes and the `.md` doesn't, the test says so.
 
 **In English, every column is in
 [idiomas/catalogEN.py](idiomas/catalogEN.py).** The same thing the catalogue
-says, written in English throughout — the view and column names included,
+says, written in English throughout, the view and column names included,
 because whoever opens it is already reading in English. It's the reference:
 when a heading on a table doesn't tell you enough, that's where you look it
 up. The panel's headings and that file use the same words on purpose, so

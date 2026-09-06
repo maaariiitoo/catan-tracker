@@ -7,7 +7,7 @@
 
 POR QUÉ EXISTE. Hasta el 2 de septiembre de 2026 la caja se arreglaba a
 golpe de anécdota: alguien enseñaba una pregunta mal contestada, se añadía
-una regla, y a otra cosa. Eso mejora esa pregunta y no dice nada del resto —
+una regla, y a otra cosa. Eso mejora esa pregunta y no dice nada del resto,
 ni siquiera si la regla nueva ha roto tres que iban bien. Sin un número, la
 única respuesta honesta a «¿cuánto acierta esto?» era «no lo sé».
 
