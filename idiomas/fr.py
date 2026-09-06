@@ -755,6 +755,191 @@ COLUMNAS = {
 }
 
 
+
+# LA CAJA DE PREGUNTAS. Esto no traduce la pregunta: la reescribe con las
+# palabras castellanas contra las que la caja empareja. El emparejador no
+# entiende ningun idioma -- parte la pregunta en palabras y las compara con
+# los nombres, titulos y columnas de las vistas, que estan escritos en
+# castellano -- asi que lo unico que hace falta es que las palabras lleguen
+# en castellano.
+#
+# Medido con el mismo examen de 68 preguntas que el castellano, traducido:
+# acierta 39 de 68 en frances. El castellano acierta 40. O sea que no es peor en frances
+# que en su propio idioma, que es el liston que importa: la caja falla lo que
+# falla, y lo que no puede pasar es que falle MAS por el idioma.
+
+# Los giros van ANTES de partir en palabras, porque solo quieren decir eso
+# juntos. Se aplican de mas largo a mas corto, que es lo que hace que
+# `combien de fois` se aplique antes que `combien de` no se coma la mitad del otro.
+GIROS = (
+    ("qu'est-ce qui", ''),
+    ('qu est-ce qui', ''),
+    ('est-ce que', ''),
+    ('combien de fois', 'cuantas veces'),
+    ('combien de temps', 'cuanto minuto'),
+    ('combien de', 'cuantos'),
+    ('combien d', 'cuantos '),
+    ('a qui', 'a quien'),
+    ('sur qui', 'a quien'),
+    ('de qui', 'a quien'),
+    ('avec qui', 'con quien'),
+    ('route la plus longue', 'carretera larga'),
+    ('armee la plus puissante', 'mayor ejercito'),
+    ('construction de routes', 'carretera'),
+    ('carte developpement', 'desarrollo carta'),
+    ('cartes developpement', 'desarrollo carta'),
+    ('point de victoire', 'punto victoria'),
+    ('points de victoire', 'punto victoria'),
+    ('ordre de depart', 'salida'),
+    ('taille de table', 'mesa'),
+    ('que ce qui lui revient', 'de lo que toca'),
+    ('comme ils devraient', 'deberia'),
+    ('le plus', 'mas'),
+    ('le moins', 'menos'),
+    ('le mieux', 'mejor'),
+    ('les des', 'tirada'),
+    ('aux des', 'tirada'),
+    ('vaut le coup', 'compensa'),
+)
+
+# Y palabra a palabra. Las vacias se borran: no dicen nada de la pregunta y
+# ensucian la bolsa con la que se puntua cada vista.
+PREGUNTAS = {
+    'achete': 'compro', 'acheter': 'compro', 'adjuge': 'pillo',
+    'amis': 'amigo', 'argile': 'arcilla', 'armee': 'ejercito',
+    'arrive': 'llego', 'attendu': 'esperado', 'au': '', 'aux': '',
+    'avec': 'con', 'banque': 'banca', 'ble': 'cereales', 'bloque': 'bloqueo',
+    'bloquer': 'bloqueo', 'bloques': 'bloqueo', 'bois': 'madera', 'bot': 'ias',
+    'bots': 'ias', 'carte': 'carta', 'cartes': 'carta', 'cause': '', 'ce': '',
+    'ces': '', 'cette': '', 'chacun': 'cada', 'chance': 'suerte',
+    'chaque': 'cada', 'chevalier': 'caballero', 'chevaliers': 'caballero',
+    'choisit': 'elige', 'cinquieme': 'quinto', 'classe': 'colocado',
+    'colonie': 'poblado', 'colonies': 'poblado', 'combien': 'cuanto',
+    'compensa': 'compensa', 'construction': 'edificio',
+    'constructions': 'edificio', 'contre': 'contra', 'couleur': 'color',
+    'cout': 'cuesta', 'coute': 'cuesta', 'd': '', 'dans': '', 'de': '',
+    'demande': 'pidio', 'demandent': 'pidio', 'depart': 'salida',
+    'dernier': 'ultimo', 'des': '', 'deuxieme': 'segundo',
+    'developpement': 'desarrollo', 'donne': 'dio', 'donnees': 'dio',
+    'donner': 'dio', 'du': '', 'dure': 'minuto', 'duree': 'minuto',
+    'durent': 'minuto', 'echange': 'trato', 'echanger': 'trato',
+    'echanges': 'trato', 'elle': '', 'elles': '', 'en': '', 'entre': 'entre',
+    'envoie': 'manda', 'envoyer': 'manda', 'est': '', 'et': '',
+    'eu': 'recibio', 'faire': '', 'fait': '', 'fini': 'acabo',
+    'finir': 'acabo', 'finit': 'acabo', 'fois': 'veces', 'froment': 'cereales',
+    'gagnant': 'victoria', 'gagne': 'victoria', 'gagner': 'victoria',
+    'generique': 'generico', 'gens': 'persona', 'heure': 'hora',
+    'humain': 'persona', 'humains': 'persona', 'ia': 'ias', 'il': '',
+    'ils': '', 'installe': 'poblado', 'invention': 'invencion',
+    'jet': 'tirada', 'jets': 'tirada', 'joue': 'juega', 'jouees': 'juega',
+    'jouent': 'juega', 'jouer': 'juega', 'joueur': 'jugador',
+    'joueurs': 'jugador', 'jour': 'dia', 'joué': 'juega', 'l': '', 'la': '',
+    'laine': 'lana', 'lance': 'tirada', 'lancer': 'tirada', 'le': '',
+    'les': '', 'leur': '', 'leurs': '', 'ma': 'mi', 'machine': 'ias',
+    'main': 'mano', 'manque': 'corto', 'marge': 'margen', 'me': 'me',
+    'meilleur': 'mejor', 'mes': 'mi', 'mieux': 'mejor', 'minerai': 'mineral',
+    'minute': 'minuto', 'minutes': 'minuto', 'moi': 'me', 'moins': 'menos',
+    'mon': 'mi', 'monopole': 'monopolio', 'monopoles': 'monopolio',
+    'mouton': 'lana', 'moyenne': 'medio', 'ne': '', 'net': 'neto',
+    'nom': 'nombre', 'normal': 'normal', 'nous': 'nos', 'numero': 'numero',
+    'numeros': 'numero', 'on': '', 'ont': '', 'ordinateur': 'ias',
+    'ou': 'donde', 'paquet': 'mazo', 'par': '', 'part': 'salida',
+    'parti': 'salida', 'partie': 'partida', 'parties': 'partida', 'partir': '',
+    'pas': '', 'pastilles': 'puntitos', 'perd': 'perdido', 'perdre': 'perdido',
+    'perdu': 'perdido', 'perdues': 'perdido', 'personne': 'nadie',
+    'personnes': 'persona', 'piece': 'pieza', 'pieces': 'pieza',
+    'place': 'puesto', 'plateau': 'tablero', 'plateaux': 'tablero',
+    'plus': 'mas', 'point': 'punto', 'points': 'punto', 'port': 'puerto',
+    'ports': 'puerto', 'pose': 'pone', 'poser': 'pone', 'pour': '',
+    'pourcentage': 'porcentaje', 'premier': 'primero', 'premiere': 'primero',
+    'prend': 'saca', 'prendre': 'saca', 'pris': 'pillo',
+    'production': 'produccion', 'produit': 'produccion',
+    'produite': 'produccion', 'proportion': 'proporcion', 'propose': 'propone',
+    'proposer': 'propone', 'qu': '', 'quand': 'cuando', 'quatrieme': 'cuarto',
+    'que': '', 'quel': 'cual', 'quelle': 'cual', 'quelles': 'cual',
+    'quelqu': 'alguien', 'quelquun': 'alguien', 'quels': 'cual',
+    'qui': 'quien', 'rang': 'colocado', 'recevoir': 'recibio',
+    'recoit': 'recibio', 'recu': 'recibio', 'ressource': 'recurso',
+    'ressources': 'recurso', 'revient': 'toca', 'route': 'carretera',
+    'routes': 'carretera', 'rythme': 'ritmo', 'sa': '', 'se': '',
+    'second': 'segundo', 'sept': 'siete', 'ses': '', 'sixieme': 'sexto',
+    'solde': 'saldo', 'son': '', 'sont': '', 'chiffre': 'numero', 'chiffres': 'numero', 'sort': 'salio',
+    'vient': 'salio', 'viennent': 'salio',
+    'sortent': 'salio', 'sorti': 'salio', 'sortir': 'salio',
+    'souvent': 'veces', 'subi': 'sufrio', 't': '', 'table': 'mesa',
+    'tables': 'mesa', 'tire': 'salieron', 'tires': 'salieron',
+    'tombent': 'toca', 'total': 'total', 'toujours': '', 'tour': 'turno',
+    'tours': 'turno', 'tous': 'todo', 'toutes': 'todo', 'troisieme': 'tercero',
+    'truque': '', 'truques': '', 'tuile': 'casilla', 'tuiles': 'casilla',
+    'un': '', 'une': '', 'utilise': 'uso', 'utiliser': 'uso', 'veut': 'mania',
+    'victoire': 'victoria', 'ville': 'ciudad', 'villes': 'ciudad',
+    'vole': 'robo', 'volees': 'robo', 'voler': 'robo', 'voles': 'robo',
+    'voleur': 'ladron', 'voleurs': 'ladron', 'vols': 'robo', 'y': '',
+}
+
+# Y con lo que CONTESTA la caja. Son plantillas de `%`, no de `{}`: los
+# huecos van por ORDEN y no por nombre, asi que una traduccion que se coma un
+# `%s` o que le cambie el orden no se ve rara, revienta al pintarla o dice
+# otra cosa. `db/pruebas.py` los compara uno a uno.
+#
+# Las cuatro ultimas no son frases sino palabras que se meten DENTRO de las
+# plantillas: «El que %s %s» se rellena con «mas» o «menos», y las vistas de
+# parejas enlazan los dos nombres con «con» o con «a».
+RESPUESTAS = {
+    '  (juntando las filas de «%s»)': '  (en regroupant les lignes de « %s »)',
+    '  (sumando %d filas)': '  (en additionnant %d lignes)',
+    '  Aunque con estos datos no se sale nadie del margen: la diferencia cabe en el error.':
+        "  Même si avec ces données personne ne sort de la marge : la différence tient dans l'erreur.",
+    '  Repartido: ': '  Réparti : ',
+    '  Sobre todo %s (%d de %d).': '  Surtout %s (%d sur %d).',
+    '%d, en «%s».': '%d, dans « %s ».',
+    '%s a %s: %s de %s.': '%s à %s : %s sur %s.',
+    '%s a %s: ninguna vez, en «%s».': '%s à %s : aucune fois, dans « %s ».',
+    '%s con %s %s: %s, con %s.': '%s avec %s %s : %s, avec %s.',
+    '%s no sale en «%s».': "%s n'apparaît pas dans « %s ».",
+    '%s, %s %s %s: %s, con %s de %s.': '%s, %s %s %s : %s, avec %s sur %s.',
+    '%s, %s: %s': '%s, %s : %s',
+    '%s, %s: %s  (una por partida)': '%s, %s : %s  (une par partie)',
+    '%s, en el %s (%s: %s).': '%s, sur le %s (%s : %s).',
+    '%s: %d en «%s».': '%s : %d dans « %s ».',
+    '%s: %s de %s.': '%s : %s sur %s.',
+    'El que %s %s: %s, con %s (%s de %s).':
+        'Celui qui a le %s de %s : %s, avec %s (%s sur %s).',
+    'El que %s %s: %s, con %s.': 'Celui qui a le %s de %s : %s, avec %s.',
+    'En el %s no hay %s.': "Sur le %s il n'y a pas de %s.",
+    'En el %s no hay nada en «%s».': "Sur le %s il n'y a rien dans « %s ».",
+    'En el %s no hay ninguno: %s es 0.':
+        "Sur le %s il n'y en a aucun : %s vaut 0.",
+    'En el %s: %s %s.': 'Sur le %s : %s %s.',
+    'En el %s: %s.': 'Sur le %s : %s.',
+    'En total, %s de %s.': 'Au total, %s sur %s.',
+    'Eso no lo tengo en una columna, pero lo que preguntas esta en «%s», aqui debajo.':
+        "Je n'ai pas ça dans une colonne, mais ce que tu demandes est dans « %s », juste en dessous.",
+    'Eso no lo tengo guardado en ninguna vista. Prueba con otra palabra: caballeros, monopolios, puertos, robos, suerte, tiradas, puntos, ladron, comercio...':
+        "Je n'ai pas ça enregistré dans une vue. Essaie un autre mot : chevaliers, monopoles, ports, vols, chance, jets, points, voleur, échanges...",
+    'Eso no sale en un numero. Lo tienes en «%s», aqui debajo.':
+        "Ça ne sort pas en un chiffre. Tu l'as dans « %s », juste en dessous.",
+    'Lo de %s con %s esta aqui debajo.':
+        'Ce que %s a fait avec %s est juste en dessous.',
+    'Lo del %s esta aqui debajo.': 'Le %s est juste en dessous.',
+    'Lo que preguntas esta en «%s», columna «%s».':
+        'Ce que tu demandes est dans « %s », colonne « %s ».',
+    'Lo tienes en «%s», aqui debajo.':
+        "Tu l'as dans « %s », juste en dessous.",
+    'No se de que me hablas. Nombra algo: caballeros, monopolios, puertos, robos, suerte, tiradas, puntos, ladron...':
+        'Je ne vois pas de quoi tu parles. Nomme quelque chose : chevaliers, monopoles, ports, vols, chance, jets, points, voleur...',
+    'Preguntame algo.': 'Demande-moi quelque chose.',
+    'Todavia no hay base de datos.': "Il n'y a pas encore de base de données.",
+    'a': 'à',
+    'con': 'avec',
+    'mas': 'plus',
+    'menos': 'moins',
+    'no se ha podido leer la base: %s': 'impossible de lire la base : %s',
+    '«%s» me vale para %d personas (%s). Dime cual, o ponles nombre en el paso 2: mientras se llamen todos «jugador_algo» no los puedo distinguir.':
+        "« %s » correspond à %d personnes (%s). Dis-moi laquelle, ou donne-leur un nom à l'étape 2 : tant qu'elles s'appellent toutes « jugador_quelque_chose » je ne peux pas les distinguer.",
+}
+
+
 # Qué quiere decir cada columna y qué es una fila. NO está aquí: vive en
 # `catalogFR.py`, al lado, y está escrito ENTERO en francés -- los nombres de
 # vista y de columna incluidos. Quien lo abre ya está leyendo en francés; no

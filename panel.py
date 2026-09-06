@@ -1227,14 +1227,14 @@ def _agrupar(cols, filas, eje):
     return nuevas_cols, nuevas
 
 
-def _y_que_recursos(cols, filas):
+def _y_que_recursos(cols, filas, idioma=None):
     """«...sobre todo arcilla (23)», si la fila trae el desglose.
 
     Media pregunta se quedaba sin contestar: «quien ha perdido mas recursos
     por el ladron Y QUE RECURSOS» daba el total y se callaba la segunda mitad,
     teniendo las cinco columnas al lado."""
     if not all(r in cols for r in _RECURSOS):
-        return ""
+        return _di("", idioma)
     suma = {}
     for r in _RECURSOS:
         k = cols.index(r)
@@ -1242,13 +1242,13 @@ def _y_que_recursos(cols, filas):
         if vals:
             suma[r] = sum(vals)
     if not suma or not max(suma.values()):
-        return ""
+        return _di("", idioma)
     cual = max(suma, key=lambda r: suma[r])
     otros = sum(v for r, v in suma.items() if r != cual)
     if suma[cual] <= otros / 2.0:          # repartido: decirlo seria mentir
-        return "  Repartido: " + ", ".join(
+        return _di("  Repartido: ", idioma) + ", ".join(
             "%s %d" % (r, suma[r]) for r in _RECURSOS if suma.get(r))
-    return "  Sobre todo %s (%d de %d)." % (cual, suma[cual],
+    return _di("  Sobre todo %s (%d de %d).", idioma) % (cual, suma[cual],
                                             sum(suma.values()))
 
 
@@ -1274,7 +1274,18 @@ def _palabras_utiles(palabras, suyas):
     return utiles
 
 
-def preguntar(texto, ambito="amigos"):
+def _di(frase, idioma):
+    """Una frase de la caja de preguntas, en el idioma del panel.
+
+    Va envolviendo cada plantilla en su sitio en vez de traducir la frase ya
+    montada, y la diferencia importa: para cuando la frase esta montada lleva
+    dentro nombres de personas y numeros, y una traduccion por texto los
+    tocaria. Aqui se traduce el molde y los datos entran despues.
+    """
+    return idiomas.respuesta(frase, idioma)
+
+
+def preguntar(texto, ambito="amigos", idioma=None):
     """Busca la respuesta en las vistas y la dice con una frase.
 
     No hay ningun modelo de lenguaje detras y no hace falta: la pregunta no se
@@ -1287,11 +1298,17 @@ def preguntar(texto, ambito="amigos"):
     puede comprobar es peor que no tenerlo."""
     conn = _abrir_base()
     if conn is None:
-        return {"error": "Todavia no hay base de datos."}
+        return {"error": _di("Todavia no hay base de datos.", idioma)}
+    # La pregunta llega en el idioma del panel y aqui se reescribe con las
+    # palabras castellanas contra las que se empareja. En castellano no toca
+    # nada. Lo que sale no es castellano correcto -- «who wins most» queda
+    # como «quien victoria mas» -- y no hace falta que lo sea: lo unico que
+    # se mira es la bolsa de palabras.
+    texto = idiomas.pregunta(texto, idioma)
     try:
         palabras = _pelado(texto)
         if not palabras:
-            return {"error": "Preguntame algo."}
+            return {"error": _di("Preguntame algo.", idioma)}
         pistas = set(palabras)
         # «A QUIEN» y «CON QUIEN» piden un nombre, no un total, y solo lo
         # pueden contestar las vistas de parejas. Hay que mirarlo en las
@@ -1378,10 +1395,10 @@ def preguntar(texto, ambito="amigos"):
         if ambiguas:
             p, quienes = ambiguas[0]
             return {"sin_respuesta": True,
-                    "respuesta": "«%s» me vale para %d personas (%s). "
+                    "respuesta": _di("«%s» me vale para %d personas (%s). "
                                  "Dime cual, o ponles nombre en el paso 2: "
                                  "mientras se llamen todos «jugador_algo» no "
-                                 "los puedo distinguir."
+                                 "los puedo distinguir.", idioma)
                                  % (p, len(quienes), ", ".join(quienes[:4]))}
         # En el orden en que salen en la frase: el primero es quien hace la
         # accion y el segundo quien la recibe, que es como se habla.
@@ -1392,9 +1409,9 @@ def preguntar(texto, ambito="amigos"):
         utiles = _palabras_utiles(palabras, suyas)
         if not utiles:
             return {"sin_respuesta": True,
-                    "respuesta": "No se de que me hablas. Nombra algo: "
+                    "respuesta": _di("No se de que me hablas. Nombra algo: "
                                  "caballeros, monopolios, puertos, robos, "
-                                 "suerte, tiradas, puntos, ladron...",
+                                 "suerte, tiradas, puntos, ladron...", idioma),
                     "columnas": [], "filas": [], "otras": []}
 
         # 2. Puntuar cada columna de cada vista. Tres clases de respuesta:
@@ -1514,10 +1531,10 @@ def preguntar(texto, ambito="amigos"):
                       if c["punto"] >= _MINIMO or c["clase"] == "vista"]
         if not candidatos:
             return {"sin_respuesta": True,
-                    "respuesta": "Eso no lo tengo guardado en ninguna vista. "
+                    "respuesta": _di("Eso no lo tengo guardado en ninguna vista. "
                                  "Prueba con otra palabra: caballeros, "
                                  "monopolios, puertos, robos, suerte, "
-                                 "tiradas, puntos, ladron, comercio...",
+                                 "tiradas, puntos, ladron, comercio...", idioma),
                     "columnas": [], "filas": [], "otras": []}
         candidatos.sort(key=lambda c: (-c["punto"], c["v"]["nombre"]))
 
@@ -1627,38 +1644,38 @@ def preguntar(texto, ambito="amigos"):
                 # «en la partida 7 quien gano» -> `gano` de esa fila.
                 sueltos = [str(f[cols.index(col)]) for f in filas
                            if f[cols.index(col)] is not None]
-                frase = ("En el %s: %s." % (valor, ", ".join(sueltos[:5]))
+                frase = (_di("En el %s: %s.", idioma) % (valor, ", ".join(sueltos[:5]))
                          if sueltos else
-                         "En el %s no hay %s." % (valor, col.replace("_", " ")))
+                         _di("En el %s no hay %s.", idioma) % (valor, idiomas.columna(col, idioma)))
             elif "quien" in cols and filas:
                 j = cols.index("quien")
                 if medida is not None:
                     vivos = [f for f in filas if numero(f[medida]) and f[medida]]
                     if not vivos:
-                        frase = "En el %s no hay ninguno: %s es 0." % (
-                            valor, cols[medida].replace("_", " "))
+                        frase = _di("En el %s no hay ninguno: %s es 0.", idioma) % (
+                            valor, idiomas.columna(cols[medida], idioma))
                     elif len(vivos) == 1:
-                        frase = "%s, en el %s (%s: %s)." % (
+                        frase = _di("%s, en el %s (%s: %s).", idioma) % (
                             vivos[0][j], valor,
-                            cols[medida].replace("_", " "), vivos[0][medida])
+                            idiomas.columna(cols[medida], idioma), vivos[0][medida])
                     else:
                         vivos.sort(key=lambda f: -f[medida])
-                        frase = "En el %s: %s." % (valor, ", ".join(
+                        frase = _di("En el %s: %s.", idioma) % (valor, ", ".join(
                             "%s (%s)" % (f[j], f[medida]) for f in vivos[:5]))
                 else:
-                    frase = "En el %s: %s." % (valor, ", ".join(
+                    frase = _di("En el %s: %s.", idioma) % (valor, ", ".join(
                         sorted(set(str(f[j]) for f in filas))[:5]))
             elif filas:
                 k2 = mejor_medida(cols, filas, utiles)
                 if k2 is not None and numero(filas[0][k2]):
-                    frase = "En el %s: %s %s." % (
-                        valor, filas[0][k2], cols[k2].replace("_", " "))
+                    frase = _di("En el %s: %s %s.", idioma) % (
+                        valor, filas[0][k2], idiomas.columna(cols[k2], idioma))
                 else:
-                    frase = "Lo del %s esta aqui debajo." % valor
+                    frase = _di("Lo del %s esta aqui debajo.", idioma) % valor
             else:
-                frase = "En el %s no hay nada en «%s»." % (valor, v["titulo"])
+                frase = _di("En el %s no hay nada en «%s».", idioma) % (valor, v["titulo"])
         elif pareja_vacia:
-            frase = "%s a %s: ninguna vez, en «%s»." % (persona, segunda,
+            frase = _di("%s a %s: ninguna vez, en «%s».", idioma) % (persona, segunda,
                                                         v["titulo"])
         elif segunda and "a_quien" in cols and filas:
             # Los dos nombrados y la vista de parejas: la fila ya esta
@@ -1668,22 +1685,22 @@ def preguntar(texto, ambito="amigos"):
             k = (cols.index(col) if col and col not in _EJES and col in cols
                  else mejor_medida(cols, filas, utiles))
             if k is None:
-                frase = "Lo de %s con %s esta aqui debajo." % (persona, segunda)
+                frase = _di("Lo de %s con %s esta aqui debajo.", idioma) % (persona, segunda)
             else:
                 total = sum(f[k] for f in filas if numero(f[k]))
-                frase = "%s a %s: %s de %s." % (
-                    persona, segunda, total, cols[k].replace("_", " "))
+                frase = _di("%s a %s: %s de %s.", idioma) % (
+                    persona, segunda, total, idiomas.columna(cols[k], idioma))
         elif elegido["clase"] == "vista":
-            frase = ("Eso no lo tengo en una columna, pero lo que preguntas "
-                     "esta en «%s», aqui debajo." % v["titulo"])
+            frase = (_di("Eso no lo tengo en una columna, pero lo que preguntas "
+                     "esta en «%s», aqui debajo.", idioma) % v["titulo"])
         elif elegido["clase"] == "filas":
-            frase = ("%s: %d en «%s»." % (persona, len(filas), v["titulo"])
-                     if persona else "%d, en «%s»." % (len(filas), v["titulo"]))
+            frase = (_di("%s: %d en «%s».", idioma) % (persona, len(filas), v["titulo"])
+                     if persona else _di("%d, en «%s».", idioma) % (len(filas), v["titulo"]))
         else:
-            legible = col.replace("_", " ")
+            legible = idiomas.columna(col, idioma)
             valores = [f[i] for f in filas if numero(f[i])]
             if persona and "quien" in cols and not filas:
-                frase = "%s no sale en «%s»." % (persona, v["titulo"])
+                frase = _di("%s no sale en «%s».", idioma) % (persona, v["titulo"])
             elif (col in _EJES and not persona
                   and (pistas & (_PISTAS_QUIEN | _PISTAS_TOTAL))):
                 # Lo preguntado es un eje. Si la vista tiene MAS de una fila
@@ -1697,28 +1714,28 @@ def preguntar(texto, ambito="amigos"):
                 k = mejor_medida(cols, filas, utiles)
                 if k is None:
                     agrupada = False
-                    frase = "Lo tienes en «%s», aqui debajo." % v["titulo"]
+                    frase = _di("Lo tienes en «%s», aqui debajo.", idioma) % v["titulo"]
                 else:
                     al_reves = _mira_al_que_menos(pistas)
                     utiles_f = [f for f in filas if numero(f[k])]
                     mejor = (min(utiles_f, key=lambda f: f[k]) if al_reves
                              else max(utiles_f, key=lambda f: f[k]))
-                    frase = "%s con %s %s: %s, con %s." % (
+                    frase = _di("%s con %s %s: %s, con %s.", idioma) % (
                         legible.capitalize(), "menos" if al_reves else "mas",
-                        cols[k].replace("_", " "), mejor[i], mejor[k])
+                        idiomas.columna(cols[k], idioma), mejor[i], mejor[k])
             elif segunda and "a_quien" in cols and valores:
-                frase = "%s a %s: %s de %s." % (persona, segunda,
+                frase = _di("%s a %s: %s de %s.", idioma) % (persona, segunda,
                                                 redondo(sum(valores)), legible)
             elif persona and not valores:
                 # Columna de texto y una persona: se lee la lista.
                 sueltos = [str(f[i]) for f in filas if f[i] is not None]
-                frase = "%s, %s: %s" % (persona, legible,
+                frase = _di("%s, %s: %s", idioma) % (persona, legible,
                                         ", ".join(sueltos[:8]) or "nada")
             elif persona and col in _NO_SE_SUMAN and len(valores) > 1:
                 # Turnos, medias y porcentajes NO se suman. «En que turno hizo
                 # su primera ciudad elGato» contestaba 131, que es la suma de
                 # cinco turnos y no significa nada.
-                frase = "%s, %s: %s  (una por partida)" % (
+                frase = _di("%s, %s: %s  (una por partida)", idioma) % (
                     persona, legible, ", ".join(str(redondo(x))
                                                 for x in valores))
             elif (persona and valores and len(filas) > 1
@@ -1734,22 +1751,22 @@ def preguntar(texto, ambito="amigos"):
                 # ya no se miraba que se preguntaba de esa persona. Con una
                 # vista de parejas eso se come justo la mitad interesante.
                 cual = "con_quien" if "con_quien" in cols else "a_quien"
-                como = cual.replace("_", " ")
+                como = idiomas.columna(cual, idioma)
                 j = cols.index(cual)
                 al_reves = _mira_al_que_menos(pistas)
                 utiles_f = [f for f in filas if numero(f[i])]
                 mejor = (min(utiles_f, key=lambda f: f[i]) if al_reves
                          else max(utiles_f, key=lambda f: f[i]))
-                frase = "%s, %s %s %s: %s, con %s de %s." % (
+                frase = _di("%s, %s %s %s: %s, con %s de %s.", idioma) % (
                     persona, como, "menos" if al_reves else "mas", legible,
                     mejor[j], redondo(mejor[i]), redondo(sum(valores)))
             elif persona:
-                frase = "%s: %s de %s." % (persona, redondo(sum(valores)),
+                frase = _di("%s: %s de %s.", idioma) % (persona, redondo(sum(valores)),
                                            legible)
                 if len(valores) > 1:
-                    frase += "  (sumando %d filas)" % len(valores)
+                    frase += _di("  (sumando %d filas)", idioma) % len(valores)
                 if col not in _RECURSOS:
-                    frase += _y_que_recursos(cols, filas)
+                    frase += _y_que_recursos(cols, filas, idioma)
             elif pistas & _PISTAS_QUIEN and "quien" in cols and valores:
                 j = cols.index("quien")
                 # «Menos» no es «mas» al reves de decirlo: es el otro extremo.
@@ -1782,26 +1799,29 @@ def preguntar(texto, ambito="amigos"):
                 # pregunta nombraba a alguien; sin nombre se caia aqui y se
                 # perdia la otra mitad.
                 quienes = mejor[j]
-                for otro, palabra in (("con_quien", "con"), ("a_quien", "a")):
+                for otro, palabra in (("con_quien", _di("con", idioma)),
+                                      ("a_quien", _di("a", idioma))):
                     if otro in cols and mejor[cols.index(otro)] is not None:
                         quienes = "%s %s %s" % (mejor[j], palabra,
                                                 mejor[cols.index(otro)])
                         break
-                frase = "El que %s %s: %s, con %s." % (
-                    "menos" if al_reves else "mas", legible, quienes, mejor[i])
+                frase = _di("El que %s %s: %s, con %s.", idioma) % (
+                    _di("menos", idioma) if al_reves else _di("mas", idioma),
+                    legible, quienes, mejor[i])
                 if k != i:
-                    frase = ("El que %s %s: %s, con %s (%s de %s)." % (
-                        "menos" if al_reves else "mas", legible, quienes,
-                        mejor[i], mejor[k], cols[k].replace("_", " ")))
+                    frase = (_di("El que %s %s: %s, con %s (%s de %s).", idioma) % (
+                        _di("menos", idioma) if al_reves
+                        else _di("mas", idioma), legible, quienes,
+                        mejor[i], mejor[k], idiomas.columna(cols[k], idioma)))
                     # Y si NADIE se sale del margen, eso es la respuesta: la
                     # tabla ordenada tiene siempre un primero, y llamarle
                     # «el que mas suerte» a una diferencia que cabe en el
                     # error es inventarse un hallazgo.
                     if "margen" in cols and abs(numero(mejor[k]) or 0) < 2:
-                        frase += ("  Aunque con estos datos no se sale nadie "
-                                  "del margen: la diferencia cabe en el error.")
+                        frase += (_di("  Aunque con estos datos no se sale nadie "
+                                  "del margen: la diferencia cabe en el error.", idioma))
                 if col not in _RECURSOS:
-                    frase += _y_que_recursos(cols, [mejor])
+                    frase += _y_que_recursos(cols, [mejor], idioma)
             elif pistas & _PISTAS_TOTAL and valores and col in _NO_SE_SUMAN:
                 # «Cuantas casillas tiene el tablero» sumaba las de las
                 # catorce partidas: 182. La cuenta esta bien y el numero no
@@ -1812,23 +1832,23 @@ def preguntar(texto, ambito="amigos"):
                     " o ".join(str(x) for x in distintos[:4]),
                     "" if len(distintos) <= 4 else ", y mas")
             elif pistas & _PISTAS_TOTAL and valores:
-                frase = "En total, %s de %s." % (redondo(sum(valores)), legible)
+                frase = _di("En total, %s de %s.", idioma) % (redondo(sum(valores)), legible)
             elif not valores:
                 # Columna de texto. Con una persona delante se puede leer;
                 # sin nadie, una lista de veinte nombres no contesta nada.
                 if persona:
                     sueltos = [str(f[i]) for f in filas if f[i] is not None][:6]
-                    frase = "%s, %s: %s" % (persona, legible,
+                    frase = _di("%s, %s: %s", idioma) % (persona, legible,
                                             ", ".join(sueltos) or "nada")
                 else:
-                    frase = ("Eso no sale en un numero. Lo tienes en «%s», "
-                             "aqui debajo." % v["titulo"])
+                    frase = (_di("Eso no sale en un numero. Lo tienes en «%s», "
+                             "aqui debajo.", idioma) % v["titulo"])
             else:
-                frase = "Lo que preguntas esta en «%s», columna «%s»." % (
+                frase = _di("Lo que preguntas esta en «%s», columna «%s».", idioma) % (
                     v["titulo"], legible)
 
         if agrupada:
-            frase += "  (juntando las filas de «%s»)" % v["titulo"]
+            frase += _di("  (juntando las filas de «%s»)", idioma) % v["titulo"]
 
         otras, vistos = [], {(v["nombre"], col)}
         for c in candidatos[1:]:
@@ -1836,20 +1856,29 @@ def preguntar(texto, ambito="amigos"):
             if clave in vistos:
                 continue
             vistos.add(clave)
-            otras.append({"vista": c["v"]["nombre"], "titulo": c["v"]["titulo"],
+            otras.append({"vista": c["v"]["nombre"],
+                          "titulo": idiomas.frase(c["v"]["titulo"], idioma),
                           "columna": c["col"] or ""})
             if len(otras) == 4:
                 break
 
         return {"respuesta": frase, "vista": v["nombre"],
-                "titulo": v["titulo"], "columna": col, "persona": persona,
-                "columnas": cols, "filas": [list(f) for f in filas[:40]],
+                "titulo": idiomas.frase(v["titulo"], idioma),
+                "columna": col, "persona": persona,
+                "columnas": cols,
+                # Las cabeceras traducidas, igual que en `/vista`: el nombre
+                # de SQL se manda porque con el se ordena, y la etiqueta
+                # porque es lo que se pinta.
+                "etiquetas": [idiomas.columna(c, idioma) for c in cols],
+                "filas": [list(f) for f in filas[:40]],
+                # `--ambito` es una opcion de la linea de ordenes. Traducirla
+                # daria un comando que no existe.
                 "de_donde": "py db/vistas.py --ver %s%s"
                             % (v["nombre"],
                                "" if ambito == "amigos" else " --ambito " + ambito),
                 "otras": otras}
     except sqlite3.Error as e:
-        return {"error": "no se ha podido leer la base: %s" % e}
+        return {"error": _di("no se ha podido leer la base: %s", idioma) % e}
     finally:
         conn.close()
 
@@ -3122,7 +3151,10 @@ async function preguntar(){
     vistaElegida = r.vista;
     for (const x of document.querySelectorAll("#botonesVista button"))
       x.classList.toggle("elegida", x.dataset.vista === vistaElegida);
-    pintarTabla({columnas: r.columnas, filas: r.filas});
+    // Con las etiquetas, que si no la tabla de la respuesta sale con
+    // los nombres de SQL mientras el resto del panel va traducido.
+    pintarTabla({columnas: r.columnas, etiquetas: r.etiquetas,
+                 filas: r.filas});
     document.getElementById("queEs").textContent =
       "En la ventana negra:  " + r.de_donde;
   }
@@ -3811,7 +3843,8 @@ class Manejador(BaseHTTPRequestHandler):
             # columnas. Lo unico que sale de aqui son vistas que ya existen.
             return self._json(preguntar(
                 unquote(args.get("q", "")).replace("+", " "),
-                unquote(args.get("ambito", "")) or "amigos"))
+                unquote(args.get("ambito", "")) or "amigos",
+                _idioma_pedido(self.headers, consulta)))
         if ruta == "/vista":
             args = dict(p.split("=", 1) for p in consulta.split("&") if "=" in p)
             partida = args.get("partida") or ""

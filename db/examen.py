@@ -174,6 +174,202 @@ PAREJAS = [
 ]
 
 
+# Y el mismo examen en los otros idiomas. NO es una traduccion palabra a
+# palabra del castellano: son las preguntas como las escribiria alguien en su
+# idioma, que es lo unico que sirve para medir. Traduciendo literalmente se
+# mediria si el diccionario deshace mi propia traduccion, que es una prueba
+# que se aprueba sola.
+#
+# La nota que importa no es la absoluta sino la comparada: la caja falla lo
+# que falla tambien en castellano, y lo que no puede pasar es que falle MAS
+# por el idioma.
+# --- ingles ---
+EXAMEN_EN = [
+    ("how many games have we played", "partidas"),
+    ("how long do the games last", "partidas"),
+    ("how many games were against the computer", "partidas"),
+    ("what color did ALGUIEN play", "jugadores"),
+    ("who wins most", "amigos_marcador"),
+    ("who finishes best ranked", "amigos_marcador"),
+    ("how many games has ALGUIEN won", "amigos_marcador"),
+    ("where did ALGUIEN get their points from", "amigos_puntos"),
+    ("who has the most cities", "amigos_puntos"),
+    ("who reaches their first city earliest", "amigos_ritmo"),
+    ("on what turn did ALGUIEN buy their first card", "amigos_ritmo"),
+    ("does it pay to start first", "amigos_por_salida"),
+    ("how does the one who starts fourth do", "amigos_por_salida"),
+    ("how many times has ALGUIEN started first", "amigos_salida_de_cada_uno"),
+    ("who gets to start first most often", "amigos_salida_de_cada_uno"),
+    ("what position did each one start in", "amigos_salida"),
+    ("how many knights has ALGUIEN played", "amigos_desarrollo"),
+    ("who buys the most development cards", "amigos_desarrollo"),
+    ("how many victory points has ALGUIEN drawn", "amigos_desarrollo"),
+    ("do the knights come out as they should", "amigos_mazo"),
+    ("what comes out of the deck most", "amigos_mazo"),
+    ("who has played monopolies", "amigos_monopolios"),
+    ("what resource do they ask for in the monopolies", "amigos_monopolios"),
+    ("who does ALGUIEN take most from with the monopoly",
+     "amigos_monopolios_a_quien"),
+    ("who takes most sheep from me with the monopoly",
+     "amigos_monopolios_a_quien"),
+    ("who gets more robbers than they should", "amigos_ladron_proporcion"),
+    ("who gets the most robbers in proportion", "amigos_ladron_proporcion"),
+    ("on whom is the robber put most in proportion",
+     "amigos_ladron_proporcion"),
+    ("how much does the robber cost me", "amigos_ladron"),
+    ("how many resources has ALGUIEN lost to the robber", "amigos_ladron"),
+    ("on whom does ALGUIEN put the robber most", "amigos_ladron_a_quien"),
+    ("who has it in for whom with the robber", "amigos_ladron_a_quien"),
+    ("what numbers does ALGUIEN send the robber to", "amigos_ladron_donde"),
+    ("where does ALGUIEN put the robber", "amigos_ladron_donde"),
+    ("which number gets the robber most", "amigos_ladron_numeros"),
+    ("how many cards has ALGUIEN stolen from the hand", "amigos_robos"),
+    ("who steals most", "amigos_robos"),
+    ("from whom does ALGUIEN steal most", "amigos_ladron_a_quien"),
+    ("who proposes the most deals", "amigos_comercio"),
+    ("with whom has ALGUIEN made the most deals", "amigos_comercio"),
+    ("does ALGUIEN come out ahead on cards in the deals", "amigos_comercio"),
+    ("who gains most in the exchanges", "amigos_saldo"),
+    ("who comes out ahead on cards across all the deals", "amigos_saldo"),
+    ("how many cards has ALGUIEN given the others", "amigos_saldo"),
+    ("what is my balance with each one", "amigos_saldo"),
+    ("what deal was made on turn 20", "amigos_tratos"),
+    ("what resource does ALGUIEN give most in the deals",
+     "amigos_comercio_material"),
+    ("to whom do I always end up giving wood", "amigos_comercio_material"),
+    ("who uses the ports most", "amigos_puertos"),
+    ("from what turn does ALGUIEN use the port", "amigos_puertos"),
+    ("how many ports has ALGUIEN claimed", "amigos_cuantos_puertos"),
+    ("who ended up with each port", "amigos_puertos_pillados"),
+    ("what ports did nobody claim", "amigos_puertos_pillados"),
+    ("how much ore has ALGUIEN produced", "amigos_produccion"),
+    ("what resource is ALGUIEN short of", "amigos_produccion"),
+    ("how much wool has ALGUIEN got", "amigos_produccion"),
+    ("how much brick has the board given ALGUIEN", "amigos_produccion"),
+    ("what numbers did ALGUIEN settle on", "amigos_numeros"),
+    ("how many times did the 8 come up for ALGUIEN", "amigos_numeros"),
+    ("are the dice rigged", "amigos_tiradas"),
+    ("who rolls the most sevens", "amigos_sietes"),
+    ("who gets more 7s", "amigos_sietes"),
+    ("on what turn did ALGUIEN place the settlement", "amigos_numeros"),
+    ("what number comes up most", "amigos_tiradas"),
+    ("how many times has the seven come up", "amigos_tiradas"),
+    ("who has had the most luck", "amigos_suerte"),
+    ("who picks the best tiles", "amigos_suerte"),
+    ("is anyone outside the luck margin", "amigos_suerte"),
+]
+
+
+# --- frances ---
+EXAMEN_FR = [
+    ("combien de parties avons-nous jouees", "partidas"),
+    ("combien de temps durent les parties", "partidas"),
+    ("combien de parties etaient contre la machine", "partidas"),
+    ("de quelle couleur a joue ALGUIEN", "jugadores"),
+    ("qui gagne le plus", "amigos_marcador"),
+    ("qui finit le mieux classe", "amigos_marcador"),
+    ("combien de parties a gagne ALGUIEN", "amigos_marcador"),
+    ("d'ou viennent les points de ALGUIEN", "amigos_puntos"),
+    ("qui a le plus de villes", "amigos_puntos"),
+    ("qui arrive le plus tot a sa premiere ville", "amigos_ritmo"),
+    ("a quel tour a achete sa premiere carte ALGUIEN", "amigos_ritmo"),
+    ("est-ce que ca vaut le coup de partir premier", "amigos_por_salida"),
+    ("comment s'en sort celui qui part quatrieme", "amigos_por_salida"),
+    ("combien de fois est parti premier ALGUIEN", "amigos_salida_de_cada_uno"),
+    ("qui part premier le plus souvent", "amigos_salida_de_cada_uno"),
+    ("de quelle place est parti chacun", "amigos_salida"),
+    ("combien de chevaliers a joue ALGUIEN", "amigos_desarrollo"),
+    ("qui achete le plus de cartes developpement", "amigos_desarrollo"),
+    ("combien de points de victoire a tires ALGUIEN", "amigos_desarrollo"),
+    ("est-ce que les chevaliers sortent comme ils devraient", "amigos_mazo"),
+    ("qu'est-ce qui sort le plus du paquet", "amigos_mazo"),
+    ("qui a joue des monopoles", "amigos_monopolios"),
+    ("quelle ressource demandent-ils dans les monopoles", "amigos_monopolios"),
+    ("a qui ALGUIEN prend le plus avec le monopole",
+     "amigos_monopolios_a_quien"),
+    ("qui me prend le plus de laine avec le monopole",
+     "amigos_monopolios_a_quien"),
+    ("qui recoit plus de voleurs que ce qui lui revient",
+     "amigos_ladron_proporcion"),
+    ("qui recoit le plus de voleurs en proportion",
+     "amigos_ladron_proporcion"),
+    ("a qui pose-t-on le plus le voleur en proportion",
+     "amigos_ladron_proporcion"),
+    ("combien me coute le voleur", "amigos_ladron"),
+    ("combien de ressources a perdu ALGUIEN a cause du voleur",
+     "amigos_ladron"),
+    ("a qui ALGUIEN pose le plus le voleur", "amigos_ladron_a_quien"),
+    ("qui en veut a qui avec le voleur", "amigos_ladron_a_quien"),
+    ("vers quels numeros envoie le voleur ALGUIEN", "amigos_ladron_donde"),
+    ("ou pose le voleur ALGUIEN", "amigos_ladron_donde"),
+    ("quel numero recoit le plus le voleur", "amigos_ladron_numeros"),
+    ("combien de cartes a volees ALGUIEN dans la main", "amigos_robos"),
+    ("qui vole le plus", "amigos_robos"),
+    ("a qui vole le plus ALGUIEN", "amigos_ladron_a_quien"),
+    ("qui propose le plus d'echanges", "amigos_comercio"),
+    ("avec qui a fait le plus d'echanges ALGUIEN", "amigos_comercio"),
+    ("est-ce que ALGUIEN sort gagnant en cartes dans les echanges",
+     "amigos_comercio"),
+    ("qui gagne le plus dans les echanges", "amigos_saldo"),
+    ("qui sort gagnant en cartes sur tous les echanges", "amigos_saldo"),
+    ("combien de cartes a donnees ALGUIEN aux autres", "amigos_saldo"),
+    ("quel est mon solde avec chacun", "amigos_saldo"),
+    ("quel echange a ete fait au tour 20", "amigos_tratos"),
+    ("quelle ressource donne le plus ALGUIEN dans les echanges",
+     "amigos_comercio_material"),
+    ("a qui je finis toujours par donner du bois", "amigos_comercio_material"),
+    ("qui utilise le plus les ports", "amigos_puertos"),
+    ("a partir de quel tour utilise le port ALGUIEN", "amigos_puertos"),
+    ("combien de ports a pris ALGUIEN", "amigos_cuantos_puertos"),
+    ("qui s'est adjuge chaque port", "amigos_puertos_pillados"),
+    ("quels ports personne n'a pris", "amigos_puertos_pillados"),
+    ("combien de minerai a produit ALGUIEN", "amigos_produccion"),
+    ("de quelle ressource manque ALGUIEN", "amigos_produccion"),
+    ("combien de laine a eu ALGUIEN", "amigos_produccion"),
+    ("combien d'argile le plateau a donne a ALGUIEN", "amigos_produccion"),
+    ("sur quels numeros s'est installe ALGUIEN", "amigos_numeros"),
+    ("combien de fois est sorti le 8 pour ALGUIEN", "amigos_numeros"),
+    ("est-ce que les des sont truques", "amigos_tiradas"),
+    ("qui sort le plus de sept", "amigos_sietes"),
+    ("a qui tombent le plus de 7", "amigos_sietes"),
+    ("a quel tour a pose la colonie ALGUIEN", "amigos_numeros"),
+    ("quel numero sort le plus", "amigos_tiradas"),
+    ("combien de fois est sorti le sept", "amigos_tiradas"),
+    ("qui a eu le plus de chance", "amigos_suerte"),
+    ("qui choisit le mieux ses tuiles", "amigos_suerte"),
+    ("est-ce que quelqu'un sort de la marge de chance", "amigos_suerte"),
+]
+
+
+def examinar_idioma(idioma, corpus):
+    """La nota de la caja en un idioma. Mismo formato que `examinar`."""
+    import panel
+    conn = sqlite3.connect("file:%s?mode=ro" % BASE.replace("\\", "/"),
+                           uri=True)
+    try:
+        quien = _alguien(conn)
+    finally:
+        conn.close()
+
+    aciertos, fallos, saltadas = 0, [], 0
+    for texto, esperada in corpus:
+        if "ALGUIEN" in texto:
+            if quien is None:
+                saltadas += 1
+                continue
+            texto = texto.replace("ALGUIEN", quien)
+        r = panel.preguntar(texto, "amigos", idioma)
+        salio = r.get("vista")
+        if salio == esperada:
+            aciertos += 1
+        else:
+            fallos.append((texto, esperada, salio, r.get("respuesta")))
+    return aciertos, len(corpus) - saltadas, fallos, saltadas
+
+
+LOS_IDIOMAS = (("en", EXAMEN_EN), ("fr", EXAMEN_FR))
+
+
 def examinar_el_lado():
     """Devuelve (aciertos, total, fallos).
 
@@ -210,8 +406,16 @@ def _alguien(conn):
     return fila[0]
 
 
+# El examen son 68 preguntas contra la base, y lo piden dos pruebas
+# distintas. Sin esto la bateria lo corria dos veces enteras para dar el mismo
+# numero.
+_YA_EXAMINADO = {}
+
+
 def examinar():
     """Devuelve (aciertos, total, fallos, saltadas)."""
+    if "es" in _YA_EXAMINADO:
+        return _YA_EXAMINADO["es"]
     import panel
     conn = sqlite3.connect("file:%s?mode=ro" % BASE.replace("\\", "/"),
                            uri=True)
@@ -233,7 +437,9 @@ def examinar():
             aciertos += 1
         else:
             fallos.append((texto, esperada, salio, r.get("respuesta")))
-    return aciertos, len(PREGUNTAS) - saltadas, fallos, saltadas
+    _YA_EXAMINADO["es"] = (aciertos, len(PREGUNTAS) - saltadas, fallos,
+                           saltadas)
+    return _YA_EXAMINADO["es"]
 
 
 def main():
@@ -300,6 +506,13 @@ def main():
           % (aciertos, total, 100.0 * aciertos / total))
     print("el lado:  %d de %d  (%.0f%%)"
           % (lado_bien, lado_total, 100.0 * lado_bien / lado_total))
+    # Y la misma nota en los otros idiomas, que es la unica forma de saber si
+    # el diccionario de cada uno vale o solo lo parece.
+    for idioma, corpus in LOS_IDIOMAS:
+        a, n, _f, _s = examinar_idioma(idioma, corpus)
+        if n:
+            print("  en %s:   %d de %d  (%.0f%%)"
+                  % (idioma, a, n, 100.0 * a / n))
     if saltadas:
         print("(%d saltadas: hablan de una persona y nadie tiene apodo)"
               % saltadas)

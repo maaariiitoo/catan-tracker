@@ -4166,6 +4166,147 @@ def prueba_la_caja_de_preguntas_no_empeora():
               % (aciertos, NOTA_MINIMA))
 
 
+
+def prueba_la_caja_de_preguntas_entiende_los_otros_idiomas():
+    """La caja tiene que acertar en cada idioma casi tanto como en castellano.
+
+    El liston NO es acertarlo todo. La caja falla 28 de 68 en su propio
+    idioma, y eso no lo arregla ningun diccionario: es lo que hay cuando se
+    empareja por palabras y no se entiende la frase. Lo que si se puede
+    exigir es que no falle MAS por estar en otro idioma, que es justo lo que
+    mide esto.
+
+    Por que existe. La caja empareja la pregunta contra los nombres, titulos
+    y columnas de las vistas, que estan escritos en castellano. Traducir la
+    pagina no la toca: un ingles leia «ask me something» y no le contestaba
+    nada. Peor todavia, el panel le sugeria ejemplos concretos --«how many
+    knights has X had»-- y ninguno funcionaba, que parece una caja rota.
+
+    Y por que un diccionario y no una traduccion. No hace falta entender la
+    pregunta: hace falta que las palabras lleguen en castellano. «who wins
+    most» se reescribe como «quien victoria mas», que no se lee bien y
+    empareja igual de bien.
+
+    Las preguntas del examen de cada idioma NO son la traduccion literal de
+    las castellanas: son como las escribiria alguien en su idioma. Con una
+    traduccion literal se mediria si el diccionario deshace mi propia
+    traduccion, que es una prueba que se aprueba sola.
+    """
+    from db import examen
+    import idiomas
+
+    en_castellano, total, _f, _s = examen.examinar()
+    if not total:
+        return saltar("el examen de preguntas en otros idiomas")
+
+    # Cuanto se le deja bajar. Tres de 68 es margen para un giro que en un
+    # idioma no existe, no para un diccionario a medias.
+    MARGEN = 3
+
+    for idioma, corpus in examen.LOS_IDIOMAS:
+        aciertos, cuantas, fallos, _ = examen.examinar_idioma(idioma, corpus)
+        comprobar("la caja en «%s» acierta %d de %d, y en castellano %d"
+                  % (idioma, aciertos, cuantas, en_castellano),
+                  aciertos >= en_castellano - MARGEN,
+                  "se queda %d por debajo; fallan: %s"
+                  % (en_castellano - aciertos,
+                     ", ".join(f[0][:40] for f in fallos[:2])))
+
+    # Y que el examen de cada idioma pregunte lo mismo que el castellano: si
+    # alguien quita una pregunta dificil de un idioma, la nota sube sola y no
+    # significa nada.
+    esperadas = [v for _q, v in examen.PREGUNTAS]
+    for idioma, corpus in examen.LOS_IDIOMAS:
+        comprobar("y el examen de «%s» tiene las mismas %d preguntas"
+                  % (idioma, len(esperadas)),
+                  [v for _q, v in corpus] == esperadas,
+                  "no coinciden las vistas esperadas")
+
+    # Un diccionario vacio pasaria las dos de arriba si el examen estuviera
+    # vacio. Que cada idioma traiga palabras de verdad.
+    for clave in sorted(idiomas.IDIOMAS):
+        lengua = idiomas.IDIOMAS[clave]
+        # `giros` es (patron, diccionario): se aplican de una pasada, asi
+        # que lo que se cuenta es el diccionario.
+        _patron, giros = lengua["giros"]
+        comprobar("y «%s» trae %d palabras y %d giros para la caja"
+                  % (clave, len(lengua["preguntas"]), len(giros)),
+                  len(lengua["preguntas"]) > 150 and len(giros) > 10)
+
+
+def prueba_la_caja_contesta_en_el_idioma_del_panel():
+    """Con lo que contesta la caja, traducido y con los huecos cuadrados.
+
+    Entender la pregunta es media caja. La otra media es la frase con la que
+    contesta, y esa se arma con plantillas: «El que %s %s: %s, con %s.» Si se
+    traduce la pagina y no las plantillas, un ingles pregunta en ingles y le
+    contesta en castellano, que es lo mismo que no haberla traducido.
+
+    LOS HUECOS SON DE `%` Y VAN POR ORDEN, no por nombre como en `FRASES`.
+    Eso los hace mas fragiles: una traduccion que se coma un `%s` no se ve
+    rara, revienta al pintarla; y una que cambie dos de orden dice otra cosa
+    con toda naturalidad -- «7 de 10» por «10 de 7». Asi que aqui se compara
+    la secuencia entera, no cuantos hay.
+
+    Las frases se sacan del ARBOL del codigo y no de una lista escrita a
+    mano: se leen las llamadas a `_di(...)`, que es por donde pasan todas. Una
+    lista seria un segundo sitio que actualizar, y el dia que alguien anadiera
+    una frase nueva estaria sin traducir y la prueba diria que todo va bien.
+    """
+    import ast
+    import io
+    import re
+    import idiomas
+
+    fuente = io.open("panel.py", encoding="utf-8").read()
+    piden = set()
+    for n in ast.walk(ast.parse(fuente)):
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+                and n.func.id == "_di" and n.args
+                and isinstance(n.args[0], ast.Constant)
+                and isinstance(n.args[0].value, str)):
+            piden.add(n.args[0].value)
+    piden = {p for p in piden if p.strip()}
+
+    comprobar("la caja contesta con %d frases distintas" % len(piden),
+              len(piden) > 30)
+
+    for clave in sorted(idiomas.IDIOMAS):
+        dice = idiomas.IDIOMAS[clave]["respuestas"]
+        faltan = sorted(piden - set(dice))
+        comprobar("y «%s» las traduce todas" % clave, not faltan,
+                  "en castellano: %s" % [f[:45] for f in faltan[:3]])
+        # Y al reves: una traducida que ya no se usa es una traduccion
+        # caduca, que es peor porque parece hecha.
+        sobran = sorted(set(dice) - piden)
+        comprobar("y no le sobra ninguna", not sobran,
+                  "ya no se usan: %s" % [f[:45] for f in sobran[:3]])
+
+        # LOS HUECOS, en el mismo orden.
+        malas = [k for k in dice
+                 if re.findall(r"%[sdfr%]", k) != re.findall(r"%[sdfr%]",
+                                                             dice[k])]
+        comprobar("y los huecos %s van en el mismo orden", not malas,
+                  "no cuadran: %s" % [m[:45] for m in malas[:3]])
+
+    # Y que de verdad conteste en el idioma, no solo que el diccionario este
+    # lleno: se le pregunta y se mira la frase.
+    import panel
+    for clave in sorted(idiomas.IDIOMAS):
+        de_ejemplo = {"en": "who has had the most luck",
+                      "fr": "qui a eu le plus de chance"}.get(clave)
+        if not de_ejemplo:
+            continue
+        r = panel.preguntar(de_ejemplo, "amigos", clave)
+        dicho = r.get("respuesta") or r.get("error") or ""
+        castellano = idiomas.IDIOMAS[clave]["respuestas"]
+        # Ninguna plantilla castellana puede asomar en la frase final.
+        asoman = [k for k in castellano
+                  if len(k) > 12 and "%" not in k and k in dicho]
+        comprobar("y preguntando en «%s» contesta en «%s»" % (clave, clave),
+                  dicho and not asoman,
+                  "asoma el castellano: %s" % [a[:40] for a in asoman[:2]])
+
 def prueba_la_caja_distingue_el_mas_del_menos():
     """Pedir «el que mas» y que conteste «el que menos» es un fallo entero,
     y la nota de arriba no lo ve.
@@ -4273,6 +4414,8 @@ def main():
         prueba_avisa_si_las_vistas_de_la_base_son_viejas()
         prueba_un_clon_recien_bajado_puede_importar()
         prueba_la_caja_de_preguntas_no_empeora()
+        prueba_la_caja_de_preguntas_entiende_los_otros_idiomas()
+        prueba_la_caja_contesta_en_el_idioma_del_panel()
         prueba_la_caja_distingue_el_mas_del_menos()
         prueba_ponerselo_a_uno_mismo_cuadra(conn)
         prueba_los_dos_temas_definen_los_mismos_colores()

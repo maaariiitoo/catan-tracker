@@ -912,6 +912,193 @@ COLUMNAS = {
 }
 
 
+
+# LA CAJA DE PREGUNTAS. Esto no traduce la pregunta: la reescribe con las
+# palabras castellanas contra las que la caja empareja. El emparejador no
+# entiende ningun idioma -- parte la pregunta en palabras y las compara con
+# los nombres, titulos y columnas de las vistas, que estan escritos en
+# castellano -- asi que lo unico que hace falta es que las palabras lleguen
+# en castellano.
+#
+# Medido con el mismo examen de 68 preguntas que el castellano, traducido:
+# acierta 39 de 68 en ingles. El castellano acierta 40. O sea que no es peor en ingles
+# que en su propio idioma, que es el liston que importa: la caja falla lo que
+# falla, y lo que no puede pasar es que falle MAS por el idioma.
+
+# Los giros van ANTES de partir en palabras, porque solo quieren decir eso
+# juntos. Se aplican de mas largo a mas corto, que es lo que hace que
+# `how many` se aplique antes que `how` no se coma la mitad del otro.
+GIROS = (
+    ('to whom', 'a quien'),
+    ('on whom', 'a quien'),
+    ('with whom', 'con quien'),
+    ('from whom', 'a quien'),
+    ('year of plenty', 'invencion'),
+    ('road building', 'carretera'),
+    ('development card', 'desarrollo carta'),
+    ('dev card', 'desarrollo carta'),
+    ('victory point', 'punto victoria'),
+    ('longest road', 'carretera larga'),
+    ('largest army', 'mayor ejercito'),
+    ('come up', 'salio'),
+    ('comes up', 'salio'),
+    ('came up', 'salio'),
+    ('come out', 'salio'),
+    ('comes out', 'salio'),
+    ('came out', 'salio'),
+    ('how many', 'cuantas'),
+    ('how much', 'cuanto'),
+    ('how long', 'cuanto minuto'),
+    ('how often', 'cuantas veces'),
+    ('than they should', 'de lo que toca'),
+    ('table size', 'mesa'),
+    ('start order', 'salida'),
+    ('turn order', 'salida'),
+)
+
+# Y palabra a palabra. Las vacias se borran: no dicen nada de la pregunta y
+# ensucian la bolsa con la que se puntua cada vista.
+PREGUNTAS = {
+    'against': 'contra', 'ahead': 'positivo', 'all': 'todo', 'always': '',
+    'an': '', 'and': '', 'anyone': 'alguien', 'are': '', 'army': 'ejercito',
+    'as': '', 'ask': 'pidio', 'asked': 'pidio', 'asking': 'pidio',
+    'asks': 'pidio', 'at': '', 'average': 'medio', 'balance': 'saldo',
+    'bank': 'banca', 'be': '', 'been': '', 'best': 'mejor', 'between': 'entre',
+    'block': 'bloqueo', 'blocked': 'bloqueo', 'blocks': 'bloqueo',
+    'board': 'tablero', 'boards': 'tablero', 'bot': 'ias', 'bots': 'ias',
+    'bought': 'compro', 'brick': 'arcilla', 'building': 'edificio',
+    'buildings': 'edificio', 'buy': 'compro', 'buys': 'compro',
+    'card': 'carta', 'cards': 'carta', 'cities': 'ciudad', 'city': 'ciudad',
+    'claim': 'pillo', 'claimed': 'pillo', 'clay': 'arcilla', 'came': 'salio', 'color': 'color', 'come': 'salio',
+    'comes': 'salio',
+    'colour': 'color', 'computer': 'ias', 'cost': 'cuesta', 'costs': 'cuesta',
+    'day': 'dia', 'deal': 'trato', 'deals': 'trato', 'deck': 'mazo',
+    'development': 'desarrollo', 'dice': 'tirada', 'did': '', 'die': 'tirada',
+    'do': '', 'does': '', 'draw': 'salieron', 'drawn': 'salieron',
+    'duration': 'minuto', 'each': 'cada', 'earliest': 'primero', 'end': '',
+    'everyone': 'todos', 'exchange': 'trato', 'exchanges': 'trato',
+    'expected': 'esperado', 'fewest': 'menos', 'fifth': 'quinto',
+    'finish': 'acabo', 'finished': 'acabo', 'finishes': 'acabo',
+    'first': 'primero', 'for': '', 'fourth': 'cuarto', 'friends': 'amigo',
+    'from': '', 'gain': 'victoria', 'gains': 'victoria', 'game': 'partida',
+    'games': 'partida', 'gave': 'dio', 'generic': 'generico', 'get': 'recibio',
+    'gets': 'recibio', 'give': 'dio', 'given': 'dio', 'gives': 'dio',
+    'got': 'recibio', 'grain': 'cereales', 'had': '', 'hand': 'mano',
+    'harbor': 'puerto', 'harbors': 'puerto', 'harbour': 'puerto', 'has': '',
+    'have': '', 'hex': 'casilla', 'hexes': 'casilla', 'hour': 'hora',
+    'how': 'cuanto', 'human': 'persona', 'humans': 'persona', 'i': '',
+    'in': '', 'invention': 'invencion', 'is': '', 'it': '', 'its': '',
+    'knight': 'caballero', 'knights': 'caballero', 'last': 'minuto',
+    'lasted': 'minuto', 'least': 'menos', 'less': 'menos', 'lose': 'perdido',
+    'loses': 'perdido', 'lost': 'perdido', 'luck': 'suerte', 'lucky': 'suerte',
+    'lumber': 'madera', 'machine': 'ias', 'made': '', 'make': '',
+    'many': 'cuantos', 'margin': 'margen', 'match': 'partida',
+    'matches': 'partida', 'me': 'me', 'minute': 'minuto', 'minutes': 'minuto',
+    'missed': 'perdido', 'monopolies': 'monopolio', 'monopoly': 'monopolio',
+    'more': 'mas', 'most': 'mas', 'much': 'cuanto', 'my': 'mi',
+    'name': 'nombre', 'net': 'neto', 'nobody': 'nadie', 'normal': 'normal',
+    'number': 'numero', 'numbers': 'numero', 'of': '', 'offer': 'propone',
+    'often': 'veces', 'on': '', 'one': '', 'ones': '', 'or': '',
+    'ore': 'mineral', 'our': 'nuestro', 'out': '', 'pace': 'ritmo',
+    'people': 'persona', 'percentage': 'porcentaje', 'piece': 'pieza',
+    'pieces': 'pieza', 'pip': 'puntitos', 'pips': 'puntitos',
+    'place': 'puesto', 'placed': 'colocado', 'play': 'juega',
+    'played': 'juega', 'player': 'jugador', 'players': 'jugador',
+    'playing': 'juega', 'plays': 'juega', 'point': 'punto', 'points': 'punto',
+    'port': 'puerto', 'ports': 'puerto', 'position': 'puesto',
+    'produce': 'produccion', 'produced': 'produccion',
+    'production': 'produccion', 'proportion': 'proporcion',
+    'propose': 'propone', 'proposed': 'propone', 'proposes': 'propone',
+    'put': 'pone', 'puts': 'pone', 'rank': 'colocado', 'ranked': 'colocado',
+    'reach': 'llego', 'reached': 'llego', 'reaches': 'llego',
+    'receive': 'recibio', 'received': 'recibio', 'receives': 'recibio',
+    'resource': 'recurso', 'resources': 'recurso', 'road': 'carretera',
+    'roads': 'carretera', 'rob': 'robo', 'robbed': 'robo', 'robber': 'ladron',
+    'robbers': 'ladron', 'roll': 'tirada', 'rolled': 'tirada',
+    'rolls': 'tirada', 'scoreboard': 'marcador', 'second': 'segundo',
+    'send': 'manda', 'sends': 'manda', 'settle': 'poblado',
+    'settled': 'poblado', 'settlement': 'poblado', 'settlements': 'poblado',
+    'settles': 'poblado', 'seven': 'siete', 'sevens': 'siete', 'sheep': 'lana',
+    'short': 'corto', 'should': 'deberia', 'sixth': 'sexto',
+    'someone': 'alguien', 'soonest': 'primero', 'spot': 'casilla',
+    'spots': 'casilla', 'start': 'salida', 'started': 'salida',
+    'starting': 'salida', 'starts': 'salida', 'steal': 'robo',
+    'steals': 'robo', 'stole': 'robo', 'stolen': 'robo', 'suffered': 'sufrio',
+    'swap': 'trato', 'table': 'mesa', 'tables': 'mesa', 'take': 'saca',
+    'taken': 'pillo', 'takes': 'saca', 'than': '', 'that': '', 'the': '',
+    'their': '', 'them': '', 'there': '', 'they': '', 'thief': 'ladron',
+    'third': 'tercero', 'this': '', 'throw': 'tirada', 'throws': 'tirada',
+    'tile': 'casilla', 'tiles': 'casilla', 'time': 'veces', 'times': 'veces',
+    'to': '', 'took': 'saca', 'total': 'total', 'trade': 'trato',
+    'traded': 'trato', 'trades': 'trato', 'turn': 'turno', 'turns': 'turno',
+    'up': '', 'us': 'nos', 'use': 'uso', 'used': 'uso', 'uses': 'uso',
+    'victory': 'victoria', 'was': '', 'we': '', 'were': '', 'what': '',
+    'wheat': 'cereales', 'when': 'cuando', 'where': 'donde', 'which': 'cual',
+    'who': 'quien', 'whom': 'quien', 'whose': 'quien', 'win': 'victoria',
+    'winner': 'victoria', 'wins': 'victoria', 'with': 'con', 'won': 'victoria',
+    'wood': 'madera', 'wool': 'lana', 'worst': 'peor', 'you': '',
+}
+
+# Y con lo que CONTESTA la caja. Son plantillas de `%`, no de `{}`: los
+# huecos van por ORDEN y no por nombre, asi que una traduccion que se coma un
+# `%s` o que le cambie el orden no se ve rara, revienta al pintarla o dice
+# otra cosa. `db/pruebas.py` los compara uno a uno.
+#
+# Las cuatro ultimas no son frases sino palabras que se meten DENTRO de las
+# plantillas: «El que %s %s» se rellena con «mas» o «menos», y las vistas de
+# parejas enlazan los dos nombres con «con» o con «a».
+RESPUESTAS = {
+    '  (juntando las filas de «%s»)': '  (merging the rows of “%s”)',
+    '  (sumando %d filas)': '  (adding up %d rows)',
+    '  Aunque con estos datos no se sale nadie del margen: la diferencia cabe en el error.':
+        '  Though with this data nobody is outside the margin: the difference fits inside the error.',
+    '  Repartido: ': '  Spread out: ',
+    '  Sobre todo %s (%d de %d).': '  Mostly %s (%d of %d).',
+    '%d, en «%s».': '%d, in “%s”.',
+    '%s a %s: %s de %s.': '%s to %s: %s of %s.',
+    '%s a %s: ninguna vez, en «%s».': '%s to %s: not once, in “%s”.',
+    '%s con %s %s: %s, con %s.': '%s with %s %s: %s, with %s.',
+    '%s no sale en «%s».': '%s does not show up in “%s”.',
+    '%s, %s %s %s: %s, con %s de %s.': '%s, %s %s %s: %s, with %s of %s.',
+    '%s, %s: %s': '%s, %s: %s',
+    '%s, %s: %s  (una por partida)': '%s, %s: %s  (one per game)',
+    '%s, en el %s (%s: %s).': '%s, on the %s (%s: %s).',
+    '%s: %d en «%s».': '%s: %d in “%s”.',
+    '%s: %s de %s.': '%s: %s of %s.',
+    'El que %s %s: %s, con %s (%s de %s).':
+        'The one with the %s %s: %s, with %s (%s of %s).',
+    'El que %s %s: %s, con %s.': 'The one with the %s %s: %s, with %s.',
+    'En el %s no hay %s.': 'On the %s there is no %s.',
+    'En el %s no hay nada en «%s».': 'On the %s there is nothing in “%s”.',
+    'En el %s no hay ninguno: %s es 0.': 'On the %s there are none: %s is 0.',
+    'En el %s: %s %s.': 'On the %s: %s %s.',
+    'En el %s: %s.': 'On the %s: %s.',
+    'En total, %s de %s.': 'In total, %s of %s.',
+    'Eso no lo tengo en una columna, pero lo que preguntas esta en «%s», aqui debajo.':
+        'I do not have that in a column, but what you are asking about is in “%s”, just below.',
+    'Eso no lo tengo guardado en ninguna vista. Prueba con otra palabra: caballeros, monopolios, puertos, robos, suerte, tiradas, puntos, ladron, comercio...':
+        'I have not got that stored in any view. Try another word: knights, monopolies, ports, steals, luck, rolls, points, robber, trade...',
+    'Eso no sale en un numero. Lo tienes en «%s», aqui debajo.':
+        'That does not come out as a number. You have it in “%s”, just below.',
+    'Lo de %s con %s esta aqui debajo.': 'What %s did with %s is just below.',
+    'Lo del %s esta aqui debajo.': 'The %s is just below.',
+    'Lo que preguntas esta en «%s», columna «%s».':
+        'What you are asking about is in “%s”, column “%s”.',
+    'Lo tienes en «%s», aqui debajo.': 'You have it in “%s”, just below.',
+    'No se de que me hablas. Nombra algo: caballeros, monopolios, puertos, robos, suerte, tiradas, puntos, ladron...':
+        'I do not know what you mean. Name something: knights, monopolies, ports, steals, luck, rolls, points, robber...',
+    'Preguntame algo.': 'Ask me something.',
+    'Todavia no hay base de datos.': 'There is no database yet.',
+    'a': 'to',
+    'con': 'with',
+    'mas': 'most',
+    'menos': 'least',
+    'no se ha podido leer la base: %s': 'could not read the database: %s',
+    '«%s» me vale para %d personas (%s). Dime cual, o ponles nombre en el paso 2: mientras se llamen todos «jugador_algo» no los puedo distinguir.':
+        '“%s” matches %d people (%s). Tell me which one, or name them in step 2: while they are all called “jugador_something” I cannot tell them apart.',
+}
+
+
 # Qué quiere decir cada columna y qué es una fila. NO está aquí: vive en
 # `catalogEN.py`, al lado, y está escrito ENTERO en inglés -- los nombres de
 # vista y de columna incluidos. Quien lo abre ya está leyendo en inglés; no
