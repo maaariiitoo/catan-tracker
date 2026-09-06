@@ -1,4 +1,4 @@
-*[Léeme en castellano](README.md).*
+*[Léeme en castellano](README.md) · [Lisez-moi en français](README.fr.md).*
 
 # Catan Tracker
 
@@ -211,7 +211,8 @@ up. The panel's headings and that file use the same words on purpose, so
 `rank` on the screen is `rank` in the file.
 
 > The catalogue that `py db/catalogo.py` writes still comes out in Spanish.
-> The panel doesn't: it has an **EN** button, next to the light/dark one.
+> The panel does not: it has a language dropdown next to the light/dark
+> button, with English and French in it.
 
 ## Licence
 

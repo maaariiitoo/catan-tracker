@@ -1,4 +1,4 @@
-*[Read this in English](README.en.md).*
+*[Read this in English](README.en.md) · [Lisez-moi en français](README.fr.md).*
 
 # Catan Tracker
 
