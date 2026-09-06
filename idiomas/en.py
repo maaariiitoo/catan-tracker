@@ -25,8 +25,9 @@ cinco enteros:
 
 NOMBRE = "English"
 
-# Lo que pone el botón que TRAE a este idioma. Dice a dónde vas, no dónde
-# estás, igual que el de claro/oscuro.
+# Cómo se llama este idioma en el desplegable de la cabecera. Lleva delante
+# el código de dos letras para que se reconozca de un vistazo aunque no
+# entiendas la palabra de al lado.
 BOTON = "EN  English"
 
 # La coma decimal. Un inglés lee «3,18» como tres mil ciento dieciocho.

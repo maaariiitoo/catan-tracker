@@ -78,8 +78,12 @@ IDIOMAS = _cargar()
 
 
 def la_vuelta():
-    """Los idiomas en el orden en que los recorre el botón, el original el
-    primero. Cada uno con el texto del botón que TRAE a él."""
+    """Los idiomas que hay, el original el primero, para el desplegable.
+
+    Era un botón que los recorría en círculo, como el de claro/oscuro. Con
+    dos vale; a la tercera deja de valer, porque para llegar al último hay
+    que pasar por los de en medio y cada paso recarga la página.
+    """
     vuelta = [{"id": ORIGINAL, "nombre": NOMBRE_ORIGINAL,
                "boton": BOTON_ORIGINAL}]
     for clave in sorted(IDIOMAS):

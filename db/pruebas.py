@@ -3794,8 +3794,9 @@ def prueba_ningun_idioma_se_queda_a_medias():
         comprobar("y la pagina en «%s» no es la misma que en castellano"
                   % clave, otra != panel.PAGINA)
 
-    comprobar("y el boton de idioma le llega al usuario",
-              'id="bIdioma"' in panel._pagina_para(panel.PAGINA, False, False))
+    comprobar("y el menu de idiomas le llega al usuario",
+              'id="selIdioma"' in panel._pagina_para(panel.PAGINA,
+                                                    False, False))
 
 
 def prueba_el_javascript_tampoco_se_queda_en_castellano():

@@ -2393,6 +2393,10 @@ h1{font-size:22px;margin:0 0 4px}
 #bTema{font-size:13px;font-weight:600;padding:7px 12px;margin:0;flex:none;
        color:var(--suave)}
 #bTema:hover{color:var(--tinta)}
+/* El de idioma es un desplegable y no un boton, asi que hay que bajarle el
+   tamanio para que los dos de la cabecera midan lo mismo. */
+#selIdioma{font-size:13px;font-weight:600;padding:6px 10px;flex:none;
+           color:var(--suave)}
 .bloque{background:var(--papel);border:1px solid var(--borde);border-radius:10px;
         padding:16px 18px;margin-bottom:14px}
 .bloque h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;
@@ -2582,7 +2586,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
     <h1>Catan Tracker</h1>
     <p class="sub" id="donde">buscando el juego...</p>
   </div>
-  <button id="bIdioma" type="button" title="Cambiar de idioma"></button>
+  <select id="selIdioma" title="Cambiar de idioma"></select>
   <button id="bTema" type="button" title="Cambiar entre claro y oscuro"></button>
 </div>
 
@@ -2902,23 +2906,24 @@ function boton(id, fn){
 // y lo apunta en el navegador. El servidor no sabe ni tiene por que saber de
 // que color ves la pagina.
 //
-// El boton de idioma, con la misma regla que el de tema: dice A DONDE
-// VAS. Recorre los idiomas en circulo, asi que con tres funciona igual que
-// con dos sin tocar nada de aqui.
+// El de idioma NO es un boton, a diferencia del de tema. Un boton que da la
+// vuelta vale para dos cosas --claro y oscuro-- y deja de valer a la
+// tercera: para llegar al aleman habria que pasar por el frances, y cada
+// paso recarga la pagina. Y hasta que no pasas por ellos no sabes que
+// existen. Un desplegable los ensena todos y llega a cualquiera en un clic,
+// que es justo lo que hacia falta si esto va a crecer.
 (function(){
-  const b = document.getElementById("bIdioma");
-  if (!b) return;
+  const s = document.getElementById("selIdioma");
+  if (!s) return;
   const hay = window.IDIOMAS_HAY || [];
-  if (hay.length < 2){ b.hidden = true; return; }
-  let i = 0;
-  for (let k = 0; k < hay.length; k++)
-    if (hay[k].id === window.IDIOMA_AHORA) i = k;
-  const siguiente = hay[(i + 1) % hay.length];
-  b.textContent = siguiente.boton;
-  b.onclick = () => {
+  if (hay.length < 2){ s.hidden = true; return; }
+  s.innerHTML = hay.map(l => '<option value="' + escapar(l.id) + '"'
+      + (l.id === window.IDIOMA_AHORA ? " selected" : "") + ">"
+      + escapar(l.boton) + "</option>").join("");
+  s.onchange = () => {
     // Un anio. Y `path=/` para que valga en todas las rutas del panel, no
     // solo en la que estabas.
-    document.cookie = "idioma=" + siguiente.id + ";path=/;max-age=31536000";
+    document.cookie = "idioma=" + s.value + ";path=/;max-age=31536000";
     location.reload();
   };
 })();
