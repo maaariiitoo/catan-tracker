@@ -16,11 +16,27 @@ dedans.
 Il te faut **Python 3.7 ou plus récent** et **Catan Universe** sur Steam.
 Rien d'autre.
 
+**1. Récupère le projet.** Le bouton vert **Code** de cette page, puis
+**Download ZIP**, et tu le décompresses où tu veux. Avec git :
+
+```powershell
+git clone https://github.com/maaariiitoo/catan-tracker
+```
+
+**2. Ouvre la fenêtre noire dans ce dossier.** Entre dans le dossier, fais un
+clic droit dans le vide et choisis **Ouvrir dans le Terminal**. Si ton Windows
+ne le propose pas, ouvre PowerShell depuis le menu démarrer, tape `cd ` avec
+une espace, fais glisser le dossier sur la fenêtre et appuie sur Entrée.
+
+**3. Tape ceci et appuie sur Entrée :**
+
 ```powershell
 py panel.py --simple
 ```
 
-Une page s'ouvre dans ton navigateur. Tout se passe là, avec des boutons.
+Une page s'ouvre dans ton navigateur. Tout se passe là, avec des boutons. La
+fenêtre noire reste ouverte derrière : c'est le programme. Si tu la fermes, le
+panneau s'éteint.
 
 > `py` n'est pas une faute de frappe : c'est le lanceur Python de Windows, et
 > il marche même quand `python` n'est pas dans ton PATH. Si tu as une

@@ -14,11 +14,27 @@ No hay que apuntar nada a mano. Juegas, le das a un botón y ya está.
 
 Necesitas **Python 3.7 o más nuevo** y **Catan Universe** en Steam. Nada más.
 
+**1. Bájate el proyecto.** El botón verde **Code** de esta misma página, y
+luego **Download ZIP**. Lo descomprimes donde quieras. Si usas git:
+
+```powershell
+git clone https://github.com/maaariiitoo/catan-tracker
+```
+
+**2. Abre la ventana negra dentro de esa carpeta.** Entra en la carpeta, haz
+clic derecho en un hueco y elige **Abrir en el Terminal**. Si tu Windows no lo
+trae, abre PowerShell desde el menú de inicio, escribe `cd ` con un espacio,
+arrastra la carpeta encima de la ventana y pulsa Enter.
+
+**3. Escribe esto y pulsa Enter:**
+
 ```powershell
 py panel.py --simple
 ```
 
-Se abre una página en el navegador. Todo se hace desde ahí, con botones.
+Se abre una página en el navegador. Todo se hace desde ahí, con botones. La
+ventana negra se queda abierta detrás: es el programa. Si la cierras, se apaga
+el panel.
 
 > `py` no es una errata: es el lanzador de Python de Windows, y funciona
 > aunque `python` no esté en el PATH. Si te da error, ése suele ser el

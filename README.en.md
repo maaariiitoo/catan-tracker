@@ -14,11 +14,27 @@ Nothing gets typed by hand. You play, you press a button, and it's in.
 
 You need **Python 3.7 or newer** and **Catan Universe** on Steam. Nothing else.
 
+**1. Get the project.** The green **Code** button on this page, then
+**Download ZIP**, and unzip it wherever you like. With git:
+
+```powershell
+git clone https://github.com/maaariiitoo/catan-tracker
+```
+
+**2. Open the black window inside that folder.** Go into the folder,
+right-click on empty space and pick **Open in Terminal**. If your Windows
+doesn't offer that, open PowerShell from the start menu, type `cd ` with a
+space, drag the folder onto the window and press Enter.
+
+**3. Type this and press Enter:**
+
 ```powershell
 py panel.py --simple
 ```
 
-A page opens in your browser. Everything happens there, with buttons.
+A page opens in your browser. Everything happens there, with buttons. The
+black window stays open behind it: that's the program. Close it and the panel
+goes down.
 
 > `py` is not a typo: it's the Windows Python launcher, and it works even when
 > `python` isn't on your PATH. If you get an error, that's usually why.
