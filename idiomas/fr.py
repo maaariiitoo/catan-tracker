@@ -181,6 +181,22 @@ TEXTO = {
     'Que alimentan las capturas': 'Ce que nourrissent les captures',
     'Que partidas': 'Quelles parties',
     'Quitar una partida': 'Supprimer une partie',
+    'Cargar una base de datos': 'Charger une base de données',
+    'es para cuando juegas en otro ordenador: te traes el':
+        "c'est pour quand tu joues sur un autre ordinateur : tu rapportes le",
+    'catan_stats.db': 'catan_stats.db',
+    'de aquel, lo eliges aqui, y este sigue con aquel historico.':
+        'de celui-là, tu le choisis ici, et celui-ci continue avec cet '
+        'historique.',
+    'Sustituye la base entera': 'Ça remplace toute la base',
+    ', no junta las dos. Antes de hacerlo comprueba que el fichero es de '
+    'verdad la base del Catan y guarda una':
+        ', ça ne fusionne pas les deux. Avant de le faire, ça vérifie que le '
+        'fichier est bien la base du Catan et ça garde une',
+    'copia de la de aqui': "copie de celle d'ici",
+    'dentro de': 'dans',
+    ', que tampoco hay deshacer.':
+        ", parce qu'ici non plus il n'y a pas de retour en arrière.",
     'R&eacute;cords de una sola partida': 'Records sur une partie',
     'Reentrenar con todo (para jugar)':
         'Réentraîner sur tout (pour jouer avec)',

@@ -31,11 +31,13 @@ Tres decisiones que importan:
   dijeran cosas distintas, el panel seria una fuente de errores nueva.
 """
 import ast
+import datetime
 import hashlib
 import importlib
 import json
 import os
 import re
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -619,6 +621,12 @@ def estado(idioma=None):
 # cual de las dos esta mal.
 
 BASE_DATOS = os.path.join(RAIZ, "catan_stats.db")
+
+# Donde van las copias de la base antes de algo que no se deshace. La misma
+# carpeta y la misma convencion de nombre que `db/quitar_partidas.py` y
+# `db/vaciar.py`: si un dia hay que rescatar una, estan todas juntas y
+# ordenadas por fecha, sin tener que acordarse de cual las dejo donde.
+COPIAS = os.path.join(RAIZ, "copias")
 
 # La lista de vistas se lee al importar el modulo, asi que anadir una y darle
 # a «rehacer las vistas» dejaba la pagina enseniando la lista vieja hasta
@@ -2036,6 +2044,104 @@ def quitar_partida(gid, motivo=""):
     return {"ok": True, "partida": gid, "ficha": descripcion, "copia": copia}
 
 
+def cargar_base(datos):
+    """Pone aqui una base traida de otro sitio, en lugar de la que haya.
+
+    Para que sirve: jugar en dos ordenadores sin partir el historico en dos.
+    Te llevas el `catan_stats.db` de uno, le das a este boton en el otro, y
+    sigues donde lo dejaste.
+
+    TRES CAUTELAS, y ninguna sobra:
+
+      - **SE COMPRUEBA ANTES DE TOCAR NADA** que el fichero es una base de
+        SQLite y que ademas es LA base, con sus tablas. Esto es un dialogo de
+        elegir fichero, y elegir el equivocado es un clic: sin comprobarlo,
+        una foto o un .db de otra cosa se llevarian por delante el historico
+        entero.
+
+      - **SE COPIA LA DE AQUI** a `copias/` antes de sustituirla, con la misma
+        convencion que `db/quitar_partidas.py`. Igual que quitar una partida,
+        esto no se deshace.
+
+      - **SE REHACEN LAS VISTAS.** Viven DENTRO del .db y no en el codigo, asi
+        que una base traida de una version anterior llega con las vistas de
+        entonces. Y eso no da error: ensena numeros viejos con el codigo nuevo
+        delante y no lo dice nadie. Es el mismo motivo por el que el
+        importador las rehace al terminar.
+
+    Se escribe primero a un fichero aparte y se mueve al final con
+    `os.replace`, que es atomico: si algo falla a mitad, la base de aqui
+    sigue entera. Escribir encima directamente deja media base el dia que se
+    corte la subida.
+    """
+    if len(datos) < 512 or not datos.startswith(b"SQLite format 3\x00"):
+        return {"ok": False,
+                "error": "eso no es una base de datos de SQLite."}
+
+    temporal = BASE_DATOS + ".subiendo"
+    try:
+        with open(temporal, "wb") as fh:
+            fh.write(datos)
+
+        con = sqlite3.connect("file:%s?mode=ro" % temporal.replace("\\", "/"),
+                              uri=True)
+        try:
+            hay = set(r[0] for r in con.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"))
+            faltan = sorted({"games", "players", "rolls", "buildings"} - hay)
+            if faltan:
+                return {"ok": False, "error":
+                        "es una base de SQLite, pero no la del Catan: "
+                        "le faltan las tablas %s." % ", ".join(faltan)}
+            partidas = con.execute("SELECT COUNT(*) FROM games").fetchone()[0]
+            jugadores = con.execute(
+                "SELECT COUNT(*) FROM players").fetchone()[0]
+        finally:
+            con.close()
+
+        copia = None
+        if os.path.isfile(BASE_DATOS):
+            if not os.path.isdir(COPIAS):
+                os.makedirs(COPIAS)
+            marca = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            copia = os.path.join(
+                COPIAS, "catan_stats_antes_de_cargar_%s.db" % marca)
+            shutil.copyfile(BASE_DATOS, copia)
+
+        os.replace(temporal, BASE_DATOS)
+    except (OSError, sqlite3.DatabaseError) as e:
+        return {"ok": False, "error": str(e)}
+    finally:
+        if os.path.isfile(temporal):
+            os.remove(temporal)
+
+    # Las vistas, ya sobre la base nueva. Que fallen no invalida la carga: los
+    # datos ya estan puestos, y rehacerlas se puede a mano.
+    aviso = None
+    try:
+        import db.vistas as _vistas
+        escribible = sqlite3.connect(BASE_DATOS)
+        try:
+            _vistas.crear(escribible)
+        finally:
+            escribible.close()
+    except Exception as e:
+        aviso = ("base cargada, pero no se han podido rehacer las vistas "
+                 "(%s). Hazlo con el boton «Rehacer las vistas»." % e)
+
+    # El mensaje se monta aqui y no en la pagina: asi el javascript no tiene
+    # que pegar seis trozos de frase, que es justo lo que luego no hay quien
+    # traduzca.
+    mensaje = "base cargada: %d partidas y %d jugadores." % (partidas,
+                                                             jugadores)
+    if copia:
+        mensaje += " La de aqui se ha guardado en copias/%s" % (
+            os.path.basename(copia))
+    return {"ok": True, "partidas": partidas, "jugadores": jugadores,
+            "copia": os.path.basename(copia) if copia else None,
+            "aviso": aviso, "mensaje": mensaje}
+
+
 def gente():
     """Quien es quien, para la lista del panel.
 
@@ -2691,6 +2797,8 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   <button class="principal" id="bImportar">Guardar en la base de datos</button>
   <button id="bNombres">Ponerle nombre a alguien</button>
   <button id="bQuitar">Quitar una partida</button>
+  <button id="bCargar">Cargar una base de datos</button>
+  <input type="file" id="ficheroBase" accept=".db" style="display:none">
   <div id="gente"></div>
   <div id="quitables"></div>
   <p class="pista">El mod no guarda nombres, guarda el identificador de cada
@@ -2708,6 +2816,12 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   grabacion para que el importador no la vuelva a meter. <b>No borra las
   capturas</b>: quitar una partida del historico no le hace perder un recorte
   a la vision. Y no hay deshacer, asi que pregunta.</p>
+  <p class="pista"><b>Cargar una base de datos</b> es para cuando juegas en
+  otro ordenador: te traes el <code>catan_stats.db</code> de aquel, lo eliges
+  aqui, y este sigue con aquel historico. <b>Sustituye la base entera</b>, no
+  junta las dos. Antes de hacerlo comprueba que el fichero es de verdad la
+  base del Catan y guarda una <b>copia de la de aqui</b> dentro de
+  <code>copias/</code>, que tampoco hay deshacer.</p>
 </div>
 
 <div class="bloque">
@@ -3051,6 +3165,46 @@ boton("bQuitar", async () => {
   pintarQuitables();
   return {ok: true};
 });
+
+// --- cargar una base traida de otro ordenador --------------------------
+//
+// El boton no sube nada: abre el dialogo. Quien sube es el `change` del
+// <input>, porque hasta que no hay fichero elegido no hay nada que mandar.
+//
+// El `value = ""` de antes de abrirlo no sobra: sin el, elegir DOS VECES
+// seguidas el mismo fichero no dispara `change` la segunda vez, y desde
+// fuera parece que el boton se ha roto.
+//
+// Va con `fetch` a pelo y no con `pedir()`, que manda JSON: aqui el cuerpo
+// es el fichero en crudo. Y el mensaje lo escribe el servidor entero, para
+// que aqui no haya que pegar trozos de frase.
+boton("bCargar", () => {
+  const caja = document.getElementById("ficheroBase");
+  caja.value = "";
+  caja.click();
+  return {ok: true};
+});
+
+if (document.getElementById("ficheroBase"))
+  document.getElementById("ficheroBase").onchange = async () => {
+    const caja = document.getElementById("ficheroBase");
+    const fichero = caja.files && caja.files[0];
+    if (!fichero) return;
+    const b = document.getElementById("bCargar");
+    b.disabled = true;
+    recado("");
+    try {
+      const r = await fetch("/cargar", {method: "POST", body: fichero});
+      const j = await r.json();
+      marcarCaido(false);
+      recado(j.error || j.aviso || j.mensaje, !j.ok);
+      // La tabla y los titulares se refrescan solos: `sello_base` es la
+      // fecha del fichero, y al sustituirlo cambia.
+    } catch (e) {
+      marcarCaido(true);
+    }
+    b.disabled = false;
+  };
 boton("bEmpezar", () => { fuente="grabacion"; pos=0; return pedir("/grabar",{arrancar:true}); });
 boton("bSoloMod", () => { fuente="mod"; pos=0;
   return pedir("/grabar",{arrancar:true, solo_mod:true}); });
@@ -3895,6 +4049,20 @@ class Manejador(BaseHTTPRequestHandler):
 
     def do_POST(self):
         largo = int(self.headers.get("Content-Length") or 0)
+
+        # Esta va ANTES de leer el cuerpo como JSON, porque lo que trae no es
+        # un objeto: es un fichero .db en crudo. Y lleva tope de tamanio a
+        # proposito -- el cuerpo se lee entero en memoria, asi que sin el,
+        # apuntar a esta ruta con un fichero enorme tumba el panel.
+        if self.path == "/cargar":
+            if largo > 200 * 1024 * 1024:
+                return self._json({"ok": False, "error":
+                                   "ese fichero pasa de 200 MB, no es la base."})
+            r = cargar_base(self.rfile.read(largo))
+            print("[panel] cargar una base: %s"
+                  % ("hecho" if r.get("ok") else "FALLO: %s" % r.get("error")))
+            return self._json(r)
+
         try:
             cuerpo = json.loads(self.rfile.read(largo) or b"{}")
         except ValueError:

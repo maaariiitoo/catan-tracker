@@ -132,6 +132,21 @@ TEXTO = {
     "Guardar en la base de datos": "Save to the database",
     "Ponerle nombre a alguien": "Name someone",
     "Quitar una partida": "Remove a game",
+    "Cargar una base de datos": "Load a database",
+    "es para cuando juegas en otro ordenador: te traes el":
+        "is for when you play on another computer: bring over the",
+    "catan_stats.db": "catan_stats.db",
+    "de aquel, lo eliges aqui, y este sigue con aquel historico.":
+        "from that one, pick it here, and this one carries on with that "
+        "history.",
+    "Sustituye la base entera": "It replaces the whole database",
+    ", no junta las dos. Antes de hacerlo comprueba que el fichero es de "
+    "verdad la base del Catan y guarda una":
+        ", it doesn't merge the two. Before doing it, it checks that the file "
+        "really is the Catan database and keeps a",
+    "copia de la de aqui": "backup of the one here",
+    "dentro de": "inside",
+    ", que tampoco hay deshacer.": ", because there's no undo here either.",
     "El mod no guarda nombres, guarda el identificador de cada cuenta, "
     "que es estable, asi que reconoce a la misma persona partida tras partida. "
     "La primera vez que juegue alguien nuevo saldra con un nombre provisional "
