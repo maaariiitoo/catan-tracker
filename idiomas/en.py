@@ -152,7 +152,12 @@ TEXTO = {
         "really is the Catan database and keeps a",
     "copia de la de aqui": "backup of the one here",
     "dentro de": "inside",
-    ", que tampoco hay deshacer.": ", because there's no undo here either.",
+    ", que tampoco hay deshacer. Las partidas que hubieras quitado a mano "
+    "siguen fuera: eso es una decision tuya sobre tus grabaciones, no un dato "
+    "de la base que llega.":
+        ", because there's no undo here either. Games you removed by hand stay "
+        "out: that's a decision you made about your own recordings, not a "
+        "piece of data belonging to the database coming in.",
     "El mod no guarda nombres, guarda el identificador de cada cuenta, "
     "que es estable, asi que reconoce a la misma persona partida tras partida. "
     "La primera vez que juegue alguien nuevo saldra con un nombre provisional "

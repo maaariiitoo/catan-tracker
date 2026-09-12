@@ -201,8 +201,13 @@ TEXTO = {
         'fichier est bien la base du Catan et ça garde une',
     'copia de la de aqui': "copie de celle d'ici",
     'dentro de': 'dans',
-    ', que tampoco hay deshacer.':
-        ", parce qu'ici non plus il n'y a pas de retour en arrière.",
+    ', que tampoco hay deshacer. Las partidas que hubieras quitado a mano '
+    'siguen fuera: eso es una decision tuya sobre tus grabaciones, no un dato '
+    'de la base que llega.':
+        ", parce qu'ici non plus il n'y a pas de retour en arrière. Les "
+        "parties que tu avais retirées à la main restent dehors : c'est une "
+        "décision à toi sur tes propres enregistrements, pas une donnée de la "
+        'base qui arrive.',
     'R&eacute;cords de una sola partida': 'Records sur une partie',
     'Reentrenar con todo (para jugar)':
         'Réentraîner sur tout (pour jouer avec)',

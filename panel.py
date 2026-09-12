@@ -2063,6 +2063,20 @@ def cargar_base(origen, cuantos):
         convencion que `db/quitar_partidas.py`. Igual que quitar una partida,
         esto no se deshace.
 
+      - **SE CONSERVAN LOS NOMBRES DE AQUI**, y esto no es cosmetica. Las
+        vistas agrupan por `COALESCE(person_name, name)`, o sea por el
+        NOMBRE y no por la cuenta. Si la misma persona se llama «Mario» aqui
+        y `jugador_e6397905` en la base que llega, aparece como dos personas
+        distintas en las 32 tablas y con sus partidas repartidas entre las
+        dos, sin que nada lo diga.
+
+      - **SE CONSERVAN LAS PARTIDAS QUE HABIAS DESCARTADO.** `mod_ignoradas`
+        vive en el .db, pero lo que dice no es un dato de la base: es una
+        decision tuya sobre las grabaciones de ESTE ordenador. Si se fuera
+        con la base vieja, la siguiente importacion volveria a meter las
+        partidas que quitaste a mano y habria que quitarlas otra vez, una
+        por una y sin que nada avisara de por que han vuelto.
+
       - **SE REHACEN LAS VISTAS.** Viven DENTRO del .db y no en el codigo, asi
         que una base traida de una version anterior llega con las vistas de
         entonces. Y eso no da error: ensena numeros viejos con el codigo nuevo
@@ -2082,6 +2096,7 @@ def cargar_base(origen, cuantos):
     que ajustar el dia que la base crezca.
     """
     temporal = BASE_DATOS + ".subiendo"
+    descartadas, nombres = [], []
     try:
         with open(temporal, "wb") as fh:
             queda = cuantos
@@ -2117,6 +2132,30 @@ def cargar_base(origen, cuantos):
         finally:
             con.close()
 
+        # Lo que hay que rescatar de la base vieja antes de que desaparezca.
+        # Si la de aqui no existe todavia, o es tan antigua que no tiene esas
+        # tablas, no hay nada que rescatar y tampoco es un error.
+        if os.path.isfile(BASE_DATOS):
+            try:
+                vieja = sqlite3.connect(
+                    "file:%s?mode=ro" % BASE_DATOS.replace("\\", "/"),
+                    uri=True)
+                try:
+                    descartadas = list(vieja.execute(
+                        "SELECT carpeta, motivo, cuando FROM mod_ignoradas"))
+                    # Y quien es quien. Los nombres provisionales no se
+                    # rescatan: no dicen nada y pisarian uno de verdad que
+                    # traiga la base que llega.
+                    nombres = [
+                        f for f in vieja.execute(
+                            "SELECT network_id, display_name, is_bot "
+                            "FROM mod_identities")
+                        if not (f[1] or "").startswith(PROVISIONAL)]
+                finally:
+                    vieja.close()
+            except sqlite3.DatabaseError:
+                pass
+
         copia = None
         if os.path.isfile(BASE_DATOS):
             if not os.path.isdir(COPIAS):
@@ -2132,6 +2171,68 @@ def cargar_base(origen, cuantos):
     finally:
         if os.path.isfile(temporal):
             os.remove(temporal)
+
+    # Se devuelven las descartadas a la base nueva. `OR IGNORE` porque la que
+    # llega puede traer ya alguna con esa misma carpeta, que es la clave.
+    devueltas = 0
+    if descartadas:
+        try:
+            escribible = sqlite3.connect(BASE_DATOS)
+            try:
+                escribible.execute(
+                    "CREATE TABLE IF NOT EXISTS mod_ignoradas ("
+                    "carpeta TEXT PRIMARY KEY, motivo TEXT, cuando TEXT)")
+                escribible.executemany(
+                    "INSERT OR IGNORE INTO mod_ignoradas "
+                    "(carpeta, motivo, cuando) VALUES (?,?,?)", descartadas)
+                devueltas = escribible.total_changes
+                escribible.commit()
+            finally:
+                escribible.close()
+        except sqlite3.DatabaseError:
+            pass
+
+    # Y los nombres de aqui, aplicados a la base nueva.
+    #
+    # POR QUE ESTO NO ES COSMETICA: las vistas agrupan por
+    # `COALESCE(person_name, name)`, o sea POR EL NOMBRE y no por la cuenta.
+    # Si la misma persona se llama «Mario» aqui y `jugador_e6397905` en la
+    # que llega, sale como DOS personas en las 32 tablas, con sus partidas
+    # repartidas entre las dos. Y no avisa nadie.
+    #
+    # Se va por `mandar_llamar`, que es el mismo camino del boton «Ponerle
+    # nombre a alguien»: cambia la identidad Y las partidas ya guardadas.
+    # Reescribir eso aqui seria tener dos versiones de una operacion que toca
+    # el historico entero.
+    unificados = 0
+    try:
+        import mod_verdad.importar as _imp
+        escribible = sqlite3.connect(BASE_DATOS)
+        try:
+            for red, nombre, es_bot in nombres:
+                fila = escribible.execute(
+                    "SELECT display_name FROM mod_identities "
+                    "WHERE network_id=?", (red,)).fetchone()
+                if fila is None:
+                    # Alli no jugo nunca. Se deja apuntado igualmente, para
+                    # que al importar las grabaciones de aqui entre con su
+                    # nombre y no con uno provisional.
+                    escribible.execute(
+                        "INSERT INTO mod_identities (network_id, "
+                        "display_name, is_bot) VALUES (?,?,?)",
+                        (red, nombre, es_bot))
+                    escribible.execute(
+                        "INSERT OR IGNORE INTO people (display_name) "
+                        "VALUES (?)", (nombre,))
+                    unificados += 1
+                elif fila[0] != nombre:
+                    _imp.mandar_llamar(escribible, red, nombre)
+                    unificados += 1
+            escribible.commit()
+        finally:
+            escribible.close()
+    except Exception as e:
+        print("[panel] no se han podido pasar los nombres: %s" % e)
 
     # Las vistas, ya sobre la base nueva. Que fallen no invalida la carga: los
     # datos ya estan puestos, y rehacerlas se puede a mano.
@@ -2152,10 +2253,18 @@ def cargar_base(origen, cuantos):
     # traduzca.
     mensaje = "base cargada: %d partidas y %d jugadores." % (partidas,
                                                              jugadores)
+    if devueltas:
+        mensaje += (" Siguen fuera las %d partidas que habias descartado."
+                    % devueltas)
+    if unificados:
+        mensaje += (" Y se han conservado %d nombres de aqui, para que cada "
+                    "persona siga siendo una sola en las tablas."
+                    % unificados)
     if copia:
         mensaje += " La de aqui se ha guardado en copias/%s" % (
             os.path.basename(copia))
     return {"ok": True, "partidas": partidas, "jugadores": jugadores,
+            "descartadas": devueltas,
             "copia": os.path.basename(copia) if copia else None,
             "aviso": aviso, "mensaje": mensaje}
 
@@ -2842,7 +2951,8 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   historico. <b>Sustituye la base entera</b>, no junta las dos. Antes de
   hacerlo comprueba que el fichero es de verdad la base del Catan y guarda una
   <b>copia de la de aqui</b> dentro de <code>copias/</code>, que tampoco hay
-  deshacer.</p>
+  deshacer. Las partidas que hubieras quitado a mano siguen fuera: eso es una
+  decision tuya sobre tus grabaciones, no un dato de la base que llega.</p>
 </div>
 
 <div class="bloque">
