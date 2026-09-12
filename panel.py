@@ -2044,7 +2044,7 @@ def quitar_partida(gid, motivo=""):
     return {"ok": True, "partida": gid, "ficha": descripcion, "copia": copia}
 
 
-def cargar_base(datos):
+def cargar_base(origen, cuantos):
     """Pone aqui una base traida de otro sitio, en lugar de la que haya.
 
     Para que sirve: jugar en dos ordenadores sin partir el historico en dos.
@@ -2073,15 +2073,33 @@ def cargar_base(datos):
     `os.replace`, que es atomico: si algo falla a mitad, la base de aqui
     sigue entera. Escribir encima directamente deja media base el dia que se
     corte la subida.
-    """
-    if len(datos) < 512 or not datos.startswith(b"SQLite format 3\x00"):
-        return {"ok": False,
-                "error": "eso no es una base de datos de SQLite."}
 
+    Y SE COPIA A TROZOS, directo al disco. No es un detalle de estilo: la
+    primera version leia el cuerpo entero en memoria de una vez, y eso obliga
+    a poner un tope de tamanio, porque entonces la memoria que reserva el
+    panel la decide el fichero que le manden. Copiando a trozos se queda
+    plana en un mega pase lo que pase, y asi no hay tope que poner ni numero
+    que ajustar el dia que la base crezca.
+    """
     temporal = BASE_DATOS + ".subiendo"
     try:
         with open(temporal, "wb") as fh:
-            fh.write(datos)
+            queda = cuantos
+            while queda > 0:
+                trozo = origen.read(min(1024 * 1024, queda))
+                if not trozo:
+                    break                # se ha cortado la subida a medias
+                fh.write(trozo)
+                queda -= len(trozo)
+
+        # La firma se mira ya sobre el fichero: son los 16 primeros bytes de
+        # cualquier base de SQLite, asi que una foto o un .zip se caen aqui
+        # sin haber tocado nada.
+        with open(temporal, "rb") as fh:
+            firma = fh.read(16)
+        if os.path.getsize(temporal) < 512 or firma != b"SQLite format 3\x00":
+            return {"ok": False,
+                    "error": "eso no es una base de datos de SQLite."}
 
         con = sqlite3.connect("file:%s?mode=ro" % temporal.replace("\\", "/"),
                               uri=True)
@@ -2818,7 +2836,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   capturas</b>: quitar una partida del historico no le hace perder un recorte
   a la vision. Y no hay deshacer, asi que pregunta.</p>
   <p class="pista">Estos dos son para jugar en mas de un ordenador sin partir
-  el historico en dos. <b>Bajar la base de datos</b> te da el fichero
+  el historico en dos. <b>Descargar la base de datos</b> te da el fichero
   <code>catan_stats.db</code> para llevartelo, y <b>Cargar una base de
   datos</b> hace lo contrario: lo eliges aqui y este panel sigue con aquel
   historico. <b>Sustituye la base entera</b>, no junta las dos. Antes de
@@ -3972,15 +3990,11 @@ class Manejador(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass      # la consola es para lo que imprime el panel, no para cada GET
 
-    def _responder(self, codigo, tipo, cuerpo, cabeceras=None):
+    def _responder(self, codigo, tipo, cuerpo):
         self.send_response(codigo)
         self.send_header("Content-Type", tipo)
         self.send_header("Content-Length", str(len(cuerpo)))
         self.send_header("Cache-Control", "no-store")
-        # `cabeceras` es para la descarga de la base, que necesita un
-        # `Content-Disposition` y es la unica que se sale de estas cuatro.
-        for nombre, valor in (cabeceras or {}).items():
-            self.send_header(nombre, valor)
         self.end_headers()
         self.wfile.write(cuerpo)
 
@@ -4011,17 +4025,31 @@ class Manejador(BaseHTTPRequestHandler):
             if not os.path.isfile(BASE_DATOS):
                 return self._responder(404, "text/plain; charset=utf-8",
                                        "todavia no hay base".encode("utf-8"))
-            with open(BASE_DATOS, "rb") as fh:
-                datos = fh.read()
             # Con la fecha en el nombre: asi se pueden guardar varias sin que
             # el navegador las llame «(1)» y «(2)» y no haya forma de saber
             # cual es cual. Como se llame da igual para volver a cargarla: el
             # panel la pone como `catan_stats.db` de todas formas.
             nombre = "catan_stats_%s.db" % datetime.datetime.now().strftime(
                 "%Y%m%d")
-            return self._responder(
-                200, "application/octet-stream", datos,
-                {"Content-Disposition": 'attachment; filename="%s"' % nombre})
+            # A trozos, igual que al cargarla: un `fh.read()` entero pondria
+            # en memoria del panel todo lo que ocupe la base, y entonces
+            # habria que preguntarse cuanto puede ocupar. Asi, no.
+            #
+            # El tamanio se saca del fichero YA ABIERTO y no de la ruta: si
+            # se mide antes de abrir y algo lo cambia en ese hueco, el
+            # `Content-Length` no cuadra con lo que va detras y el navegador
+            # se queda esperando.
+            with open(BASE_DATOS, "rb") as fh:
+                self.send_response(200)
+                self.send_header("Content-Type", "application/octet-stream")
+                self.send_header("Content-Length",
+                                 str(os.fstat(fh.fileno()).st_size))
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("Content-Disposition",
+                                 'attachment; filename="%s"' % nombre)
+                self.end_headers()
+                shutil.copyfileobj(fh, self.wfile, 1024 * 1024)
+            return
         if ruta == "/gente":
             return self._json(gente())
         if ruta == "/titulares":
@@ -4082,14 +4110,11 @@ class Manejador(BaseHTTPRequestHandler):
         largo = int(self.headers.get("Content-Length") or 0)
 
         # Esta va ANTES de leer el cuerpo como JSON, porque lo que trae no es
-        # un objeto: es un fichero .db en crudo. Y lleva tope de tamanio a
-        # proposito -- el cuerpo se lee entero en memoria, asi que sin el,
-        # apuntar a esta ruta con un fichero enorme tumba el panel.
+        # un objeto: es un fichero .db en crudo. Y no se lee aqui: se le pasa
+        # el flujo a `cargar_base`, que lo copia al disco a trozos. Sin tope
+        # de tamanio, y sin que haga falta: por memoria no pasa.
         if self.path == "/cargar":
-            if largo > 200 * 1024 * 1024:
-                return self._json({"ok": False, "error":
-                                   "ese fichero pasa de 200 MB, no es la base."})
-            r = cargar_base(self.rfile.read(largo))
+            r = cargar_base(self.rfile, largo)
             print("[panel] cargar una base: %s"
                   % ("hecho" if r.get("ok") else "FALLO: %s" % r.get("error")))
             return self._json(r)

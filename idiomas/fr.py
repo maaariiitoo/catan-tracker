@@ -182,7 +182,7 @@ TEXTO = {
     'Que partidas': 'Quelles parties',
     'Quitar una partida': 'Supprimer une partie',
     'Cargar una base de datos': 'Charger une base de données',
-    'Bajar la base de datos': 'Télécharger la base de données',
+    'Descargar la base de datos': 'Télécharger la base de données',
     'Estos dos son para jugar en mas de un ordenador sin partir el historico '
     'en dos.':
         "Ces deux-là servent à jouer sur plus d'un ordinateur sans couper ton "

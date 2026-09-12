@@ -133,7 +133,7 @@ TEXTO = {
     "Ponerle nombre a alguien": "Name someone",
     "Quitar una partida": "Remove a game",
     "Cargar una base de datos": "Load a database",
-    "Bajar la base de datos": "Download the database",
+    "Descargar la base de datos": "Download the database",
     "Estos dos son para jugar en mas de un ordenador sin partir el historico "
     "en dos.":
         "These two are for playing on more than one computer without "
