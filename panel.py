@@ -2797,6 +2797,7 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   <button class="principal" id="bImportar">Guardar en la base de datos</button>
   <button id="bNombres">Ponerle nombre a alguien</button>
   <button id="bQuitar">Quitar una partida</button>
+  <button id="bBajar">Descargar la base de datos</button>
   <button id="bCargar">Cargar una base de datos</button>
   <input type="file" id="ficheroBase" accept=".db" style="display:none">
   <div id="gente"></div>
@@ -2816,12 +2817,14 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   grabacion para que el importador no la vuelva a meter. <b>No borra las
   capturas</b>: quitar una partida del historico no le hace perder un recorte
   a la vision. Y no hay deshacer, asi que pregunta.</p>
-  <p class="pista"><b>Cargar una base de datos</b> es para cuando juegas en
-  otro ordenador: te traes el <code>catan_stats.db</code> de aquel, lo eliges
-  aqui, y este sigue con aquel historico. <b>Sustituye la base entera</b>, no
-  junta las dos. Antes de hacerlo comprueba que el fichero es de verdad la
-  base del Catan y guarda una <b>copia de la de aqui</b> dentro de
-  <code>copias/</code>, que tampoco hay deshacer.</p>
+  <p class="pista">Estos dos son para jugar en mas de un ordenador sin partir
+  el historico en dos. <b>Bajar la base de datos</b> te da el fichero
+  <code>catan_stats.db</code> para llevartelo, y <b>Cargar una base de
+  datos</b> hace lo contrario: lo eliges aqui y este panel sigue con aquel
+  historico. <b>Sustituye la base entera</b>, no junta las dos. Antes de
+  hacerlo comprueba que el fichero es de verdad la base del Catan y guarda una
+  <b>copia de la de aqui</b> dentro de <code>copias/</code>, que tampoco hay
+  deshacer.</p>
 </div>
 
 <div class="bloque">
@@ -3178,6 +3181,11 @@ boton("bQuitar", async () => {
 // Va con `fetch` a pelo y no con `pedir()`, que manda JSON: aqui el cuerpo
 // es el fichero en crudo. Y el mensaje lo escribe el servidor entero, para
 // que aqui no haya que pegar trozos de frase.
+// Bajarla es un enlace de descarga, no una peticion: el servidor manda un
+// `Content-Disposition`, asi que el navegador guarda el fichero y la pagina
+// se queda donde estaba.
+boton("bBajar", () => { window.location = "/base"; return {ok: true}; });
+
 boton("bCargar", () => {
   const caja = document.getElementById("ficheroBase");
   caja.value = "";
@@ -3964,11 +3972,15 @@ class Manejador(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass      # la consola es para lo que imprime el panel, no para cada GET
 
-    def _responder(self, codigo, tipo, cuerpo):
+    def _responder(self, codigo, tipo, cuerpo, cabeceras=None):
         self.send_response(codigo)
         self.send_header("Content-Type", tipo)
         self.send_header("Content-Length", str(len(cuerpo)))
         self.send_header("Cache-Control", "no-store")
+        # `cabeceras` es para la descarga de la base, que necesita un
+        # `Content-Disposition` y es la unica que se sale de estas cuatro.
+        for nombre, valor in (cabeceras or {}).items():
+            self.send_header(nombre, valor)
         self.end_headers()
         self.wfile.write(cuerpo)
 
@@ -3991,6 +4003,25 @@ class Manejador(BaseHTTPRequestHandler):
         if ruta == "/vistas":
             return self._json(
                 catalogo(_idioma_pedido(self.headers, consulta)))
+        if ruta == "/base":
+            # Bajarse la base para llevarsela a otro ordenador. Va por GET y
+            # no por POST a proposito, al reves que `/quitar`: esto no toca
+            # nada, solo lee el fichero, y GET es lo que entiende una
+            # descarga del navegador.
+            if not os.path.isfile(BASE_DATOS):
+                return self._responder(404, "text/plain; charset=utf-8",
+                                       "todavia no hay base".encode("utf-8"))
+            with open(BASE_DATOS, "rb") as fh:
+                datos = fh.read()
+            # Con la fecha en el nombre: asi se pueden guardar varias sin que
+            # el navegador las llame «(1)» y «(2)» y no haya forma de saber
+            # cual es cual. Como se llame da igual para volver a cargarla: el
+            # panel la pone como `catan_stats.db` de todas formas.
+            nombre = "catan_stats_%s.db" % datetime.datetime.now().strftime(
+                "%Y%m%d")
+            return self._responder(
+                200, "application/octet-stream", datos,
+                {"Content-Disposition": 'attachment; filename="%s"' % nombre})
         if ruta == "/gente":
             return self._json(gente())
         if ruta == "/titulares":

@@ -182,11 +182,17 @@ TEXTO = {
     'Que partidas': 'Quelles parties',
     'Quitar una partida': 'Supprimer une partie',
     'Cargar una base de datos': 'Charger une base de données',
-    'es para cuando juegas en otro ordenador: te traes el':
-        "c'est pour quand tu joues sur un autre ordinateur : tu rapportes le",
+    'Bajar la base de datos': 'Télécharger la base de données',
+    'Estos dos son para jugar en mas de un ordenador sin partir el historico '
+    'en dos.':
+        "Ces deux-là servent à jouer sur plus d'un ordinateur sans couper ton "
+        'historique en deux.',
+    'te da el fichero': 'te donne le fichier',
     'catan_stats.db': 'catan_stats.db',
-    'de aquel, lo eliges aqui, y este sigue con aquel historico.':
-        'de celui-là, tu le choisis ici, et celui-ci continue avec cet '
+    'para llevartelo, y': 'à emporter, et',
+    'hace lo contrario: lo eliges aqui y este panel sigue con aquel '
+    'historico.':
+        "fait l'inverse : tu le choisis ici et ce panneau continue avec cet "
         'historique.',
     'Sustituye la base entera': 'Ça remplace toute la base',
     ', no junta las dos. Antes de hacerlo comprueba que el fichero es de '

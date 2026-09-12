@@ -133,11 +133,17 @@ TEXTO = {
     "Ponerle nombre a alguien": "Name someone",
     "Quitar una partida": "Remove a game",
     "Cargar una base de datos": "Load a database",
-    "es para cuando juegas en otro ordenador: te traes el":
-        "is for when you play on another computer: bring over the",
+    "Bajar la base de datos": "Download the database",
+    "Estos dos son para jugar en mas de un ordenador sin partir el historico "
+    "en dos.":
+        "These two are for playing on more than one computer without "
+        "splitting your history in two.",
+    "te da el fichero": "hands you the",
     "catan_stats.db": "catan_stats.db",
-    "de aquel, lo eliges aqui, y este sigue con aquel historico.":
-        "from that one, pick it here, and this one carries on with that "
+    "para llevartelo, y": "file to take with you, and",
+    "hace lo contrario: lo eliges aqui y este panel sigue con aquel "
+    "historico.":
+        "does the opposite: pick it here and this panel carries on with that "
         "history.",
     "Sustituye la base entera": "It replaces the whole database",
     ", no junta las dos. Antes de hacerlo comprueba que el fichero es de "
