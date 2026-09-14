@@ -3859,6 +3859,12 @@ function ficha(x){
           // del primero, que es justo lo contrario de lo que es.
           + (x.empate || []).map(
               e => '<div class="detalle">' + escapar(e) + "</div>").join("")
+          // La misma lista mirada de otra forma (quien gana mas POR PARTIDA).
+          // Sin raya encima y con el estilo del detalle: es una pega a lo de
+          // arriba, no otro bloque. La raya la lleva `tambien`, que si lo es.
+          + (x.ritmo ? '<div class="detalle">' + escapar(x.ritmo) + "</div>" : "")
+          // Y el extremo de abajo, cuando el titular tiene dos puntas.
+          + (x.reves ? '<div class="detalle">' + escapar(x.reves) + "</div>" : "")
           + (x.tambien ? '<div class="tambien">' + escapar(x.tambien) + "</div>" : "")
           + (x.partida === undefined ? ""
              : '<div class="cuando">partida ' + Number(x.partida)

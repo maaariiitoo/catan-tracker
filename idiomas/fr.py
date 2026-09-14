@@ -476,6 +476,10 @@ FRASES = {
     'El ritmo de cada uno': 'Le rythme de chacun',
     'El saldo con cada uno': 'Le solde avec chacun',
     'El tablero y los dados': 'Le plateau et les dés',
+    'El que menos suerte tiene es {quien}, con {suerte}% y {se_sale} márgenes.':
+        "Celui qui a le moins de chance, c'est {quien}, avec {suerte} % et {se_sale} écarts.",
+    'El que más gana por partida es {quien}, {victorias} de {partidas}.':
+        "Celui qui gagne le plus par partie jouée, c'est {quien}, {victorias} sur {partidas}.",
     'En mesa de 5 y 6 manda {quien}, con {victorias} de {partidas}.':
         'Aux tables de 5 et 6, {quien} mène, avec {victorias} sur {partidas}.',
     'En mesa de 5 y 6 no ha ganado todavía ninguno de los que llegan al mínimo.':

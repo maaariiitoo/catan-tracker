@@ -2962,13 +2962,37 @@ def prueba_el_panel_las_sirve(partidas):
                 return None
             return max(filas, key=lambda x: x[columna] or 0)["quien"]
 
+        # `el_que_mas` con una columna que puede estar a CERO devuelve a
+        # alguien igualmente --el mayor de varios ceros sigue siendo un
+        # nombre-- y eso no es lo que contesta la caja: si nadie lo hizo
+        # nunca, contesta un 0. Asi que para esas se pregunta por el mayor
+        # QUE TENGA ALGO.
+        #
+        # No es hipotetico: esta prueba daba por hecho que en el 11 no habia
+        # puesto un caballero nadie y el 14 de septiembre de 2026 alguien
+        # puso el primero. La caja contestaba bien y la prueba fallaba, que
+        # es la peor forma de fallar que hay.
+        def el_que_mas_con_algo(vista, columna, **filtro):
+            c, f = V.consultar(conn2b, vista)
+            filas = [dict(zip(c, x)) for x in f]
+            for k, v in filtro.items():
+                filas = [x for x in filas if x.get(k) == v]
+            filas = [x for x in filas if (x[columna] or 0) > 0]
+            if not filas:
+                return None
+            return max(filas, key=lambda x: x[columna])["quien"]
+
         tapa_el_11 = el_que_mas("amigos_ladron_donde", "veces", numero=11)
-        caballero_3 = el_que_mas("amigos_ladron_donde", "con_caballero", numero=3)
+        caballero_3 = el_que_mas_con_algo("amigos_ladron_donde",
+                                          "con_caballero", numero=3)
+        caballero_11 = el_que_mas_con_algo("amigos_ladron_donde",
+                                           "con_caballero", numero=11)
         gano_la_7 = conn2b.execute(
             "SELECT gano FROM partidas WHERE game_id = 7").fetchone()
         casos_filtro = [
             ("quien ha puesto el ladron en el 11", [tapa_el_11 or "", "11"]),
-            ("quien puso el caballero en el 11", ["11", "0"]),
+            ("quien puso el caballero en el 11",
+             ["11", caballero_11] if caballero_11 else ["11", "0"]),
             ("quien ha puesto un caballero en el 3", [caballero_3 or ""]),
             ("cuantos 7 han salido", [sietes]),
             ("en la partida 7 quien gano", [gano_la_7[0] if gano_la_7 else ""]),
@@ -3269,7 +3293,12 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
     tabla. Lo segundo no repite el codigo del modulo: no mira si eligio bien
     la fila, mira que el numero exista, que es lo que promete la portada."""
     def cifras(t):
-        return set(re.findall(r"\d+(?:,\d+)?", t))
+        # CON EL SIGNO DELANTE. Sin el, «-2,17 margenes» se leia como 2,17 y
+        # se buscaba un 2,17 en la tabla, donde lo que hay es un -2,17: la
+        # prueba cantaba un numero inventado que estaba escrito bien. Pasa
+        # desde que la portada ensena el extremo de abajo de una lista, que
+        # es justo donde viven los negativos.
+        return set(re.findall(r"-?\d+(?:,\d+)?", t))
 
     gente = T.elegibles(conn)
     todos = T._cuantas_lleva(conn)
@@ -3287,6 +3316,17 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
         cols, filas = V.consultar(conn, t["vista"])
         plantillas = " ".join(t.get(k, "")
                               for k in ("quien", "cifra", "detalle"))
+        # La linea del «mejor por partida» tambien: sus huecos son columnas
+        # de la misma vista y sus numeros salen de la misma fila.
+        if isinstance(t.get("al_reves"), dict):
+            plantillas += " " + t["al_reves"]["texto"]
+        if isinstance(t.get("mejor_por"), dict):
+            plantillas += " " + t["mejor_por"]["texto"]
+            for col in t["mejor_por"]["clave"]:
+                if col not in cols:
+                    sin_columna.append("%s: ordena por %s para el ritmo, "
+                                       "que no esta en %s"
+                                       % (t["id"], col, t["vista"]))
         for hueco in re.findall(r"\{([a-z0-9_]+)\}", plantillas):
             if hueco not in cols:
                 sin_columna.append("%s: {%s} no esta en %s"
@@ -3303,7 +3343,9 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
         # ensena igual que los demas, y sin esto se quedaban sin mirar.
         escrito = (salido["quien"] + " " + salido["cifra"] + " "
                    + salido["detalle"] + " "
-                   + " ".join(salido.get("empate", [])))
+                   + " ".join(salido.get("empate", []))
+                   + " " + salido.get("ritmo", "")
+                   + " " + salido.get("reves", ""))
         if "{" in escrito or "}" in escrito:
             crudos.append("%s: %s" % (t["id"], escrito))
 
@@ -3372,6 +3414,78 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
                                    % (t["id"], nombre, T._num(tope)))
     comprobar("y si empatan en cabeza salen todos", not sin_nombrar,
               "; ".join(sin_nombrar))
+
+    # La linea del «mejor por partida» dice OTRA cosa que el titular, asi que
+    # se comprueba aparte: que nombre al que mejor ratio tiene de los que
+    # entran, y que no salga cuando ese es el que ya manda --entonces seria
+    # la misma frase dos veces--.
+    mal_ritmo = []
+    for t in T.TITULARES:
+        if not isinstance(t.get("mejor_por"), dict):
+            continue
+        salido = [x for x in hecho["titulares"] if x["id"] == t["id"]][0]
+        if "falta" in salido:
+            continue
+        cols, filas = V.consultar(conn, t["vista"])
+        i = cols.index(t["ordenar"])
+        arriba, abajo = t["mejor_por"]["clave"]
+        ia, ib = cols.index(arriba), cols.index(abajo)
+        quienes = [c for c in ("quien", "a_quien", "con_quien") if c in cols]
+        pueden = [f for f in filas if f[i] is not None
+                  and all(f[cols.index(c)] in gente for c in quienes)]
+        dentro = T._filtrar(pueden, cols, t.get("donde"))
+        conta = [f for f in dentro if f[ia] is not None and f[ib]]
+        if not conta:
+            continue
+        suyo = max(conta, key=lambda f: f[ia] / float(f[ib]))
+        manda = suyo[i] == max(f[i] for f in dentro)
+        if manda and "ritmo" in salido:
+            mal_ritmo.append("%s: el mejor por partida ya manda y aun asi se "
+                             "dice" % t["id"])
+        if not manda:
+            if "ritmo" not in salido:
+                mal_ritmo.append("%s: falta la linea del mejor por partida"
+                                 % t["id"])
+            elif suyo[cols.index("quien")] not in salido["ritmo"]:
+                mal_ritmo.append("%s: el mejor por partida es %s y la linea "
+                                 "dice otra cosa"
+                                 % (t["id"], suyo[cols.index("quien")]))
+    comprobar("y el «mejor por partida» es el que mas gana por partida",
+              not mal_ritmo, "; ".join(mal_ritmo))
+
+    # El otro extremo: la linea de abajo tiene que nombrar al ULTIMO de los
+    # que entran, que es lo unico que promete. Se recalcula aqui igual que
+    # todo lo demas, sin preguntarle al modulo.
+    mal_reves = []
+    for t in T.TITULARES:
+        if not isinstance(t.get("al_reves"), dict):
+            continue
+        salido = [x for x in hecho["titulares"] if x["id"] == t["id"]][0]
+        if "falta" in salido:
+            continue
+        cols, filas = V.consultar(conn, t["vista"])
+        i = cols.index(t["ordenar"])
+        quienes = [c for c in ("quien", "a_quien", "con_quien") if c in cols]
+        pueden = [f for f in filas if f[i] is not None
+                  and all(f[cols.index(c)] in gente for c in quienes)]
+        dentro = T._filtrar(pueden, cols, t.get("donde"))
+        if not dentro:
+            continue
+        fondo, tope = min(f[i] for f in dentro), max(f[i] for f in dentro)
+        if fondo == tope:
+            if "reves" in salido:
+                mal_reves.append("%s: todos iguales y aun asi hay ultimo"
+                                 % t["id"])
+            continue
+        if "reves" not in salido:
+            mal_reves.append("%s: falta la linea del ultimo" % t["id"])
+            continue
+        ultimos = [f[cols.index("quien")] for f in dentro if f[i] == fondo]
+        if not any(q in salido["reves"] for q in ultimos):
+            mal_reves.append("%s: el ultimo es %s y la linea dice otra cosa"
+                             % (t["id"], ultimos[0]))
+    comprobar("y el de abajo del todo es el ultimo de verdad", not mal_reves,
+              "; ".join(mal_reves))
 
     # El minimo de partidas no es decoracion: sin el, el titular se lo lleva
     # el que jugo una vez y tuvo un buen dia. Nadie por debajo sale nombrado.
@@ -3737,8 +3851,9 @@ def prueba_ningun_idioma_se_queda_a_medias():
                       "si_cero", "si_nadie"):
             if isinstance(d.get(clave), str):
                 fuera.append(d[clave])
-        if isinstance(d.get("tambien"), dict):
-            fuera += plantillas(d["tambien"])
+        for dentro in ("tambien", "mejor_por", "al_reves"):
+            if isinstance(d.get(dentro), dict):
+                fuera += plantillas(d[dentro])
         return fuera
 
     for uno in list(T.TITULARES) + list(T.RECORDS):

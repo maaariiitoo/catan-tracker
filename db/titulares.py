@@ -83,6 +83,26 @@ TITULARES = (
          "si_cero": "En mesa de 5 y 6 no ha ganado todavía ninguno de los "
                     "que llegan al mínimo.",
      },
+     # Y QUIEN GANA MAS A MENUDO, que no es el mismo y no se ve solo.
+     #
+     # Ordenar por victorias a secas premia al que mas juega: 7 de 16 manda
+     # sobre 6 de 12, o sea 43,8% por delante de un 50%. Ordenar por el
+     # porcentaje seria peor: con diez partidas de minimo, UNA victoria da la
+     # vuelta al titular --el de 6 de 12 pierde la siguiente, se queda en 46%
+     # y deja de mandar-- y eso es ruido con nombre y apellidos.
+     #
+     # Asi que van las dos, y esta linea solo sale cuando son personas
+     # distintas: cuando el que mas gana es ademas el que mas gana por
+     # partida, decirlo dos veces no aniade nada.
+     #
+     # El numero de esta linea SIGUE SIENDO DE LA TABLA --«6 de 12» son dos
+     # columnas de la misma fila-- y por eso se ordena aqui en vez de pedirle
+     # a la vista un porcentaje que no tiene. No es una segunda consulta.
+     "mejor_por": {
+         "clave": ("victorias", "partidas"),
+         "texto": "El que más gana por partida es {quien}, "
+                  "{victorias} de {partidas}.",
+     },
      "cifra": "{victorias} de {partidas}",
      # `eran` va en el detalle a propósito: «Marcador» tiene una fila por
      # persona Y por tamaño de mesa, porque a 5 se juega a 12 puntos y no es
@@ -172,6 +192,20 @@ TITULARES = (
      # pero entre dos que llevan doce sigue habiendo uno con ruido y otro sin
      # el, y el porcentaje solo no los distingue.
      "ordenar": "se_sale",
+     # Y EL OTRO EXTREMO DE LA MISMA LISTA. Un titular aparte para la mala
+     # suerte seria otra ficha diciendo lo mismo del reves, y la pregunta es
+     # una sola: como se ha repartido el tablero. Arriba el que mas cobro de
+     # lo suyo, aqui el que menos, y se ve el recorrido entero sin abrir la
+     # tabla.
+     #
+     # Sale de la misma fila de la misma consulta, asi que el numero se
+     # vuelve a encontrar abajo. Y no juzga: da el porcentaje y los margenes,
+     # y la regla de los 2 esta dicha una linea antes, que vale para los dos
+     # lados. Ahora mismo el de abajo la pasa y el de arriba no.
+     "al_reves": {
+         "texto": "El que menos suerte tiene es {quien}, "
+                  "con {suerte}% y {se_sale} márgenes.",
+     },
      "cifra": "{suerte}%",
      # La frase no dice si es suerte o no: dice el numero y la regla, y que
      # la lea quien mira. Una plantilla no puede ramificar, y escribir «y eso
@@ -428,6 +462,31 @@ def _uno(conn, titular, gente, idioma=None):
     _escribir(salida, titular, cols, [f for f in dentro if f[orden] == tope],
               idioma)
 
+    # La otra forma de mirar la misma lista: el mejor por partida jugada.
+    # Sale solo si no es quien ya manda, y el empate aqui se queda en uno por
+    # lo mismo que la segunda mesa: es una frase hecha, no una ficha.
+    ritmo = titular.get("mejor_por")
+    if ritmo:
+        arriba, abajo = ritmo["clave"]
+        if arriba in cols and abajo in cols:
+            ia, ib = cols.index(arriba), cols.index(abajo)
+            conta = [f for f in dentro if f[ia] is not None and f[ib]]
+            if conta:
+                suyo = max(conta, key=lambda f: f[ia] / float(f[ib]))
+                if suyo[orden] != tope:
+                    salida["ritmo"] = _rellenar(ritmo["texto"], cols, suyo,
+                                                idioma)
+
+    # El extremo de abajo de la misma lista. No sale si hay una sola fila
+    # --entonces el mismo seria el primero y el ultimo-- y el empate abajo se
+    # queda en uno, por lo mismo que las otras frases hechas.
+    reves = titular.get("al_reves")
+    if reves:
+        fondo = min(f[orden] for f in dentro)
+        if fondo != tope:
+            peor = [f for f in dentro if f[orden] == fondo][0]
+            salida["reves"] = _rellenar(reves["texto"], cols, peor, idioma)
+
     # La segunda linea, cuando la vista se parte en bloques que no se pueden
     # mezclar. Es OTRA fila de LA MISMA consulta -- no una consulta nueva --
     # asi que sigue valiendo lo de siempre: el numero que se lee aqui es el
@@ -557,6 +616,10 @@ def _pintar(t):
     print("    %s" % t["detalle"])
     for linea in t.get("empate", []):
         print("    %s" % linea)
+    if "ritmo" in t:
+        print("    %s" % t["ritmo"])
+    if "reves" in t:
+        print("    %s" % t["reves"])
     if "partida" in t:
         print("    partida %s, %s" % (t["partida"], t["dia"]))
     print("    de: %s" % t["vista_titulo"])

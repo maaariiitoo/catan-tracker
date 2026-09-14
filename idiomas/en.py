@@ -630,6 +630,10 @@ FRASES = {
     'El ritmo de cada uno': "Everyone's pace",
     'El saldo con cada uno': 'The balance with each player',
     'El tablero y los dados': 'The board and the dice',
+    'El que menos suerte tiene es {quien}, con {suerte}% y {se_sale} márgenes.':
+        'The one with the least luck is {quien}, on {suerte}% and {se_sale} margins.',
+    'El que más gana por partida es {quien}, {victorias} de {partidas}.':
+        'The one who wins most per game played is {quien}, {victorias} of {partidas}.',
     'En mesa de 5 y 6 manda {quien}, con {victorias} de {partidas}.':
         'At 5- and 6-player tables {quien} leads, with {victorias} of {partidas}.',
     'En mesa de 5 y 6 no ha ganado todavía ninguno de los que llegan al mínimo.':
