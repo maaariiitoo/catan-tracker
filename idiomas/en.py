@@ -146,10 +146,14 @@ TEXTO = {
         "does the opposite: pick it here and this panel carries on with that "
         "history.",
     "Sustituye la base entera": "It replaces the whole database",
-    ", no junta las dos. Antes de hacerlo comprueba que el fichero es de "
-    "verdad la base del Catan y guarda una":
-        ", it doesn't merge the two. Before doing it, it checks that the file "
-        "really is the Catan database and keeps a",
+    "y al terminar mete las partidas de este ordenador, que estan en tus "
+    "grabaciones: te quedan las dos cosas y no se repite ninguna. Antes de "
+    "hacerlo comprueba que el fichero es de verdad la base del Catan y "
+    "guarda una":
+        "and when it's done it adds this computer's games, the ones in your "
+        "recordings: you end up with both and nothing gets duplicated. "
+        "Before doing it, it checks that the file really is the Catan "
+        "database and keeps a",
     "copia de la de aqui": "backup of the one here",
     "dentro de": "inside",
     ", que tampoco hay deshacer. Las partidas que hubieras quitado a mano "
@@ -602,6 +606,8 @@ GUION = {
 # deja un `{victorias}` en crudo en la pantalla. `db/pruebas.py` comprueba que
 # los huecos de la traducción son EXACTAMENTE los mismos que los del original.
 FRASES = {
+    ': ': ': ',
+    ' y ': ' and ',
     'Aquí sólo entran los monopolios de los que se sabe cuánto se llevaron. Si en esta partida se jugó alguno y no sale, es de antes del 22/8/2026: el mod no leía el reparto todavía. Están en «Los monopolios», con quién lo tiró y qué pidió.':
         "Only monopolies whose haul is known get in here. If one was played in this game and doesn't show up, it's from before 22/8/2026: the mod wasn't reading the handover yet. They're in «The monopolies», with who played it and what they called.",
     'Cartas de desarrollo': 'Development cards',
@@ -638,6 +644,8 @@ FRASES = {
     'Los números que más tapa el ladrón': 'The numbers the robber blocks most',
     'Los sietes de cada uno': "Everyone's sevens",
     'Marcador': 'Scoreboard',
+    'Lo que más bloqueó el ladrón en una partida':
+        'The most the robber blocked in a single game',
     'Más ladrones en una partida': 'Most robbers in a single game',
     'Ninguno todavía. Si en la partida se jugó alguno y aquí no sale, es que la carta no llegó a apuntarse: el recurso sólo se engancha a una jugada del mismo jugador y el mismo turno.':
         "None yet. If one was played in the game and doesn't show up here, the card never got recorded: the resource is only tied to a play by the same player on the same turn.",
@@ -703,6 +711,8 @@ FRASES = {
         'which seat each player started from and where they finished',
     'en qué turno llegó a su primera ciudad, su primera carta...':
         'which turn they reached their first city, their first card...',
+    'que no llegó a cobrar: tenía el ladrón encima y el número le salió {le_bloquearon} veces. Ese día produjo {producido} cartas en total.':
+        'they never got to collect: they had the robber on them and the number came up {le_bloquearon} times. That day they produced {producido} cards in all.',
     'entrenar (apartando una partida para medir)':
         'train (holding one game back to measure)',
     'guardar las partidas en la base de datos':
@@ -770,6 +780,7 @@ FRASES = {
         '{compradas} cards in {partidas} games, {caballero} of them knights.',
     '{con_7} veces obligado por un 7 y {con_caballero} eligiéndolo con un caballero. En {le_bloqueo} de esas veces salió el número y {a_quien} no cobró: son {le_costo} cartas que se quedó sin producir. Y aparte le quitó {le_robo} cartas de la mano.':
         '{con_7} times forced by a 7 and {con_caballero} by choice with a knight. On {le_bloqueo} of those the number came up and {a_quien} collected nothing: {le_costo} cards never produced. And on top of that took {le_robo} cards out of their hand.',
+    '{perdido} cartas': '{perdido} cards',
     '{neto} cartas': '{neto} cards',
     '{por_casilla} puntitos': '{por_casilla} pips',
     '{por_partida} por partida': '{por_partida} per game',

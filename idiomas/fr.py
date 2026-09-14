@@ -195,10 +195,14 @@ TEXTO = {
         "fait l'inverse : tu le choisis ici et ce panneau continue avec cet "
         'historique.',
     'Sustituye la base entera': 'Ça remplace toute la base',
-    ', no junta las dos. Antes de hacerlo comprueba que el fichero es de '
-    'verdad la base del Catan y guarda una':
-        ', ça ne fusionne pas les deux. Avant de le faire, ça vérifie que le '
-        'fichier est bien la base du Catan et ça garde une',
+    'y al terminar mete las partidas de este ordenador, que estan en tus '
+    'grabaciones: te quedan las dos cosas y no se repite ninguna. Antes de '
+    'hacerlo comprueba que el fichero es de verdad la base del Catan y '
+    'guarda una':
+        "et à la fin ça ajoute les parties de cet ordinateur, celles de tes "
+        "enregistrements : tu as les deux et rien n'est en double. Avant de "
+        'le faire, ça vérifie que le fichier est bien la base du Catan et '
+        'ça garde une',
     'copia de la de aqui': "copie de celle d'ici",
     'dentro de': 'dans',
     ', que tampoco hay deshacer. Las partidas que hubieras quitado a mano '
@@ -447,6 +451,8 @@ GUION = {
 # la traducción se come un `{hueco}` o se inventa otro, en la pantalla sale
 # un `{victorias}` en crudo o falta el número.
 FRASES = {
+    ': ': ' : ',
+    ' y ': ' et ',
     'Aquí sólo entran los monopolios de los que se sabe cuánto se llevaron. Si en esta partida se jugó alguno y no sale, es de antes del 22/8/2026: el mod no leía el reparto todavía. Están en «Los monopolios», con quién lo tiró y qué pidió.':
         "Ici n'entrent que les monopoles dont le butin est connu. Si un monopole a été joué dans cette partie et n'apparaît pas, c'est qu'il date d'avant le 22/8/2026 : le mod ne lisait pas encore le transfert. Ils sont dans « Les monopoles », avec qui l'a joué et ce qu'il a demandé.",
     'Cartas de desarrollo': 'Cartes développement',
@@ -485,6 +491,8 @@ FRASES = {
         'Les numéros que le voleur bloque le plus',
     'Los sietes de cada uno': 'Les sept de chacun',
     'Marcador': 'Le tableau des scores',
+    'Lo que más bloqueó el ladrón en una partida':
+        'Ce que le voleur a le plus bloqué en une partie',
     'Más ladrones en una partida': 'Le plus de voleurs en une partie',
     'Ninguno todavía. Si en la partida se jugó alguno y aquí no sale, es que la carta no llegó a apuntarse: el recurso sólo se engancha a una jugada del mismo jugador y el mismo turno.':
         "Aucun pour l'instant. Si un monopole a été joué dans la partie et n'apparaît pas ici, la carte n'a jamais été enregistrée : la ressource n'est reliée à une carte jouée que par le même joueur et le même tour.",
@@ -550,6 +558,8 @@ FRASES = {
         'de quelle place chacun est parti et où il a fini',
     'en qué turno llegó a su primera ciudad, su primera carta...':
         'à quel tour il a eu sa première ville, sa première carte...',
+    'que no llegó a cobrar: tenía el ladrón encima y el número le salió {le_bloquearon} veces. Ese día produjo {producido} cartas en total.':
+        "qu'il n'a jamais encaissées : il avait le voleur dessus et le numéro est sorti {le_bloquearon} fois. Ce jour-là il a produit {producido} cartes en tout.",
     'entrenar (apartando una partida para medir)':
         'entraîner (en gardant une partie de côté pour mesurer)',
     'guardar las partidas en la base de datos':
@@ -618,6 +628,7 @@ FRASES = {
         '{compradas} cartes en {partidas} parties, dont {caballero} chevaliers.',
     '{con_7} veces obligado por un 7 y {con_caballero} eligiéndolo con un caballero. En {le_bloqueo} de esas veces salió el número y {a_quien} no cobró: son {le_costo} cartas que se quedó sin producir. Y aparte le quitó {le_robo} cartas de la mano.':
         "{con_7} fois forcé par un 7 et {con_caballero} par choix avec un chevalier. Sur {le_bloqueo} d'entre elles le numéro est sorti et {a_quien} n'a rien encaissé : {le_costo} cartes jamais produites. Et en plus il lui a pris {le_robo} cartes dans la main.",
+    '{perdido} cartas': '{perdido} cartes',
     '{neto} cartas': '{neto} cartes',
     '{por_casilla} puntitos': '{por_casilla} pastilles',
     '{por_partida} por partida': '{por_partida} par partie',

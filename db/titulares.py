@@ -233,6 +233,30 @@ RECORDS = (
                 "sali\u00f3 el n\u00famero y no cobr\u00f3: {perdido} cartas que se qued\u00f3 "
                 "sin producir. M\u00e1s {le_robaron} que le robaron de la mano, "
                 "{en_total} cartas en total."},
+
+    # EL MISMO LADRON QUE EL DE ARRIBA, PERO EN CARTAS QUE NO SE COBRARON.
+    # Aquel ordena por `se_lo_pusieron` --las veces que te lo plantaron
+    # encima, que es lo que uno recuerda-- y este por `perdido`, que es lo
+    # unico que te quita de verdad: el ladron en tu casilla, sale el numero,
+    # y esa produccion no llega.
+    #
+    # Y son dos partidas distintas, que es justo lo que las separa: la 17 es
+    # la de mas ladrones (21) y la 5 la de mas cartas bloqueadas (20, con
+    # ocho ladrones menos). Ponerselo a alguien veinte veces sin que le salga
+    # el numero no le cuesta una sola carta.
+    #
+    # `perdido` Y NO `en_total`, que es esto MAS las cartas que le sacaron
+    # de la mano. Son dos cosas distintas --una te la quita el
+    # ladron de la mano, la otra no te deja ni producirla-- y la pregunta
+    # aqui es la segunda. El robo de la mano ya sale en el record de arriba.
+    {"id": "bloqueado_de_un_dia",
+     "titulo": "Lo que más bloqueó el ladrón en una partida",
+     "vista": "amigos_ladron",
+     "ordenar": "perdido",
+     "cifra": "{perdido} cartas",
+     "detalle": "que no llegó a cobrar: tenía el ladrón encima y el número "
+                "le salió {le_bloquearon} veces. Ese día produjo "
+                "{producido} cartas en total."},
 )
 
 
@@ -303,6 +327,67 @@ def _filtrar(filas, cols, donde):
     return [f for f in filas if _COMO[op](f[k], valor)]
 
 
+# Lo unico que se pega a mano: el «y» de «Fulano y Mengano». Va aqui y no
+# escrito dentro de la funcion porque tiene que traducirse como cualquier
+# otra frase del servidor, y `db/pruebas.py` no deja que se quede sin.
+CONECTOR = " y "
+# Y los dos puntos de «Fulano: lo suyo». Parece puntuacion y no idioma, pero
+# el frances pide un espacio DELANTE (« Fulano : lo suyo ») y el ingles no.
+# Por eso se traduce como cualquier otra frase en vez de ir pegado a mano.
+SEPARADOR = ": "
+
+
+def _juntar(nombres, idioma=None):
+    """«A», «A y B», «A, B y C»."""
+    if len(nombres) < 2:
+        return nombres[0]
+    return (", ".join(nombres[:-1]) + idiomas.frase(CONECTOR, idioma)
+            + nombres[-1])
+
+
+def _escribir(salida, plantillas, cols, iguales, idioma=None):
+    """Quien, cifra y detalle. Y SI HAY EMPATE, salen todos.
+
+    POR QUE NO VALE `max`. Dos personas con 3,45 puntitos por casilla son dos
+    personas con 3,45 puntitos por casilla: `max` se queda con la primera que
+    le llega --que es el orden en que salio la consulta, o sea ninguno-- y
+    la otra desaparece de la portada teniendo el mismo numero que se ensena.
+    Quien mire la tabla de debajo ve los dos 3,45 y la portada nombrando a
+    uno, y eso parece un fallo de la cuenta aunque no lo sea.
+
+    Con empate, el detalle se parte en una linea por persona y cada una lleva
+    su nombre delante, porque los numeros que lo sostienen NO son los mismos:
+    los dos eligen igual de bien las casillas, pero uno cobro 534 veces y el
+    otro 635. Una sola frase con los numeros de uno y los dos nombres arriba
+    seria mentira sobre el otro.
+
+    La cifra grande solo se queda arriba si es la misma para todos. Se empata
+    por la columna que ordena, que no siempre es la que se ensena: «Quien
+    tiene mas suerte» ordena por `se_sale` y ensena `suerte`, asi que dos
+    empatados pueden traer dos porcentajes distintos. En ese caso cada uno
+    lleva el suyo en su linea y arriba no va ninguno, que es lo unico que no
+    se puede leer mal."""
+    nombres = [_rellenar(plantillas.get("quien", "{quien}"), cols, f, idioma)
+               for f in iguales]
+    cifras = [_rellenar(plantillas["cifra"], cols, f, idioma)
+              for f in iguales]
+    detalles = [_rellenar(plantillas["detalle"], cols, f, idioma)
+                for f in iguales]
+    salida["quien"] = _juntar(nombres, idioma)
+    if len(iguales) == 1:
+        salida["cifra"] = cifras[0]
+        salida["detalle"] = detalles[0]
+        return salida
+    misma = len(set(cifras)) == 1
+    salida["cifra"] = cifras[0] if misma else ""
+    dos_puntos = idiomas.frase(SEPARADOR, idioma)
+    lineas = [n + (dos_puntos if misma else ", %s%s" % (c, dos_puntos)) + d
+              for n, c, d in zip(nombres, cifras, detalles)]
+    salida["detalle"] = lineas[0]
+    salida["empate"] = lineas[1:]
+    return salida
+
+
 def _uno(conn, titular, gente, idioma=None):
     """Un titular resuelto, o con `falta` puesto si todavía no se puede."""
     salida = {"id": titular["id"],
@@ -339,11 +424,9 @@ def _uno(conn, titular, gente, idioma=None):
         salida["falta"] = "todavía nadie"
         return salida
 
-    fila = max(dentro, key=lambda f: f[orden])
-    salida["quien"] = _rellenar(titular.get("quien", "{quien}"), cols, fila,
-                                idioma)
-    salida["cifra"] = _rellenar(titular["cifra"], cols, fila, idioma)
-    salida["detalle"] = _rellenar(titular["detalle"], cols, fila, idioma)
+    tope = max(f[orden] for f in dentro)
+    _escribir(salida, titular, cols, [f for f in dentro if f[orden] == tope],
+              idioma)
 
     # La segunda linea, cuando la vista se parte en bloques que no se pueden
     # mezclar. Es OTRA fila de LA MISMA consulta -- no una consulta nueva --
@@ -356,6 +439,11 @@ def _uno(conn, titular, gente, idioma=None):
             salida["tambien"] = idiomas.frase(extra.get("si_nadie"),
                                               idioma)
         else:
+            # Aqui el empate SI se queda en uno, al reves que arriba: esto es
+            # una frase hecha --«En mesa de 5 y 6 manda {quien}, con
+            # {victorias} de {partidas}»-- y con dos empatados serian dos
+            # frases iguales seguidas. El dia que haga falta, lo que hay que
+            # partir es la plantilla, no esta linea.
             otra = max(otras, key=lambda f: f[orden])
             salida["tambien"] = (
                 idiomas.frase(extra["si_cero"], idioma)
@@ -394,17 +482,23 @@ def _un_record(conn, record, partidas, idioma=None):
             return salida
         i = cols.index(record["ordenar"])
         for f in filas:
-            if f[i] is not None and (mejor is None or f[i] > mejor[0]):
-                mejor = (f[i], numero, dia, cols, f)
+            if f[i] is None:
+                continue
+            if mejor is None or f[i] > mejor[0]:
+                mejor = [f[i], numero, dia, cols, [f]]
+            elif f[i] == mejor[0] and numero == mejor[1]:
+                # Empate en LA MISMA partida: los dos hicieron la marca ese
+                # dia, asi que los dos son el record. Entre partidas
+                # distintas no se juntan --la ficha dice de que partida es y
+                # el enlace filtra por ella-- y ahi sigue mandando el orden
+                # de `_las_partidas`: gana la mas reciente.
+                mejor[4].append(f)
     if mejor is None:
         salida["falta"] = "todavia no hay partidas"
         return salida
 
-    _valor, numero, dia, cols, fila = mejor
-    salida["quien"] = _rellenar(record.get("quien", "{quien}"), cols, fila,
-                                idioma)
-    salida["cifra"] = _rellenar(record["cifra"], cols, fila, idioma)
-    salida["detalle"] = _rellenar(record["detalle"], cols, fila, idioma)
+    _valor, numero, dia, cols, iguales = mejor
+    _escribir(salida, record, cols, iguales, idioma)
     salida["partida"] = numero
     salida["dia"] = dia
     return salida
@@ -461,6 +555,8 @@ def _pintar(t):
         return
     print("    %s  --  %s" % (t["quien"], t["cifra"]))
     print("    %s" % t["detalle"])
+    for linea in t.get("empate", []):
+        print("    %s" % linea)
     if "partida" in t:
         print("    partida %s, %s" % (t["partida"], t["dia"]))
     print("    de: %s" % t["vista_titulo"])

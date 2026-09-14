@@ -3299,8 +3299,11 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
         salido = [x for x in hecho["titulares"] if x["id"] == t["id"]][0]
         if "falta" in salido:
             continue
+        # Con las lineas del empate dentro: son numeros que la portada
+        # ensena igual que los demas, y sin esto se quedaban sin mirar.
         escrito = (salido["quien"] + " " + salido["cifra"] + " "
-                   + salido["detalle"])
+                   + salido["detalle"] + " "
+                   + " ".join(salido.get("empate", [])))
         if "{" in escrito or "}" in escrito:
             crudos.append("%s: %s" % (t["id"], escrito))
 
@@ -3335,6 +3338,41 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
     comprobar("y el titular se lo lleva el que mas tiene", not no_ganan,
               "; ".join(no_ganan))
 
+    # Y SI DOS EMPATAN EN CABEZA, SALEN LOS DOS. Antes se quedaba con el
+    # primero que le llegaba --el orden en que salio la consulta, o sea
+    # ninguno-- y el otro desaparecia de la portada teniendo el mismo numero
+    # a la vista en la tabla de debajo. Eso no rompe nada y se lee como un
+    # fallo de la cuenta.
+    #
+    # La lista de empatados se vuelve a calcular aqui desde la vista, no se
+    # le pregunta al modulo: si el modulo se equivoca al elegirlos, esto
+    # tiene que cantarlo y no repetir su error.
+    sin_nombrar = []
+    for t in T.TITULARES:
+        salido = [x for x in hecho["titulares"] if x["id"] == t["id"]][0]
+        if "falta" in salido or t["vista"] not in V.POR_NOMBRE:
+            continue
+        cols, filas = V.consultar(conn, t["vista"])
+        if t["ordenar"] not in cols:
+            continue
+        i = cols.index(t["ordenar"])
+        quienes = [c for c in ("quien", "a_quien", "con_quien") if c in cols]
+        pueden = [f for f in filas if f[i] is not None
+                  and all(f[cols.index(c)] in gente for c in quienes)]
+        dentro = T._filtrar(pueden, cols, t.get("donde"))
+        if not dentro:
+            continue
+        tope = max(f[i] for f in dentro)
+        for f in dentro:
+            if f[i] != tope:
+                continue
+            nombre = T._rellenar(t.get("quien", "{quien}"), cols, f)
+            if nombre not in salido["quien"]:
+                sin_nombrar.append("%s: %s tambien tiene %s y no sale"
+                                   % (t["id"], nombre, T._num(tope)))
+    comprobar("y si empatan en cabeza salen todos", not sin_nombrar,
+              "; ".join(sin_nombrar))
+
     # El minimo de partidas no es decoracion: sin el, el titular se lo lleva
     # el que jugo una vez y tuvo un buen dia. Nadie por debajo sale nombrado.
     cortos = [q for q, n in todos.items() if n < T.MINIMO]
@@ -3362,7 +3400,8 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
         plantillas = " ".join(r.get(k, "") for k in ("quien", "cifra", "detalle"))
         literal = cifras(re.sub(r"\{[a-z0-9_]+\}", "@", plantillas))
         escrito = (salido["quien"] + " " + salido["cifra"] + " "
-                   + salido["detalle"])
+                   + salido["detalle"] + " "
+                   + " ".join(salido.get("empate", [])))
         aqui = set()
         for f in filas:
             aqui.update(T._num(v) for v in f if v is not None)
@@ -3704,6 +3743,10 @@ def prueba_ningun_idioma_se_queda_a_medias():
 
     for uno in list(T.TITULARES) + list(T.RECORDS):
         frases += plantillas(uno)
+    # El «y» de «Fulano y Mengano», que no vive en ninguna plantilla sino
+    # suelto en el modulo. Sin esta linea el castellano se colaria en la
+    # pagina inglesa sin que nada lo dijera.
+    frases += [T.CONECTOR, T.SEPARADOR]
     frases = [f for f in dict.fromkeys(frases) if f]
 
     columnas = set(C.COMUNES)

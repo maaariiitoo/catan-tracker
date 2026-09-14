@@ -2051,6 +2051,15 @@ def cargar_base(origen, cuantos):
     Te llevas el `catan_stats.db` de uno, le das a este boton en el otro, y
     sigues donde lo dejaste.
 
+    ESTO SUSTITUYE, NO JUNTA: al salir de aqui, en la base estan las partidas
+    de la que ha llegado y ninguna de las de este ordenador. Las de aqui
+    vuelven al importar, porque salen de las grabaciones de `crudo/`, que no
+    se tocan; por eso la pagina llama a «Guardar en la base de datos» en
+    cuanto esto contesta que si, y quien acaba con las dos es esa segunda
+    parte. Aqui no se importa nada a proposito: importar puede tardar y
+    escupe lineas, y eso es una tarea con su registro en vivo, no una
+    respuesta a una peticion.
+
     TRES CAUTELAS, y ninguna sobra:
 
       - **SE COMPRUEBA ANTES DE TOCAR NADA** que el fichero es una base de
@@ -2948,11 +2957,13 @@ mark{background:var(--acento);color:#fff;border-radius:3px;padding:0 2px}
   el historico en dos. <b>Descargar la base de datos</b> te da el fichero
   <code>catan_stats.db</code> para llevartelo, y <b>Cargar una base de
   datos</b> hace lo contrario: lo eliges aqui y este panel sigue con aquel
-  historico. <b>Sustituye la base entera</b>, no junta las dos. Antes de
-  hacerlo comprueba que el fichero es de verdad la base del Catan y guarda una
-  <b>copia de la de aqui</b> dentro de <code>copias/</code>, que tampoco hay
-  deshacer. Las partidas que hubieras quitado a mano siguen fuera: eso es una
-  decision tuya sobre tus grabaciones, no un dato de la base que llega.</p>
+  historico. <b>Sustituye la base entera</b> y al terminar mete las partidas
+  de este ordenador, que estan en tus grabaciones: te quedan las dos cosas y
+  no se repite ninguna. Antes de hacerlo comprueba que el fichero es de
+  verdad la base del Catan y guarda una <b>copia de la de aqui</b> dentro de
+  <code>copias/</code>, que tampoco hay deshacer. Las partidas que hubieras
+  quitado a mano siguen fuera: eso es una decision tuya sobre tus
+  grabaciones, no un dato de la base que llega.</p>
 </div>
 
 <div class="bloque">
@@ -3334,6 +3345,21 @@ if (document.getElementById("ficheroBase"))
       const j = await r.json();
       marcarCaido(false);
       recado(j.error || j.aviso || j.mensaje, !j.ok);
+      // Y en cuanto la base esta puesta, las partidas de ESTE ordenador.
+      //
+      // Cargar SUSTITUYE la base, asi que justo despues de cargarla las de
+      // aqui no estan en ella. Vuelven en cuanto se importa, porque salen de
+      // las grabaciones de `crudo/`, que cargar no toca. Hacerlo solo ahorra
+      // el paso de acordarse, y sobre todo ahorra el susto de ver que tus
+      // partidas han desaparecido.
+      //
+      // Es la MISMA ruta que «Guardar en la base de datos», no una copia:
+      // mismo proceso, mismo registro en vivo y mismas partidas saltadas.
+      if (j.ok){
+        fuente = "tarea"; pos = 0;
+        const t = await pedir("/tarea", {que: "importar"});
+        if (t.error) recado(t.error);
+      }
       // La tabla y los titulares se refrescan solos: `sello_base` es la
       // fecha del fichero, y al sustituirlo cambia.
     } catch (e) {
@@ -3827,6 +3853,12 @@ function ficha(x){
         : '<div class="quien">' + escapar(x.quien)
           + ' <span class="cifra">' + escapar(x.cifra) + "</span></div>"
           + '<div class="detalle">' + escapar(x.detalle) + "</div>"
+          // El empate va al MISMO peso que el detalle y no de nota al pie:
+          // los dos han hecho la misma marca, y cada linea trae los numeros
+          // de uno. Con el estilo de `tambien` se leeria como una coletilla
+          // del primero, que es justo lo contrario de lo que es.
+          + (x.empate || []).map(
+              e => '<div class="detalle">' + escapar(e) + "</div>").join("")
           + (x.tambien ? '<div class="tambien">' + escapar(x.tambien) + "</div>" : "")
           + (x.partida === undefined ? ""
              : '<div class="cuando">partida ' + Number(x.partida)
