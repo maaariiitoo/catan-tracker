@@ -638,6 +638,54 @@ def prueba_una_maquina_recien_clonada_arranca():
                   "Copyright (c) 2026 Mario Razquin" in texto)
 
 
+def prueba_la_meta_de_puntos_cuadra(conn):
+    """A cuantos puntos se jugaba tiene que caber en lo que paso.
+
+    POR QUE EXISTE. Hasta el 18 de septiembre de 2026 esta columna no se
+    apuntaba: se calculaba con un `CASE WHEN eran >= 5 THEN 12 ELSE 10`, y el
+    comentario de al lado decia que no hacia falta apuntarlo porque «se sabe
+    por cuantos eran». Es falso, la meta la elige quien crea la mesa. Ese dia
+    jugaron CINCO a 10 puntos, la partida entro diciendo 12, y no lo canto
+    nadie: no rompe ninguna consulta, solo deja mal una columna que se lee
+    como un hecho.
+
+    Lo que se comprueba son dos cosas que no dependen de como se calcule la
+    meta, sino de como funciona el juego:
+
+      - EL QUE GANA NO PUEDE TENER MENOS PUNTOS QUE LA META. Si la tabla dice
+        12 y la partida se gano con 10, la tabla miente. Esto es lo que
+        habria cazado el fallo el primer dia.
+      - NINGUNO DE LOS DEMAS PUEDE HABERLA ALCANZADO. El que llega a la meta
+        gana y la partida se acaba ahi; un segundo con los puntos de la meta
+        significa que la meta era otra.
+
+    Las dos juntas ACOTAN la meta sin adivinarla, y valen igual para las
+    partidas viejas --que no traen el dato-- y para las nuevas, que lo traen
+    del juego."""
+    altas, bajas = [], []
+    for gid, meta, gano, otros in conn.execute("""
+            SELECT g.game_id,
+                   (SELECT a_puntos FROM partidas pa
+                     WHERE pa.game_id = g.game_id),
+                   (SELECT MAX(final_points) FROM players p
+                     WHERE p.game_id = g.game_id AND p.final_rank = 1),
+                   (SELECT MAX(final_points) FROM players p
+                     WHERE p.game_id = g.game_id AND p.final_rank <> 1)
+              FROM games g ORDER BY g.game_id"""):
+        if meta is None or gano is None:
+            continue
+        if meta > gano:
+            altas.append("partida %s: dice %s y se gano con %s"
+                         % (gid, meta, gano))
+        if otros is not None and otros >= meta:
+            bajas.append("partida %s: dice %s y un segundo acabo con %s"
+                         % (gid, meta, otros))
+    comprobar("la meta nunca pasa de los puntos del que gano", not altas,
+              "; ".join(altas[:3]))
+    comprobar("y nadie que no gano llego a ella", not bajas,
+              "; ".join(bajas[:3]))
+
+
 def prueba_la_base_esta_entera(conn):
     """Claves ajenas de verdad, no de adorno.
 
@@ -4666,6 +4714,7 @@ def main():
         prueba_el_global_es_la_suma(conn, amigas)
         prueba_las_tiradas_cuadran(conn, amigas)
         prueba_una_maquina_recien_clonada_arranca()
+        prueba_la_meta_de_puntos_cuadra(conn)
         prueba_la_base_esta_entera(conn)
         prueba_todas_las_columnas_estan_explicadas(conn)
         prueba_la_suerte_cuadra(conn, amigas)

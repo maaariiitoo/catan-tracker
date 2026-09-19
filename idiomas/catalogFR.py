@@ -89,11 +89,7 @@ PAR_VUE = {
     "parties": {
         "gagnant"          : "qui a gagné",
         "nombre_de_joueurs": "combien jouaient",
-        "points_visés"     : "en combien de points la partie se jouait : **10 "
-                             "pour Catane de base, 12 pour l'extension 5-6 "
-                             "joueurs**. Ce n'est stocké nulle part "
-                             "directement parce que ce n'est pas nécessaire : "
-                             "ça se déduit du nombre de joueurs",
+        "points_visés": "en combien de points la partie se jouait. **C'est celui qui crée la table qui le choisit**, donc ça ne se déduit pas du nombre de joueurs : le 18 septembre 2026 ils ont joué à cinq en 10 points. Le mod le lit dans l'état du jeu. Les parties enregistrées avant ce jour-là ne l'ont pas, et alors on l'**encadre** : la cible ne peut pas dépasser les points avec lesquels la partie a été gagnée",
         "tuiles_du_plateau": "combien de tuiles avait le plateau : **19 pour "
                              "le jeu de base, 30 pour celui à 5-6**. C'est le "
                              "moyen le plus rapide de voir quelles parties "
@@ -121,8 +117,8 @@ PAR_VUE = {
     "joueurs": {
         "est_un_bot"       : "1 si c'est l'ordinateur",
         "nombre_de_joueurs": "combien jouaient cette partie",
-        "points_visés"     : "en combien de points la partie se jouait (10 ou "
-                             "12)",
+        "points_visés"     : "en combien de points cette partie se jouait, "
+                             "tel quel depuis «Les parties»",
     },
 
     # --- Le tableau des scores ---------------------------------------------
@@ -133,12 +129,12 @@ PAR_VUE = {
                            "en blocs",
         "victoires"      : "combien de ces parties il a gagnées",
         "points_moyens"  : "les points moyens avec lesquels il finit",
-        "partie_en"      : "en combien de points la partie se jouait : 10 "
-                           "jusqu'à quatre joueurs, 12 à cinq ou six. Elle "
-                           "est à côté de `points_moyens` parce qu'on ne peut "
-                           "pas lire cette colonne sans elle : 9 points à une "
-                           "table de six est bien plus loin de gagner que 9 à "
-                           "une table de quatre",
+        "partie_en"      : "en combien de points. **C'est celui qui crée la "
+                           "table qui le choisit**, ça ne se déduit pas du "
+                           "nombre de joueurs. C'est à côté de `points_moyens` "
+                           "parce que sans ça cette colonne ne se lit pas : "
+                           "9 points à une table de six est bien plus loin de "
+                           "gagner que 9 à une table de quatre",
         "rang_moyen"     : "le rang moyen à l'arrivée. Plus bas est meilleur",
         "meilleur_score" : "son meilleur score à cette taille de table",
     },

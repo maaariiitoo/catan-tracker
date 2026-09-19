@@ -247,12 +247,31 @@ VISTAS = [
                g.winner                                       AS gano,
                (SELECT COUNT(*) FROM players p
                  WHERE p.game_id = g.game_id)                  AS jugadores,
-               -- A cuantos puntos se jugaba: el basico es a 10 y el de 5-6
-               -- jugadores a 12. No se apunta en ningun sitio porque no hace
-               -- falta -- se sabe por cuantos eran.
-               CASE WHEN (SELECT COUNT(*) FROM players p
-                           WHERE p.game_id = g.game_id) >= 5
-                    THEN 12 ELSE 10 END                        AS a_puntos,
+               -- A CUANTOS PUNTOS SE JUGABA. Lo dice el juego y lo apunta el
+               -- mod desde el 18 de septiembre de 2026 (`games.a_puntos`).
+               --
+               -- Aqui ponia `CASE WHEN eran >= 5 THEN 12 ELSE 10`, con un
+               -- comentario que decia «no hace falta apuntarlo, se sabe por
+               -- cuantos eran». Era mentira: la meta la elige quien crea la
+               -- mesa. Ese dia jugaron CINCO a 10 puntos y esta columna dijo
+               -- 12, sin que nada chillara.
+               --
+               -- LAS DE ANTES no lo traen y no hay forma de recuperarlo de
+               -- su grabacion, asi que se ACOTA, que no es lo mismo que
+               -- adivinar: el que gana no puede tener MENOS puntos que la
+               -- meta, luego la meta no puede pasar de los puntos con los
+               -- que se gano. Se coge la suposicion de siempre y se le
+               -- recorta ese techo. Con eso, la partida de cinco que se gano
+               -- con 10 sale a 10 y las demas no se mueven.
+               COALESCE(g.a_puntos,
+                        MIN(CASE WHEN (SELECT COUNT(*) FROM players p
+                                        WHERE p.game_id = g.game_id) >= 5
+                                 THEN 12 ELSE 10 END,
+                            COALESCE((SELECT MAX(p.final_points)
+                                        FROM players p
+                                       WHERE p.game_id = g.game_id
+                                         AND p.final_rank = 1), 99)))
+                                                              AS a_puntos,
                -- `casillas_tablero` y no `casillas` a secas: en
                -- `amigos_suerte` hay otra columna `casillas` que son las de
                -- cada JUGADOR, y esas si se suman. Con el mismo nombre, lo
@@ -318,12 +337,13 @@ VISTAS = [
                -- mismo que ganar entre cuatro.
                (SELECT COUNT(*) FROM players x
                  WHERE x.game_id = p.game_id)   AS jugadores,
-               -- A cuantos puntos se jugaba. El Catan basico es a 10 y el de
-               -- 5-6 jugadores a 12 -- confirmado en pantalla el 27 de
-               -- agosto. No hace falta apuntarlo: se sabe por cuantos son.
-               CASE WHEN (SELECT COUNT(*) FROM players x
-                           WHERE x.game_id = p.game_id) >= 5
-                    THEN 12 ELSE 10 END         AS a_puntos
+               -- A cuantos puntos se jugaba, TAL CUAL SALE DE «Las
+               -- partidas». Aqui habia una segunda copia de la cuenta, y
+               -- eso es justo lo que este proyecto no se permite: el dia que
+               -- una cambia y la otra no, dos tablas dicen cosas distintas
+               -- de la misma partida y nadie lo ve. Una sola cuenta, en la
+               -- vista de la que cuelga esta.
+               pa.a_puntos                     AS a_puntos
           FROM players p
           JOIN partidas pa ON pa.game_id = p.game_id
          WHERE {donde}
@@ -2450,7 +2470,7 @@ COMPARTIDAS = {
     "puesto_medio":  "media del puesto en que acaba",
     "puntos_medios": "media de puntos",
     "jugadores":     "cuantos jugaban esa partida",
-    "a_puntos":      "a cuantos puntos se jugaba: 10 o 12",
+    "a_puntos":      "a cuantos puntos se jugaba, lo elige la mesa",
     # Las dos que NO quieren decir exactamente lo mismo, y por que pasan:
     #
     # `veces` es un contador de filas y su unidad la pone la vista: veces que

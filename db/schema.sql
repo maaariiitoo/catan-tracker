@@ -16,7 +16,16 @@ CREATE TABLE IF NOT EXISTS games (
     -- leyo el tracker de la pantalla, con lo que eso implica. Importa
     -- separarlas: si se juega con las dos cosas encendidas, la MISMA partida
     -- esta dos veces, y mezclarlas al analizar contaria todo por duplicado.
-    source      TEXT
+    source      TEXT,
+    -- A cuantos puntos se jugaba ESTA partida, leido del juego por el mod.
+    -- Hasta el 18 de septiembre de 2026 no existia esta columna porque se
+    -- daba por sabido: 10 el basico, 12 el de 5-6. Ese dia jugaron CINCO a
+    -- 10 y la partida entro diciendo que se jugaba a 12. La meta la elige
+    -- quien crea la mesa, asi que se apunta y no se supone.
+    --
+    -- NULL en las partidas grabadas antes de ese cambio: el dato no esta en
+    -- sus grabaciones, asi que no se puede recuperar reimportando.
+    a_puntos    INTEGER
 );
 
 -- Identidad estable de cada persona/bot real, para poder comparar entre

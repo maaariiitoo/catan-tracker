@@ -46,7 +46,7 @@ POR_VISTA = {
     "partidas": {
         "gano"            : "quién ganó",
         "jugadores"       : "cuántos jugaban",
-        "a_puntos"        : "a cuántos puntos se jugaba: **10 el Catan básico, 12 el de 5-6 jugadores**. No está apuntado en ningún sitio porque no hace falta: se sabe por cuántos eran",
+        "a_puntos"        : "a cuántos puntos se jugaba. **Lo elige quien crea la mesa**, así que no se deduce de cuántos jugaban: el 18 de septiembre de 2026 jugaron cinco a 10 puntos. Lo apunta el mod leyendo el estado del juego. En las partidas grabadas antes de ese día no está, y entonces se **acota**: la meta no puede pasar de los puntos con los que se ganó",
         "casillas_tablero": "cuántas tenía el tablero: **19 el básico, 30 el de 5-6**. Es la forma más rápida de ver qué partidas son del tablero grande",
         "ias"             : "cuántos de los jugadores eran la máquina",
         "tiradas"         : "cuántas veces se tiraron los dados en esa partida",
@@ -56,14 +56,14 @@ POR_VISTA = {
     "jugadores": {
         "es_ia"    : "1 si es la máquina",
         "jugadores": "cuántos jugaban esa partida",
-        "a_puntos" : "a cuántos puntos se jugaba (10 o 12)",
+        "a_puntos" : "a cuántos puntos se jugaba esa partida, tal cual sale de «Las partidas»",
     },
     "amigos_marcador": {
         "partidas"     : "cuántas ha jugado **en mesas de ese tamaño**",
         "eran"         : "cuántos jugaban. Es lo que parte la tabla en bloques",
         "victorias"    : "cuántas de ésas ha ganado",
         "puntos_medios": "media de los puntos con los que acaba",
-        "se_jugaba_a"  : "a cuántos puntos: 10 hasta cuatro, 12 con cinco o seis. Va al lado de `puntos_medios` porque sin esto no se puede leer: 9 puntos en una mesa de seis está más lejos de ganar que 9 en una de cuatro",
+        "se_jugaba_a": "a cuántos puntos: **lo elige quien crea la mesa**, no se deduce de cuántos jugaban. Va al lado de `puntos_medios` porque sin esto no se puede leer: 9 puntos en una mesa de seis está más lejos de ganar que 9 en una de cuatro",
         "puesto_medio" : "media del puesto. Más bajo es mejor",
         "su_mejor"     : "los puntos de su mejor partida de ese tamaño",
     },

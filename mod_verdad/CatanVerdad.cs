@@ -312,6 +312,24 @@ namespace CatanVerdad
                 j.Append(",\"mayor_ejercito\":").Append(Entero(partida, "LargestArmyPlayerId"));
             }
 
+            // A CUANTOS PUNTOS SE JUEGA ESTA PARTIDA, leido del juego.
+            //
+            // Hasta el 18 de septiembre de 2026 esto no se apuntaba porque
+            // se daba por sabido: 10 el Catan basico y 12 el de 5-6. Es
+            // falso. Ese dia jugaron CINCO a 10 puntos y la partida entro
+            // en la base diciendo que se jugaba a 12, sin que nada chillara:
+            // la meta la elige quien crea la mesa.
+            //
+            // Sale de `CatanGameState.StaticState`, que es donde el juego
+            // guarda lo que se decidio antes de empezar y no cambia en toda
+            // la partida (ahi estan tambien la regla, el ladron amigable y
+            // el reloj de turno). Se apunta en cada linea y no una sola vez
+            // porque una grabacion se lee linea a linea y ninguna depende de
+            // las de antes; son doce bytes que el gzip se come.
+            object estatico = Campo(catan, "StaticState");
+            if (estatico != null)
+                j.Append(",\"a_puntos\":").Append(Entero(estatico, "VictoryPoints"));
+
             j.Append(",\"casillas\":").Append(Casillas(tablero));
             j.Append(",\"puertos\":").Append(Puertos(tablero));
             j.Append(",\"edificios\":").Append(Piezas(tablero, "GamePiecesBuildings"));

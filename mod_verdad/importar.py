@@ -337,6 +337,12 @@ def crear_tablas(conn):
     # antes del movimiento. Deducirlo después por cercanía fallaría justo en
     # el caso interesante -- jugar un caballero y luego sacar un 7 en el mismo
     # turno son DOS movimientos, y por tiempo se confunden.
+    # A cuantos puntos se jugaba. Solo la traen las grabaciones del 18 de
+    # septiembre de 2026 en adelante; en las de antes se queda a NULL y las
+    # vistas lo resuelven como pueden, que es lo unico honesto.
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(games)")}
+    if "a_puntos" not in cols:
+        conn.execute("ALTER TABLE games ADD COLUMN a_puntos INTEGER")
     cols = {r[1] for r in conn.execute("PRAGMA table_info(robber_moves)")}
     if "cause" not in cols:
         conn.execute("ALTER TABLE robber_moves ADD COLUMN cause TEXT")
@@ -714,18 +720,36 @@ def importar(conn, ruta, rehacer=False, callado=False):
     if mismo_id is not None:
         borrar_partida(conn, mismo_id)
 
+    # A cuantos puntos se jugaba, tal cual lo dice el juego.
+    #
+    # Se busca en la PRIMERA linea que lo traiga y no en la ultima por si
+    # acaso: es una decision de antes de empezar y no cambia, pero una
+    # grabacion que empiece a media partida --una reconexion-- tiene tantas
+    # papeletas de traerlo al principio como al final.
+    #
+    # Las grabaciones anteriores al 18 de septiembre de 2026 no lo traen y
+    # aqui se queda a None. Eso NO es un fallo que arreglar adivinando: es
+    # que el dato no se apunto, y quien lo lea tiene que saberlo.
+    a_puntos = None
+    for ev in evs:
+        v = ev.get("a_puntos")
+        if isinstance(v, int) and 3 <= v <= 30:
+            a_puntos = v
+            break
+
     # --- la partida y los jugadores ---------------------------------------
     if mismo_id is not None:
         conn.execute(
-            "INSERT INTO games (game_id, started_at, ended_at, notes, source) "
-            "VALUES (?,?,?,?,?)",
-            (mismo_id, empezo, acabo, "mod: " + nombre_carpeta, "mod"))
+            "INSERT INTO games (game_id, started_at, ended_at, notes, source,"
+            " a_puntos) VALUES (?,?,?,?,?,?)",
+            (mismo_id, empezo, acabo, "mod: " + nombre_carpeta, "mod",
+             a_puntos))
         game_id = mismo_id
     else:
         cur = conn.execute(
-            "INSERT INTO games (started_at, ended_at, notes, source) "
-            "VALUES (?,?,?,?)",
-            (empezo, acabo, "mod: " + nombre_carpeta, "mod"))
+            "INSERT INTO games (started_at, ended_at, notes, source,"
+            " a_puntos) VALUES (?,?,?,?,?)",
+            (empezo, acabo, "mod: " + nombre_carpeta, "mod", a_puntos))
         game_id = cur.lastrowid
 
     quien, nuevos = identidades(conn, ultimo.get("jugadores") or [], empezo)

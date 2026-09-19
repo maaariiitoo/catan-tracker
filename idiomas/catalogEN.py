@@ -46,7 +46,7 @@ BY_VIEW = {
     "games": {
         "winner"      : "who won",
         "player_count": "how many were playing",
-        "target_points": "how many points the game was played to: **10 for base Catan, 12 for the 5-6 player expansion**. It isn't stored anywhere directly because it doesn't need to be: you can tell from how many were playing",
+        "target_points": "how many points the game was played to. **Whoever sets up the table picks it**, so it cannot be worked out from how many were playing: on 18 September 2026 five people played to 10. The mod reads it from the game state. Games recorded before that day do not carry it, and then it gets **bracketed**: the target cannot be higher than the points the game was won with",
         "board_tiles" : "how many tiles the board had: **19 for the base game, 30 for the 5-6 player one**. It's the fastest way to see which games used the big board",
         "bots"        : "how many of the players were the computer",
         "rolls"       : "how many times the dice were rolled in that game",
@@ -56,14 +56,14 @@ BY_VIEW = {
     "players": {
         "is_bot"       : "1 if it's the computer",
         "player_count" : "how many were playing that game",
-        "target_points": "how many points the game was played to (10 or 12)",
+        "target_points": "how many points that game was played to, straight from «The games»",
     },
     "friends_scoreboard": {
         "games_played": "how many they've played **at tables of that size**",
         "table_size"  : "how many were playing. This is what splits the table into blocks",
         "wins"        : "how many of those they won",
         "avg_points"  : "average points they finish with",
-        "played_to"   : "how many points the game was played to: 10 up to four players, 12 with five or six. It sits next to `avg_points` because you can't read that column without it: 9 points at a table of six is much further from winning than 9 at a table of four",
+        "played_to": "how many points to. **Whoever sets up the table picks it**, it does not follow from how many were playing. It sits next to `avg_points` because you cannot read that column without it: 9 points at a table of six is much further from winning than 9 at a table of four",
         "avg_rank"    : "average finishing rank. Lower is better",
         "best_points" : "their best score at that table size",
     },
