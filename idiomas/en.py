@@ -648,6 +648,7 @@ FRASES = {
     'Los números que más tapa el ladrón': 'The numbers the robber blocks most',
     'Los sietes de cada uno': "Everyone's sevens",
     'Marcador': 'Scoreboard',
+    'El monopolio más grande': 'The biggest monopoly',
     'Lo que más bloqueó el ladrón en una partida':
         'The most the robber blocked in a single game',
     'Más ladrones en una partida': 'Most robbers in a single game',
@@ -715,6 +716,8 @@ FRASES = {
         'which seat each player started from and where they finished',
     'en qué turno llegó a su primera ciudad, su primera carta...':
         'which turn they reached their first city, their first card...',
+    'con un solo monopolio, pidiendo {pidio} en el turno {turno}. Se las soltaron: {de_quien}.':
+        'with a single monopoly, calling {pidio} on turn {turno}. Handed over by: {de_quien}.',
     'que no llegó a cobrar: tenía el ladrón encima y el número le salió {le_bloquearon} veces. Ese día produjo {producido} cartas en total.':
         'they never got to collect: they had the robber on them and the number came up {le_bloquearon} times. That day they produced {producido} cards in all.',
     'entrenar (apartando una partida para medir)':
@@ -784,6 +787,7 @@ FRASES = {
         '{compradas} cards in {partidas} games, {caballero} of them knights.',
     '{con_7} veces obligado por un 7 y {con_caballero} eligiéndolo con un caballero. En {le_bloqueo} de esas veces salió el número y {a_quien} no cobró: son {le_costo} cartas que se quedó sin producir. Y aparte le quitó {le_robo} cartas de la mano.':
         '{con_7} times forced by a 7 and {con_caballero} by choice with a knight. On {le_bloqueo} of those the number came up and {a_quien} collected nothing: {le_costo} cards never produced. And on top of that took {le_robo} cards out of their hand.',
+    '{les_saco} cartas': '{les_saco} cards',
     '{perdido} cartas': '{perdido} cards',
     '{neto} cartas': '{neto} cards',
     '{por_casilla} puntitos': '{por_casilla} pips',

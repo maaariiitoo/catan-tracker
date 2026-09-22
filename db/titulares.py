@@ -291,6 +291,30 @@ RECORDS = (
      "detalle": "que no llegó a cobrar: tenía el ladrón encima y el número "
                 "le salió {le_bloquearon} veces. Ese día produjo "
                 "{producido} cartas en total."},
+
+    # EL MONOPOLIO MAS GORDO, de una sola carta.
+    #
+    # UNA FILA ES UN MONOPOLIO, no un jugador ni una partida, y esa es la
+    # gracia: la pregunta es cuanto se llevo alguien con UNA carta, no cuanto
+    # sumo tirando tres en la misma partida. Por eso va sobre esta vista y no
+    # sobre una suma por jugador -- serian dos records distintos y este es el
+    # que se nota en la mesa.
+    #
+    # `les_saco` es NULL en las grabaciones que no traian el reparto, y
+    # `_un_record` se salta los None: esas no compiten, en vez de entrar como
+    # un cero y colarse por debajo. Un cero SI compite, que es otra cosa:
+    # pedir un material que no tiene nadie ha pasado.
+    #
+    # Se ensena de quien salio cada carta porque es la mitad de la historia.
+    # «12 cartas» es una cifra; «9 se las quito a uno solo» es lo que se
+    # cuenta despues.
+    {"id": "monopolio_de_un_dia",
+     "titulo": "El monopolio más grande",
+     "vista": "amigos_monopolios",
+     "ordenar": "les_saco",
+     "cifra": "{les_saco} cartas",
+     "detalle": "con un solo monopolio, pidiendo {pidio} en el turno "
+                "{turno}. Se las soltaron: {de_quien}."},
 )
 
 

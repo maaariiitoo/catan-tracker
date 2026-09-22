@@ -495,6 +495,7 @@ FRASES = {
         'Les numéros que le voleur bloque le plus',
     'Los sietes de cada uno': 'Les sept de chacun',
     'Marcador': 'Le tableau des scores',
+    'El monopolio más grande': 'Le plus gros monopole',
     'Lo que más bloqueó el ladrón en una partida':
         'Ce que le voleur a le plus bloqué en une partie',
     'Más ladrones en una partida': 'Le plus de voleurs en une partie',
@@ -562,6 +563,8 @@ FRASES = {
         'de quelle place chacun est parti et où il a fini',
     'en qué turno llegó a su primera ciudad, su primera carta...':
         'à quel tour il a eu sa première ville, sa première carte...',
+    'con un solo monopolio, pidiendo {pidio} en el turno {turno}. Se las soltaron: {de_quien}.':
+        "avec un seul monopole, en demandant {pidio} au tour {turno}. Ils les ont lâchées : {de_quien}.",
     'que no llegó a cobrar: tenía el ladrón encima y el número le salió {le_bloquearon} veces. Ese día produjo {producido} cartas en total.':
         "qu'il n'a jamais encaissées : il avait le voleur dessus et le numéro est sorti {le_bloquearon} fois. Ce jour-là il a produit {producido} cartes en tout.",
     'entrenar (apartando una partida para medir)':
@@ -632,6 +635,7 @@ FRASES = {
         '{compradas} cartes en {partidas} parties, dont {caballero} chevaliers.',
     '{con_7} veces obligado por un 7 y {con_caballero} eligiéndolo con un caballero. En {le_bloqueo} de esas veces salió el número y {a_quien} no cobró: son {le_costo} cartas que se quedó sin producir. Y aparte le quitó {le_robo} cartas de la mano.':
         "{con_7} fois forcé par un 7 et {con_caballero} par choix avec un chevalier. Sur {le_bloqueo} d'entre elles le numéro est sorti et {a_quien} n'a rien encaissé : {le_costo} cartes jamais produites. Et en plus il lui a pris {le_robo} cartes dans la main.",
+    '{les_saco} cartas': '{les_saco} cartes',
     '{perdido} cartas': '{perdido} cartes',
     '{neto} cartas': '{neto} cartes',
     '{por_casilla} puntitos': '{por_casilla} pastilles',

@@ -3566,7 +3566,17 @@ def prueba_los_titulares_salen_de_las_tablas(conn):
                    + " ".join(salido.get("empate", [])))
         aqui = set()
         for f in filas:
-            aqui.update(T._num(v) for v in f if v is not None)
+            for v in f:
+                if v is None:
+                    continue
+                aqui.add(T._num(v))
+                # Y los numeros que van DENTRO de una celda de texto. El
+                # record del monopolio ensena «se las soltaron: Fulano 9,
+                # Mengano 2», y ese desglose es UNA celda de la tabla
+                # (`de_quien`), no tres columnas. Sin esto, el 9 y el 2
+                # parecerian sacados de la nada cuando estan en la fila que
+                # el enlace va a ensenar.
+                aqui |= cifras(T._num(v))
         for c in cifras(escrito) - literal - aqui:
             de_otra.append("%s: el %s no esta en %s de la partida %s"
                            % (r["id"], c, r["vista"], salido["partida"]))
