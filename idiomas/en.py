@@ -36,6 +36,17 @@ DECIMAL = "."
 # El castellano es el original: no hay diccionario que valga, es la página tal
 # cual está escrita. Aquí sólo van los DEMÁS.
 TEXTO = {
+    # --- juntar dos bases ---
+    "Estos dos son para tener un solo historico entre varios.":
+        "These two are for keeping one history between several people.",
+    "para pasarselo a alguien, y":
+        "to pass on to someone, and",
+    "hace lo contrario: eliges la de un amigo y entran aqui las partidas suyas que te falten.":
+        "does the opposite: you pick a friend's and the games of theirs you are missing come in here.",
+    "Junta, no sustituye.":
+        "It merges, it does not replace.",
+    "Puedes cargar la de uno y luego la de otro, hoy y el mes que viene, y lo unico que pasa es que hay mas partidas. Las que jugasteis juntos entran una sola vez, aunque en su base tengan otro numero y otros nombres: se reconoce la mesa por quienes jugaron y que tablero salio. Y a cada persona se le pone el nombre que tiene aqui, que si no la misma persona contaria como dos en las 32 tablas. Antes de nada comprueba que el fichero es de verdad la base del Catan y guarda una":
+        "You can load one person's and then another's, today and next month, and all that happens is that there are more games. The ones you played together come in only once, even if their database numbers them differently and uses other names: a table is recognised by who played and which board came up. And each person gets the name they have here, because otherwise the same person would count as two across the 32 tables. Before anything it checks that the file really is the Catan database, and it saves a",
     # --- la cabecera y los dos avisos de arriba -------------------------
     "Catan Tracker": "Catan Tracker",
     "buscando el juego...": "looking for the game...",
@@ -134,34 +145,9 @@ TEXTO = {
     "Quitar una partida": "Remove a game",
     "Cargar una base de datos": "Load a database",
     "Descargar la base de datos": "Download the database",
-    "Estos dos son para jugar en mas de un ordenador sin partir el historico "
-    "en dos.":
-        "These two are for playing on more than one computer without "
-        "splitting your history in two.",
     "te da el fichero": "hands you the",
     "catan_stats.db": "catan_stats.db",
-    "para llevartelo, y": "file to take with you, and",
-    "hace lo contrario: lo eliges aqui y este panel sigue con aquel "
-    "historico.":
-        "does the opposite: pick it here and this panel carries on with that "
-        "history.",
-    "Sustituye la base entera": "It replaces the whole database",
-    "y al terminar mete las partidas de este ordenador, que estan en tus "
-    "grabaciones: te quedan las dos cosas y no se repite ninguna. Antes de "
-    "hacerlo comprueba que el fichero es de verdad la base del Catan y "
-    "guarda una":
-        "and when it's done it adds this computer's games, the ones in your "
-        "recordings: you end up with both and nothing gets duplicated. "
-        "Before doing it, it checks that the file really is the Catan "
-        "database and keeps a",
     "copia de la de aqui": "backup of the one here",
-    "dentro de": "inside",
-    ", que tampoco hay deshacer. Las partidas que hubieras quitado a mano "
-    "siguen fuera: eso es una decision tuya sobre tus grabaciones, no un dato "
-    "de la base que llega.":
-        ", because there's no undo here either. Games you removed by hand stay "
-        "out: that's a decision you made about your own recordings, not a "
-        "piece of data belonging to the database coming in.",
     "El mod no guarda nombres, guarda el identificador de cada cuenta, "
     "que es estable, asi que reconoce a la misma persona partida tras partida. "
     "La primera vez que juegue alguien nuevo saldra con un nombre provisional "
@@ -1154,6 +1140,9 @@ RESPUESTAS = {
 # otra forma no existirian. Estan en la lista para que `db/pruebas.py` pueda
 # exigirlas todas sin excepciones que alguien tenga que mantener.
 CONSOLA = {
+    "     misma mesa que la partida %d, y esta trae mas (%d apuntes contra %d): se cambia":
+        "     same table as game %d, and this one brings more"
+        " (%d records against %d): swapping it",
     '         %-58s x%d': '         %-58s x%d',
     '         La grabación está entera y guardada: cuando el importador':
         '         The recording is whole and saved: when the importer',

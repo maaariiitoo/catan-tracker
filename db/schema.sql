@@ -25,7 +25,20 @@ CREATE TABLE IF NOT EXISTS games (
     --
     -- NULL en las partidas grabadas antes de ese cambio: el dato no esta en
     -- sus grabaciones, asi que no se puede recuperar reimportando.
-    a_puntos    INTEGER
+    a_puntos    INTEGER,
+    -- QUE MESA FUE ESTA: las cuentas que jugaron mas el tablero que les toco.
+    -- No identifica la grabacion, identifica la PARTIDA, y por eso las
+    -- grabaciones que dejan cuatro amigos de la misma mesa dan la misma.
+    --
+    -- Sirve para las dos formas que hay de que una partida entre dos veces:
+    -- importar dos grabaciones de la misma mesa, y juntar dos bases que la
+    -- tienen las dos. Sin esto, cada partida del grupo se contaria tantas
+    -- veces como gente tuviera el mod puesto, y eso no se ve en la tabla: se
+    -- ve en las medias, que es donde no se mira.
+    --
+    -- Se rellena sola tambien en las partidas de antes: sale de `players` y
+    -- de `tiles`, que ya estaban.
+    huella      TEXT
 );
 
 -- Identidad estable de cada persona/bot real, para poder comparar entre
@@ -41,6 +54,13 @@ CREATE TABLE IF NOT EXISTS players (
     player_id     INTEGER PRIMARY KEY AUTOINCREMENT,
     game_id       INTEGER NOT NULL REFERENCES games(game_id),
     person_name   TEXT REFERENCES people(display_name),
+    -- La cuenta de Catan, que es lo unico estable de una persona: el nombre
+    -- se cambia con un boton y el color cambia cada partida. Hasta que esto
+    -- existio, la unica forma de volver de un `player` a su cuenta era
+    -- cruzar el nombre contra `mod_identities`, y eso se rompe en cuanto dos
+    -- maquinas llaman distinto a la misma persona -- que es justo lo que
+    -- pasa al juntar la base de un amigo con la de uno.
+    network_id    TEXT,
     name          TEXT NOT NULL,          -- nombre tal cual aparece en el log
     color         TEXT,                   -- color detectado en la UI (para vision)
     -- Matiz/saturación/brillo MEDIDOS en la bandera, no el centro del rango

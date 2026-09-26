@@ -50,6 +50,7 @@ import collections
 import datetime
 import glob
 import gzip
+import hashlib
 import json
 import os
 import shutil
@@ -343,6 +344,12 @@ def crear_tablas(conn):
     cols = {r[1] for r in conn.execute("PRAGMA table_info(games)")}
     if "a_puntos" not in cols:
         conn.execute("ALTER TABLE games ADD COLUMN a_puntos INTEGER")
+    # Que mesa fue cada partida, para reconocerla venga por donde venga.
+    if "huella" not in cols:
+        conn.execute("ALTER TABLE games ADD COLUMN huella TEXT")
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(players)")}
+    if "network_id" not in cols:
+        conn.execute("ALTER TABLE players ADD COLUMN network_id TEXT")
     cols = {r[1] for r in conn.execute("PRAGMA table_info(robber_moves)")}
     if "cause" not in cols:
         conn.execute("ALTER TABLE robber_moves ADD COLUMN cause TEXT")
@@ -648,7 +655,111 @@ def produccion_inicial(edificio, tablero, alin):
 # importar una grabación
 # --------------------------------------------------------------------------
 
+def huella_de_la_mesa(cuentas, casillas):
+    """Que MESA fue esta. `None` si no hay con que decirlo.
+
+    EL PROBLEMA QUE RESUELVE. La misma partida puede llegar aqui por dos
+    caminos: cuatro amigos con el mod puesto dejan cuatro grabaciones de
+    ella, y la base de cualquiera de ellos la trae otra vez. Si entra cuatro
+    veces hay cuatro ganadores, cada tirada cuenta cuatro veces y todas las
+    medias del grupo se tuercen. Es el peor fallo que puede tener esto:
+    callado, y en los numeros, no en la pantalla.
+
+    COMO SE RECONOCE. Por lo que las cuatro copias tienen igual y otra mesa
+    no repite: QUIENES estaban --las cuentas, ordenadas, que son las mismas
+    se mire desde donde se mire-- y QUE TABLERO les toco, casilla por
+    casilla. Dos partidas de los mismos cuatro salen distintas porque el
+    tablero se sortea; y si algun dia saliera el mismo tablero con la misma
+    gente, lo unico que pasaria es que la segunda se tomaria por la primera,
+    que ya es mala suerte.
+
+    LO QUE NO ENTRA: la hora. Cada uno entra en la mesa cuando entra, y el
+    que reconecta empieza media hora tarde. Ni los nombres, que cada casa
+    pone los suyos. Ni el color, que cambia de partida en partida.
+
+    `casillas` son tuplas (q, r, recurso, numero), que es como se guardan en
+    `tiles`. Asi la misma cuenta sale igual viniendo de una grabacion o
+    viniendo de la base, que es lo que permite ponersela tambien a las
+    partidas de antes de que esto existiera.
+    """
+    quien = sorted(str(c or "") for c in cuentas)
+    donde = sorted("%s,%s:%s:%s" % (q, r, recurso, numero)
+                   for q, r, recurso, numero in casillas)
+    if not quien or not donde:
+        return None
+    return hashlib.sha1(("|".join(quien) + "#" + "|".join(donde))
+                        .encode("utf-8")).hexdigest()
+
+
+def huella_en_la_base(conn, game_id):
+    """La huella de una partida que YA esta guardada, leida de la base.
+
+    Es el mismo calculo de arriba con los datos sacados de `players` y
+    `tiles`, no una segunda version: si fueran dos cuentas distintas, una
+    partida vieja y la misma partida reimportada darian huellas distintas y
+    el cruce no serviria para nada.
+
+    Devuelve `None` si a algun jugador le falta la cuenta, que es el caso de
+    las partidas guardadas antes de que `players.network_id` existiera y
+    cuyo nombre ya no cuadra con ninguna identidad. Mejor sin huella que con
+    una que no case con la del vecino."""
+    cuentas = [r[0] for r in conn.execute(
+        "SELECT network_id FROM players WHERE game_id=?", (game_id,))]
+    if not cuentas or any(c is None for c in cuentas):
+        return None
+    return huella_de_la_mesa(cuentas, conn.execute(
+        "SELECT axial_q, axial_r, resource, number FROM tiles WHERE game_id=?",
+        (game_id,)).fetchall())
+
+
+def ponerle_huella_a_las_de_antes(conn):
+    """Rellena `players.network_id` y `games.huella` donde falten.
+
+    Las partidas guardadas antes de esto no las traen, y sin ellas no se
+    pueden cruzar con las que llegan: se colarian repetidas justo las que uno
+    ya tiene. Se sacan de lo que ya estaba guardado -- la cuenta, del nombre
+    contra `mod_identities`; la huella, de los jugadores y el tablero -- asi
+    que no hay que reimportar nada.
+
+    Es idempotente y solo trabaja cuando queda algo por rellenar."""
+    hay = conn.execute("SELECT 1 FROM players WHERE network_id IS NULL "
+                       "LIMIT 1").fetchone()
+    if hay:
+        # Por el NOMBRE, que es el unico puente que hay hacia atras. Funciona
+        # porque renombrar a alguien cambia las dos puntas a la vez: el
+        # `display_name` de la identidad y el `name` de sus partidas.
+        conn.execute("""
+            UPDATE players SET network_id = (
+                SELECT i.network_id FROM mod_identities i
+                 WHERE i.display_name = players.name)
+             WHERE network_id IS NULL""")
+    # Se RECALCULAN TODAS, no solo las que faltan, y se guarda la que no
+    # cuadre. Cuesta dos consultas por partida --nada-- y evita el fallo que
+    # no se ve: una huella guardada con una version anterior de la formula se
+    # queda ahi para siempre, no case con nada, y la partida que ya tienes se
+    # cuela otra vez el dia que juntes tu base con la de un amigo. Aqui paso:
+    # tres partidas quedaron con la huella de una formula que luego cambio.
+    #
+    # Una huella es un dato DERIVADO de los jugadores y el tablero. Lo unico
+    # honesto con un derivado es rehacerlo, no confiar en que sigue bueno.
+    tocadas = 0
+    for gid, guardada in conn.execute("SELECT game_id, huella FROM games"):
+        h = huella_en_la_base(conn, gid)
+        # Si no se puede calcular no se borra la que hubiera: no saber no es
+        # lo mismo que saber que no hay.
+        if h and h != guardada:
+            conn.execute("UPDATE games SET huella=? WHERE game_id=?", (h, gid))
+            tocadas += 1
+    if hay or tocadas:
+        conn.commit()
+    return tocadas
+
+
 def importar(conn, ruta, rehacer=False, callado=False):
+    # Las de antes primero: sin su huella no hay con que cruzar la que llega,
+    # y la que llega se colaria repetida si ya estuviera.
+    ponerle_huella_a_las_de_antes(conn)
+
     def di(*a):
         if not callado:
             print(*a)
@@ -717,6 +828,52 @@ def importar(conn, ruta, rehacer=False, callado=False):
     # ser la 2 por reimportarla, y cualquier consulta escrita a mano dejaba
     # de encontrarla sin decir por qué.
     mismo_id = ya[0] if (ya and rehacer) else None
+
+    # Que mesa es esta. Las casillas se dan en las mismas coordenadas con las
+    # que se van a guardar dentro de un momento, para que la huella de una
+    # grabacion recien leida y la de esa misma partida sacada de la base sean
+    # la misma cadena.
+    huella = huella_de_la_mesa(
+        [j.get("red") for j in (ultimo.get("jugadores") or [])],
+        [(alin.reticula.casillas[i][0], alin.reticula.casillas[i][1],
+          tablero[i][0], tablero[i][1]) for i in sorted(tablero)])
+
+    # Y si ya la tenemos por otra grabacion.
+    #
+    # Entre dos grabaciones de la misma partida se queda LA QUE MAS APUNTES
+    # TRAE, no la primera que llegue. La corta es de alguien que entro tarde
+    # o se fue antes: cuenta la partida a medias, y quedarse con ella por
+    # haber llegado antes seria perder medio historico por el orden en que
+    # sus amigos abrieron el juego.
+    if huella and mismo_id is None and not rehacer:
+        gemela = conn.execute(
+            "SELECT g.game_id, COALESCE(MAX(i.eventos), 0) "
+            "FROM games g LEFT JOIN mod_imports i ON i.game_id = g.game_id "
+            "WHERE g.huella = ? GROUP BY g.game_id", (huella,)).fetchone()
+        if gemela:
+            otra, tenia = gemela
+            if len(evs) > (tenia or 0):
+                di(_t("     misma mesa que la partida %d, y esta trae mas"
+                      " (%d apuntes contra %d): se cambia")
+                   % (otra, len(evs), tenia or 0))
+                mismo_id = otra
+            else:
+                # Se apunta igual, con el game_id de la que se queda: asi no
+                # se vuelve a leer en cada pasada, y quien mire la tabla ve
+                # de donde salio cada cosa.
+                conn.execute("DELETE FROM mod_imports WHERE carpeta=?",
+                             (nombre_carpeta,))
+                conn.execute(
+                    "INSERT INTO mod_imports (carpeta, game_id, eventos,"
+                    " imported_at, pegas) VALUES (?,?,?,?,?)",
+                    (nombre_carpeta, otra, len(evs),
+                     datetime.datetime.now().isoformat(timespec="seconds"),
+                     "misma mesa que la partida %d" % otra))
+                conn.commit()
+                return None, ("misma mesa que la partida %d, y aquella esta"
+                              " mas completa (%d apuntes contra %d)"
+                              % (otra, tenia or 0, len(evs)))
+
     if mismo_id is not None:
         borrar_partida(conn, mismo_id)
 
@@ -741,15 +898,16 @@ def importar(conn, ruta, rehacer=False, callado=False):
     if mismo_id is not None:
         conn.execute(
             "INSERT INTO games (game_id, started_at, ended_at, notes, source,"
-            " a_puntos) VALUES (?,?,?,?,?,?)",
+            " a_puntos, huella) VALUES (?,?,?,?,?,?,?)",
             (mismo_id, empezo, acabo, "mod: " + nombre_carpeta, "mod",
-             a_puntos))
+             a_puntos, huella))
         game_id = mismo_id
     else:
         cur = conn.execute(
             "INSERT INTO games (started_at, ended_at, notes, source,"
-            " a_puntos) VALUES (?,?,?,?,?)",
-            (empezo, acabo, "mod: " + nombre_carpeta, "mod", a_puntos))
+            " a_puntos, huella) VALUES (?,?,?,?,?,?)",
+            (empezo, acabo, "mod: " + nombre_carpeta, "mod", a_puntos,
+             huella))
         game_id = cur.lastrowid
 
     quien, nuevos = identidades(conn, ultimo.get("jugadores") or [], empezo)
@@ -761,9 +919,9 @@ def importar(conn, ruta, rehacer=False, callado=False):
         # allí). Si la partida se importa antes de la colocación inicial, se
         # queda en NULL, que es la respuesta correcta: todavía no se sabe.
         cur = conn.execute(
-            "INSERT INTO players (game_id, person_name, name, color, is_bot) "
-            "VALUES (?,?,?,?,?)",
-            (game_id, nombre, nombre, j.get("color"), es_bot))
+            "INSERT INTO players (game_id, person_name, name, color, is_bot,"
+            " network_id) VALUES (?,?,?,?,?,?)",
+            (game_id, nombre, nombre, j.get("color"), es_bot, j.get("red")))
         pid_de[j["id"]] = cur.lastrowid
 
     # --- las casillas del tablero (19 en el base, 30 en el de 5-6) ---------

@@ -638,6 +638,230 @@ def prueba_una_maquina_recien_clonada_arranca():
                   "Copyright (c) 2026 Mario Razquin" in texto)
 
 
+def prueba_la_huella_dice_que_mesa_fue(conn):
+    """La huella tiene que salir igual leyendo la grabacion o leyendo la base.
+
+    De ella dependen las dos unicas defensas que hay contra contar una
+    partida dos veces: el importador, cuando cuatro amigos mandan cuatro
+    grabaciones de la misma mesa, y `db/fundir.py`, cuando se junta la base
+    de uno con la de otro. Si los dos caminos dieran cadenas distintas, las
+    dos defensas dejarian de servir A LA VEZ y sin decir nada: entrarian
+    duplicados y en la pantalla se verian partidas normales.
+
+    Y TIENE QUE DISTINGUIR. Una huella que saliera igual para dos mesas
+    distintas seria peor que no tenerla: se tomaria una partida por otra y se
+    perderia entera. Se comprueba que las de esta base son todas distintas.
+    """
+    import mod_verdad.importar as imp
+
+    imp.crear_tablas(conn)
+    imp.ponerle_huella_a_las_de_antes(conn)
+    total, con = conn.execute(
+        "SELECT COUNT(*), COUNT(huella) FROM games").fetchone()
+    comprobar("las %d partidas de la base tienen su huella" % total,
+              total and con == total, "%d de %d" % (con, total))
+
+    distintas = conn.execute(
+        "SELECT COUNT(DISTINCT huella) FROM games "
+        "WHERE huella IS NOT NULL").fetchone()[0]
+    comprobar("y no hay dos mesas con la misma", distintas == con,
+              "%d huellas para %d partidas" % (distintas, con))
+
+    # El mismo numero por los dos caminos. Se recalcula desde la base y tiene
+    # que dar lo que se guardo, que salio de la grabacion al importar.
+    malas = []
+    for gid, guardada in conn.execute(
+            "SELECT game_id, huella FROM games WHERE huella IS NOT NULL"):
+        if imp.huella_en_la_base(conn, gid) != guardada:
+            malas.append(gid)
+    comprobar("y sale la misma leyendola de la base", not malas,
+              "no cuadran las partidas %s" % malas[:6])
+
+    # Y que de verdad dependa de las dos cosas: si cambia el tablero o cambia
+    # quien jugaba, tiene que cambiar.
+    base = imp.huella_de_la_mesa(["a", "b"], [(0, 0, "Madera", 6)])
+    comprobar("cambia si cambia quien jugaba",
+              base != imp.huella_de_la_mesa(["a", "c"],
+                                            [(0, 0, "Madera", 6)]))
+    comprobar("y si cambia el tablero",
+              base != imp.huella_de_la_mesa(["a", "b"],
+                                            [(0, 0, "Madera", 8)]))
+    comprobar("y no cambia por el orden en que se miren",
+              base == imp.huella_de_la_mesa(["b", "a"],
+                                            [(0, 0, "Madera", 6)]))
+
+
+def prueba_dos_bases_se_juntan_sin_perder_ni_duplicar():
+    """Partir la base en dos, volver a juntarlas y exigir la de antes.
+
+    ESTO ES LO QUE PERMITE QUE EL GRUPO TENGA UN SOLO HISTORICO. Cada uno
+    juega en su ordenador y tiene su base; juntarlas es la unica forma de
+    verlo todo junto sin que nadie pase ficheros a mano. Y es la operacion
+    mas delicada que hay aqui, porque los numeros de partida de los dos lados
+    no tienen nada que ver: la partida 7 de uno y la 7 del otro son dos
+    partidas, asi que TODO lo que cuelga de una --jugadores, casillas,
+    tiradas, robos, comercios-- hay que volver a atarlo al numero nuevo.
+
+    Un fallo ahi no da error. Da una tirada apuntando al jugador de otra
+    partida, y eso sale en las tablas como un dato mas.
+
+    COMO SE COMPRUEBA: se parte la base de verdad en dos trozos QUE SE SOLAPAN
+    --como dos amigos que han jugado algunas partidas juntos-- se juntan, y
+    el resultado tiene que tener exactamente las mismas filas que la base
+    original, tabla por tabla. Ni una de menos (se perdio algo al remapear)
+    ni una de mas (entro algo dos veces).
+
+    Y EL AMIGO LLAMA DISTINTO A LA GENTE, que es lo que pasa de verdad: en su
+    base nadie tiene nombre puesto. Al terminar, en la nuestra no puede
+    aparecer ni uno de sus nombres, porque las vistas agrupan por nombre y la
+    misma persona contaria como dos.
+    """
+    import shutil
+    import tempfile
+    import mod_verdad.importar as imp
+    from db import fundir as F
+
+    base = os.path.join(RAIZ, "catan_stats.db")
+    if not os.path.isfile(base):
+        return saltar("juntar dos bases: no hay base con la que probar")
+
+    tmp = tempfile.mkdtemp(prefix="catan_fundir_")
+    try:
+        mia = os.path.join(tmp, "mia.db")
+        suya = os.path.join(tmp, "suya.db")
+        for d in (mia, suya):
+            shutil.copy2(base, d)
+        for d in (mia, suya):
+            c = sqlite3.connect(d)
+            imp.crear_tablas(c)
+            imp.ponerle_huella_a_las_de_antes(c)
+            c.commit()
+            c.close()
+
+        c = sqlite3.connect(mia)
+        todas = [r[0] for r in c.execute(
+            "SELECT game_id FROM games ORDER BY game_id")]
+        tablas = sorted(set(F.tablas_de_una_partida(c) + ["building_tiles"]))
+        antes = {t: c.execute("SELECT COUNT(*) FROM %s" % t).fetchone()[0]
+                 for t in tablas}
+        c.close()
+        if len(todas) < 4:
+            return saltar("juntar dos bases: hacen falta 4 partidas y hay %d"
+                          % len(todas))
+
+        # Dos trozos con solape: las del medio las tenemos los dos.
+        corte = max(2, len(todas) * 2 // 3)
+        mias, suyas = todas[:corte], todas[len(todas) // 3:]
+        for ruta, quedarse in ((mia, mias), (suya, suyas)):
+            con = sqlite3.connect(ruta)
+            for gid in todas:
+                if gid not in quedarse:
+                    imp.borrar_partida(con, gid)
+            con.commit()
+            con.close()
+
+        # En su base nadie tiene nombre puesto.
+        con = sqlite3.connect(suya)
+        con.execute("UPDATE mod_identities SET display_name = "
+                    "'suyo_' || network_id")
+        con.execute("UPDATE players SET name = 'suyo_' || network_id, "
+                    "person_name = 'suyo_' || network_id")
+        con.execute("INSERT OR IGNORE INTO people (display_name) "
+                    "SELECT display_name FROM mod_identities")
+        con.commit()
+        con.close()
+
+        con = sqlite3.connect(mia)
+        try:
+            r = F.fundir(con, suya)
+            comprobar("se traen las partidas que faltaban",
+                      len(r["traidas"]) == len(todas) - len(mias),
+                      "%d traidas, %d ya estaban" % (len(r["traidas"]),
+                                                     r["ya_estaban"]))
+            comprobar("y las que ya estaban no se vuelven a meter",
+                      r["ya_estaban"] == len(set(mias) & set(suyas)))
+
+            despues = {t: con.execute(
+                "SELECT COUNT(*) FROM %s" % t).fetchone()[0] for t in tablas}
+            mal = ["%s (%d contra %d)" % (t, despues[t], antes[t])
+                   for t in tablas if despues[t] != antes[t]]
+            comprobar("y sale la base de antes, fila por fila y tabla por "
+                      "tabla", not mal, "; ".join(mal))
+
+            rotas = con.execute("PRAGMA foreign_key_check").fetchall()
+            comprobar("sin una sola clave que apunte a donde no hay nada",
+                      not rotas, str(rotas[:3]))
+
+            # Lo que no daria error pero seria falso: una fila hija atada a
+            # un jugador de otra partida.
+            cruzadas = con.execute(
+                "SELECT COUNT(*) FROM rolls r JOIN players p "
+                "  ON p.player_id = r.player_id "
+                " WHERE p.game_id <> r.game_id").fetchone()[0]
+            cruzadas += con.execute(
+                "SELECT COUNT(*) FROM buildings b JOIN players p "
+                "  ON p.player_id = b.player_id "
+                " WHERE p.game_id <> b.game_id").fetchone()[0]
+            comprobar("y nada de una partida atado a alguien de otra",
+                      not cruzadas, "%d filas cruzadas" % cruzadas)
+
+            suyos = [n for (n,) in con.execute(
+                "SELECT DISTINCT name FROM players") if n.startswith("suyo_")]
+            comprobar("y cada persona con el nombre que tiene AQUI",
+                      not suyos, "han entrado con el suyo: %s" % suyos[:4])
+
+            # Volver a cargar el mismo fichero no puede meter nada.
+            r2 = F.fundir(con, suya)
+            comprobar("y cargarla otra vez no mete nada",
+                      not r2["traidas"],
+                      "ha metido %d" % len(r2["traidas"]))
+        finally:
+            con.close()
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def prueba_al_juntar_no_se_olvida_ninguna_tabla(conn):
+    """El recorrido de `fundir` tiene que cubrir todo lo que borra el otro.
+
+    Son las dos caras de lo mismo: una partida son las filas de N tablas, y
+    hay dos sitios que recorren esas N. Si se anade una tabla y solo se
+    entera uno, el fallo es callado en los dos sentidos -- al borrar quedan
+    filas huerfanas, al juntar llega media partida.
+
+    Ninguna de las dos listas esta escrita a mano, las dos salen del esquema,
+    y aun asi se comprueba que dicen lo mismo: son dos preguntas distintas al
+    esquema y podrian dejar de coincidir.
+    """
+    from db import fundir as F
+    import mod_verdad.importar as imp
+    import inspect
+
+    trae = set(F.tablas_de_una_partida(conn))
+    # Las que nombra `borrar_partida`, leidas de su propio codigo.
+    fuente = inspect.getsource(imp.borrar_partida)
+    borra = set(re.findall(r'"(\w+)"', fuente))
+    borra |= set(re.findall(r'DELETE FROM (\w+)', fuente))
+    borra = {t for t in borra
+             if conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' "
+                             "AND name=?", (t,)).fetchone()}
+    faltan = sorted(borra - trae)
+    comprobar("juntar dos bases toca las mismas %d tablas que borrar una "
+              "partida" % len(borra), not faltan,
+              "a fundir le faltan: %s" % faltan)
+
+    # Y en orden: ninguna tabla antes que una de la que depende.
+    orden = F.tablas_de_una_partida(conn)
+    sitio = {t: i for i, t in enumerate(orden)}
+    tarde = []
+    for t in orden:
+        for padre in set(F._padres(conn, t).values()):
+            if padre in sitio and sitio[padre] > sitio[t]:
+                tarde.append("%s va antes que %s" % (t, padre))
+    comprobar("y en un orden en el que los padres van primero", not tarde,
+              "; ".join(tarde))
+
+
 def prueba_la_meta_de_puntos_cuadra(conn):
     """A cuantos puntos se jugaba tiene que caber en lo que paso.
 
@@ -4724,6 +4948,9 @@ def main():
         prueba_el_global_es_la_suma(conn, amigas)
         prueba_las_tiradas_cuadran(conn, amigas)
         prueba_una_maquina_recien_clonada_arranca()
+        prueba_la_huella_dice_que_mesa_fue(conn)
+        prueba_al_juntar_no_se_olvida_ninguna_tabla(conn)
+        prueba_dos_bases_se_juntan_sin_perder_ni_duplicar()
         prueba_la_meta_de_puntos_cuadra(conn)
         prueba_la_base_esta_entera(conn)
         prueba_todas_las_columnas_estan_explicadas(conn)

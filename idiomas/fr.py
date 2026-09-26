@@ -40,6 +40,17 @@ DECIMAL = ","
 # Lo que se ve entre etiquetas de la página, y los cuatro atributos que
 # lee un humano. La clave es el castellano tal cual está escrito.
 TEXTO = {
+    # --- juntar dos bases ---
+    'Estos dos son para tener un solo historico entre varios.':
+        "Ces deux-là servent à n'avoir qu'un seul historique à plusieurs.",
+    'para pasarselo a alguien, y':
+        "pour le passer à quelqu'un, et",
+    'hace lo contrario: eliges la de un amigo y entran aqui las partidas suyas que te falten.':
+        "fait l'inverse : tu choisis celle d'un ami et les parties qui te manquent entrent ici.",
+    'Junta, no sustituye.':
+        "Ça fusionne, ça ne remplace pas.",
+    'Puedes cargar la de uno y luego la de otro, hoy y el mes que viene, y lo unico que pasa es que hay mas partidas. Las que jugasteis juntos entran una sola vez, aunque en su base tengan otro numero y otros nombres: se reconoce la mesa por quienes jugaron y que tablero salio. Y a cada persona se le pone el nombre que tiene aqui, que si no la misma persona contaria como dos en las 32 tablas. Antes de nada comprueba que el fichero es de verdad la base del Catan y guarda una':
+        "Tu peux charger celle de l'un puis celle de l'autre, aujourd'hui et le mois prochain, et la seule chose qui change c'est qu'il y a plus de parties. Celles que vous avez jouées ensemble n'entrent qu'une fois, même si dans sa base elles portent un autre numéro et d'autres noms : une table se reconnaît à qui a joué et au plateau qui est sorti. Et chaque personne reçoit le nom qu'elle a ici, sinon la même personne compterait pour deux dans les 32 tableaux. Avant tout il vérifie que le fichier est bien la base du Catan, et il garde une",
     '&hellip;y grabar capturas': '&hellip;et enregistrer des captures',
     '&laquo;&hellip;y grabar capturas&raquo;':
         '&laquo;&hellip;et enregistrer des captures&raquo;',
@@ -183,35 +194,9 @@ TEXTO = {
     'Quitar una partida': 'Supprimer une partie',
     'Cargar una base de datos': 'Charger une base de données',
     'Descargar la base de datos': 'Télécharger la base de données',
-    'Estos dos son para jugar en mas de un ordenador sin partir el historico '
-    'en dos.':
-        "Ces deux-là servent à jouer sur plus d'un ordinateur sans couper ton "
-        'historique en deux.',
     'te da el fichero': 'te donne le fichier',
     'catan_stats.db': 'catan_stats.db',
-    'para llevartelo, y': 'à emporter, et',
-    'hace lo contrario: lo eliges aqui y este panel sigue con aquel '
-    'historico.':
-        "fait l'inverse : tu le choisis ici et ce panneau continue avec cet "
-        'historique.',
-    'Sustituye la base entera': 'Ça remplace toute la base',
-    'y al terminar mete las partidas de este ordenador, que estan en tus '
-    'grabaciones: te quedan las dos cosas y no se repite ninguna. Antes de '
-    'hacerlo comprueba que el fichero es de verdad la base del Catan y '
-    'guarda una':
-        "et à la fin ça ajoute les parties de cet ordinateur, celles de tes "
-        "enregistrements : tu as les deux et rien n'est en double. Avant de "
-        'le faire, ça vérifie que le fichier est bien la base du Catan et '
-        'ça garde une',
     'copia de la de aqui': "copie de celle d'ici",
-    'dentro de': 'dans',
-    ', que tampoco hay deshacer. Las partidas que hubieras quitado a mano '
-    'siguen fuera: eso es una decision tuya sobre tus grabaciones, no un dato '
-    'de la base que llega.':
-        ", parce qu'ici non plus il n'y a pas de retour en arrière. Les "
-        "parties que tu avais retirées à la main restent dehors : c'est une "
-        "décision à toi sur tes propres enregistrements, pas une donnée de la "
-        'base qui arrive.',
     'R&eacute;cords de una sola partida': 'Records sur une partie',
     'Reentrenar con todo (para jugar)':
         'Réentraîner sur tout (pour jouer avec)',
@@ -996,6 +981,9 @@ RESPUESTAS = {
 # otra forma no existirian. Estan en la lista para que `db/pruebas.py` pueda
 # exigirlas todas sin excepciones que alguien tenga que mantener.
 CONSOLA = {
+    "     misma mesa que la partida %d, y esta trae mas (%d apuntes contra %d): se cambia":
+        "     même table que la partie %d, et celle-ci en"
+        " apporte plus (%d notes contre %d) : on la remplace",
     '         %-58s x%d': '         %-58s x%d',
     '         La grabación está entera y guardada: cuando el importador':
         "         L'enregistrement est entier et sauvegardé : quand",
